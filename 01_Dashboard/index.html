@@ -1579,12 +1579,12 @@ function renderOverview(data){
   opdRows.forEach(function(r){channels.forEach(function(ch){chTot[ch]+=(r[ch]||0);chQty[ch]+=(r[ch+'_q']||0);});});
   var opdTotal=channels.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
   var opdQtyTotal=channels.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
-  var opdOfflineQty=OFFLINE_CHS.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
-  var opdOnlineQty=opdQtyTotal-opdOfflineQty;
   /* Online-only: ตัด offline channels ออก (หน้าร้าน, Bookfair) */
   var OFFLINE_CHS=['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19','Bookfair'];
   var opdOfflineTotal=OFFLINE_CHS.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
   var opdOnlineTotal=opdTotal-opdOfflineTotal;
+  var opdOfflineQty=OFFLINE_CHS.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
+  var opdOnlineQty=opdQtyTotal-opdOfflineQty;
 
   /* ── Channel aggregates ── */
   var metaRev=(chTot['Facebook']||0)+(chTot['Instagram']||0);
