@@ -1579,6 +1579,10 @@ function renderOverview(data){
   opdRows.forEach(function(r){channels.forEach(function(ch){chTot[ch]+=(r[ch]||0);chQty[ch]+=(r[ch+'_q']||0);});});
   var opdTotal=channels.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
   var opdQtyTotal=channels.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
+  /* Online-only: ตัด offline channels ออก (หน้าร้าน, งานหนังสือ) */
+  var OFFLINE_CHS=['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19','\u0e07\u0e32\u0e19\u0e2b\u0e19\u0e31\u0e07\u0e2a\u0e37\u0e2d'];
+  var opdOfflineTotal=OFFLINE_CHS.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
+  var opdOnlineTotal=opdTotal-opdOfflineTotal;
 
   /* ── Channel aggregates ── */
   var metaRev=(chTot['Facebook']||0)+(chTot['Instagram']||0);
@@ -1605,7 +1609,7 @@ function renderOverview(data){
   var _ovMfg=MONTHLY_FINANCE_GOALS[month];
   var ovEffGoal=(_ovMfg&&_ovMfg.onlineGoal>0)?_ovMfg.onlineGoal:goalTotal;
   var ovBookfair=(_ovMfg&&_ovMfg.bookfairGoal>0)?_ovMfg.bookfairGoal:0;
-  var achieve=ovEffGoal>0?(opdTotal/ovEffGoal*100):0;
+  var achieve=ovEffGoal>0?(opdOnlineTotal/ovEffGoal*100):0;
 
   /* ── Status counts ── */
   var sc={ot:0,on:0,wa:0,cr:0};
@@ -1624,19 +1628,19 @@ function renderOverview(data){
   var achColor=achieve>=100?'var(--success)':achieve>=80?'#F59E0B':achieve>=50?'var(--warn)':'var(--danger)';
   var heroEl=document.getElementById('ov-hero');
   if(heroEl){
-    var aprNote=month==='Apr 26'?' <span style="font-size:10px;font-weight:400">(1-2 เม.ย.)</span>':'';
+    var aprNote=month==='Apr 26'?' <span style="font-size:10px;font-weight:400">(1-'+range.to.slice(8)+' เม.ย.)</span>':'';
     var h=
       '<div class="kpi-card accent" style="position:relative">'
         +'<div class="kpi-label">Revenue vs Goal — '+escH(month)+aprNote+'</div>'
-        +'<div class="kpi-value">'+fmt(opdTotal)+'</div>'
+        +'<div class="kpi-value">'+fmt(opdOnlineTotal)+'</div>'
         +'<div class="kpi-sub">เป้า: '+fmt(ovEffGoal)+(ovBookfair>0?' <span style="font-size:10px;opacity:.75">(รวม Bookfair +'+fmt(ovBookfair)+')</span>':'')+'</div>'
         +'<div style="position:absolute;top:14px;right:16px;font-size:28px;font-weight:800;color:'+achColor+'">'+achieve.toFixed(1)+'%</div>'
       +'</div>'
       /* ── ยอดออนไลน์ card ── */
       +'<div class="kpi-card" style="border-top:3px solid var(--accent)">'
         +'<div class="kpi-label">ยอดออนไลน์</div>'
-        +'<div class="kpi-value actual-val">'+fmt(opdTotal)+'</div>'
-        +'<div class="kpi-sub" style="font-size:10px">Online Channels รวม · ไม่รวม Bookfair/Consign</div>'
+        +'<div class="kpi-value actual-val">'+fmt(opdOnlineTotal)+'</div>'
+        +'<div class="kpi-sub" style="font-size:10px">Online เท่านั้น'+(opdOfflineTotal>0?' · หน้าร้าน +'+fmt(opdOfflineTotal)+' แยก':'')+'</div>'
       +'</div>'
       +'<div class="kpi-card">'
         +'<div class="kpi-label">จำนวนเล่มที่ขาย</div>'
