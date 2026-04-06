@@ -2833,9 +2833,10 @@ function renderGoal(month){
   var rows=GOALS_DATA[month];
 
   // ── Summary ──
-  var totalGoal=0,totalActual=0,overCount=0,critCount=0,warnCount=0,onCount=0,focusCritCount=0;
+  var totalGoal=0,totalActual=0,totalHanraan=0,overCount=0,critCount=0,warnCount=0,onCount=0,focusCritCount=0;
   rows.forEach(function(r){
     totalGoal+=r.goal||0;totalActual+=r.actual||0;
+    totalHanraan+=(r.channels&&r.channels['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19'])||0;
     var s=(r.status||'').toLowerCase();
     var isFocRow=FOCUS_PRODUCTS.indexOf(r.product)>-1;
     if(s.indexOf('over')>-1)overCount++;
@@ -2856,7 +2857,9 @@ function renderGoal(month){
     var goalNote=(_mfgRef&&_mfgRef.bookfairGoal>0)?'รวม Bookfair +'+fmt(_mfgRef.bookfairGoal):'';
     var sh='';
     sh+='<div class="gs-card"><div class="gs-l">Total Goal</div><div class="gs-v" style="color:var(--accent)">'+fmt(effGoal)+'</div><div class="gs-sub">'+(goalNote||fmtFull(effGoal))+'</div></div>';
-    sh+='<div class="gs-card"><div class="gs-l">Total Actual</div><div class="gs-v actual-val">'+fmt(totalActual)+'</div><div class="gs-sub">'+fmtFull(totalActual)+'</div></div>';
+    var totalOnline=totalActual-totalHanraan;
+    var actualSubLine=totalHanraan>0?'Online '+fmt(totalOnline)+' · \u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19 '+fmt(totalHanraan):fmtFull(totalActual);
+    sh+='<div class="gs-card"><div class="gs-l">Total Actual</div><div class="gs-v actual-val">'+fmt(totalActual)+'</div><div class="gs-sub">'+actualSubLine+'</div></div>';
     sh+='<div class="gs-card"><div class="gs-l">Achievement</div><div class="gs-v" style="color:'+effAchColor+'">'+effAch.toFixed(1)+'%</div><div class="gs-sub">of monthly goal</div></div>';
     sh+='<div class="gs-card" style="border-top:3px solid #16A34A"><div class="gs-l">Over Target</div><div class="gs-v" style="color:#16A34A">'+overCount+'</div><div class="gs-sub">≥ 100%</div></div>';
     sh+='<div class="gs-card" style="border-top:3px solid #CA8A04"><div class="gs-l">On Track</div><div class="gs-v" style="color:#CA8A04">'+onCount+'</div><div class="gs-sub">80–99%</div></div>';
