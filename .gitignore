@@ -1,0 +1,34 @@
+# LibreOffice / MS Office lock files
+.~lock.*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Node / npm (if any scripts added later)
+node_modules/
+npm-debug.log*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp / backup files
+*.tmp
+*.bak
+*~
+
+# Sensitive data (Finance CSVs with actual numbers — keep local only)
+# Uncomment below if you don't want Finance CSVs in git:
+# [Finance]*.csv
+
+# Large raw data exports (optional — comment out to include)
+# 03_Raw Data/*.xlsx
