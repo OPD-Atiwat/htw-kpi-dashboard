@@ -602,10 +602,11 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
       <div class="table-head-title">Content Performance</div>
       <div style="display:flex;align-items:center;gap:10px">
         <span style="font-size:11px;color:var(--text2)">คลิก row เพื่อดู KPI</span>
-        <button id="new-only-btn" onclick="toggleNewOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">🆕 NEW เท่านั้น</button>
-        <button id="video-only-btn" onclick="toggleVideoOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">▶ มีคลิป</button>
-        <button id="tiktok-only-btn" onclick="toggleTikTokOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">🎵 TikTok</button>
-        <button id="meta-only-btn" onclick="toggleMetaOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">📘 Meta</button>
+        <button id="new-only-btn" onclick="toggleNewOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">NEW เท่านั้น</button>
+        <button id="video-only-btn" onclick="toggleVideoOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">มีคลิป</button>
+        <button id="tiktok-only-btn" onclick="toggleTikTokOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">TikTok</button>
+        <button id="meta-only-btn" onclick="toggleMetaOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">Meta</button>
+        <button id="success-only-btn" onclick="toggleSuccessOnly()" style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface2);color:var(--text1);border:1px solid var(--border);transition:all .2s">Success</button>
       </div>
     </div>
     <div style="overflow-x:auto">
@@ -1312,6 +1313,7 @@ var STATE = {
   tiktokOnly: false,
   metaOnly: false,
   newOnly: false,
+  successOnly: false,
   chartPlatforms: {trend:'Meta'},
   chType: 'stacked',
   ovMonth: 'Mar 26'
@@ -2288,6 +2290,7 @@ function renderContent(data){
     c.isSuccess = (c.rev >= CONFIG.SUCCESS_REVENUE) && (aggRoas >= succRoas);
     c.content_format = fmt;
   });
+  if(STATE.successOnly){arr=arr.filter(function(c){return c.isSuccess;});}
 
   // ── Content-Type Summary Cards (updates with filter) ──
   var CT_COLORS={'Sale':'#1877F2','Engage':'#10B981','Promotion':'#F59E0B','Book Fair':'#7C3AED'};
@@ -2377,9 +2380,10 @@ function renderContent(data){
     html+='<td class="td-content"><b>'+escH(c.content_name)+'</b>'+(c.isNew?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle">NEW</span>':'')+successBadge+'</td>';
     html+='<td>'+escH(c.creator)+'</td>';
     html+='<td>'+escH(c.product)+'</td>';
-    var ctCls={'Sale':'#1877F2','Engage':'#10B981','Promotion':'#F59E0B','Book Fair':'#7C3AED'};
+    /* Type: text-only, สีต่างจาก Platform (ไม่มี background เพื่อไม่ซ้ำ badge Platform) */
+    var ctCls={'Sale':'#D97706','Engage':'#16A34A','Promotion':'#9333EA','Book Fair':'#0891B2'};
     var ctColor=ctCls[c.content_type]||'#94A3B8';
-    var ctTag=c.content_type?'<span style="display:inline-block;font-size:10px;font-weight:700;background:'+ctColor+';color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap">'+escH(c.content_type)+'</span>':'<span style="color:var(--text2)">–</span>';
+    var ctTag=c.content_type?'<span style="font-size:11px;font-weight:700;color:'+ctColor+'">'+escH(c.content_type)+'</span>':'<span style="color:var(--text2)">–</span>';
     html+='<td>'+ctTag+'</td>';
     html+='<td><span class="plat-badge '+platCls+'">'+escH(c.platform)+'</span></td>';
     html+='<td class="num">'+c.daysRun+' วัน</td>';
@@ -2445,6 +2449,17 @@ function toggleNewOnly(){
     btn.style.background=STATE.newOnly?'#10B981':'var(--surface2)';
     btn.style.color=STATE.newOnly?'#fff':'var(--text1)';
     btn.style.border=STATE.newOnly?'1px solid #10B981':'1px solid var(--border)';
+  }
+  renderContent(STATE.filteredData);
+}
+function toggleSuccessOnly(){
+  STATE.successOnly=!STATE.successOnly;
+  STATE.contentPage=1;
+  var btn=document.getElementById('success-only-btn');
+  if(btn){
+    btn.style.background=STATE.successOnly?'#16A34A':'var(--surface2)';
+    btn.style.color=STATE.successOnly?'#fff':'var(--text1)';
+    btn.style.border=STATE.successOnly?'1px solid #16A34A':'1px solid var(--border)';
   }
   renderContent(STATE.filteredData);
 }
