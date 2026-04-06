@@ -1644,13 +1644,10 @@ function renderOverview(data){
       +'</div>'
       /* ── ยอดรวมทุกช่องทาง card ── */
       +(function(){
-        var _hr=pmHanraan;
+        /* หน้าร้าน === Bookfair — ใช้ยอด OPD เป็น source เดียว */
         var _bf=chTot['Bookfair']||0;
-        var _totalAll=pmOnlineActual+_hr+_bf;
-        var _parts=[];
-        if(_hr>0)_parts.push('หน้าร้าน '+fmt(_hr));
-        if(_bf>0)_parts.push('Bookfair '+fmt(_bf));
-        var _sub='Online '+fmt(pmOnlineActual)+(_parts.length>0?' · '+_parts.join(' · '):'');
+        var _totalAll=pmOnlineActual+_bf;
+        var _sub='Online '+fmt(pmOnlineActual)+(_bf>0?' · Bookfair '+fmt(_bf):'');
         return '<div class="kpi-card" style="border-top:3px solid var(--accent)">'
           +'<div class="kpi-label">ยอดรวมทุกช่องทาง</div>'
           +'<div class="kpi-value actual-val">'+fmt(_totalAll)+'</div>'
