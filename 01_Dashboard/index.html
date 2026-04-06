@@ -1554,7 +1554,7 @@ function renderCurrentTab(){
 function ovMonthRange(m){
   if(m==='Feb 26') return {from:'2026-02-01',to:'2026-02-28'};
   if(m==='Mar 26') return {from:'2026-03-01',to:'2026-03-31'};
-  return {from:'2026-04-01',to:'2026-04-07'};
+  return {from:'2026-04-01',to:'2026-04-05'};
 }
 function setOvMonth(m){
   STATE.ovMonth=m;
@@ -2792,10 +2792,11 @@ function calcMonthForecast(month){
   if(!prefix||!OPD_DAILY||!OPD_DAILY.data)return null;
   var totalDays=daysMap[month]||30;
   var actualRev=0,daysWithData=0;
+  var _offlineFc=['หน้าร้าน','งานหนังสือ'];
   OPD_DAILY.data.forEach(function(d){
     if(!d.d||d.d.substring(0,7)!==prefix)return;
     var dayTotal=0;
-    OPD_DAILY.channels.forEach(function(ch){dayTotal+=d[ch]||0;});
+    OPD_DAILY.channels.forEach(function(ch){if(_offlineFc.indexOf(ch)===-1)dayTotal+=d[ch]||0;});
     actualRev+=dayTotal;daysWithData++;
   });
   if(daysWithData===0)return null;
@@ -3456,13 +3457,13 @@ function renderGoalAnalysis(rows){
           var _found=null;
           (GOALS_DATA[currentMonth]||[]).forEach(function(mr){if(mr.product===b.product)_found=mr;});
           var _cur=_found?(_found.actual||0):0;
-          return _cur>0?Math.round(_cur*_barFc.scaleFactor):null;
+          return _cur>0?Math.round(_cur*(_barFc.totalDays/_barFc.days)):null;
         } else {
           var _nfA=0;
           (GOALS_DATA[currentMonth]||[]).forEach(function(mr){
             if(FOCUS_PRODUCTS.indexOf(mr.product)===-1){_nfA+=mr.actual||0;}
           });
-          return _nfA>0?Math.round(_nfA*_barFc.scaleFactor):null;
+          return _nfA>0?Math.round(_nfA*(_barFc.totalDays/_barFc.days)):null;
         }
       });
       barDatasets.push({
@@ -3829,8 +3830,8 @@ var CH_ICONS = {
 function chDateBounds(preset){
   if(preset==='feb') return {from:'2026-02-01',to:'2026-02-28'};
   if(preset==='mar') return {from:'2026-03-01',to:'2026-03-31'};
-  if(preset==='apr') return {from:'2026-04-01',to:'2026-04-07'};
-  return {from:'2026-02-01',to:'2026-04-02'};
+  if(preset==='apr') return {from:'2026-04-01',to:'2026-04-05'};
+  return {from:'2026-02-01',to:'2026-04-05'};
 }
 
 function setChRange(preset){
