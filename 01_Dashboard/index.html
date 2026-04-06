@@ -2890,10 +2890,20 @@ function renderGoal(month){
     var effAchColor=effAch>=100?'var(--success)':effAch>=70?'var(--warn)':'var(--danger)';
     var goalNote=(_mfgRef&&_mfgRef.bookfairGoal>0)?'รวม Bookfair +'+fmt(_mfgRef.bookfairGoal):'';
     var sh='';
-    sh+='<div class="gs-card"><div class="gs-l">Total Goal</div><div class="gs-v" style="color:var(--accent)">'+fmt(effGoal)+'</div><div class="gs-sub">'+(goalNote||fmtFull(effGoal))+'</div></div>';
+    var diff=totalActual-effGoal;
+    var diffColor=diff>=0?'var(--success)':'var(--danger)';
+    var diffLabel=diff>=0?'+'+fmt(diff):'-'+fmt(Math.abs(diff));
+    var diffNote=diff>=0?' (เกินเป้า)':' (ต้องทำเพิ่ม)';
+    sh+='<div class="gs-card"><div class="gs-l">Total Goal</div><div class="gs-v" style="color:var(--accent)">'+fmt(effGoal)+'</div>'
+      +'<div class="gs-sub">'+(goalNote||fmtFull(effGoal))+'</div>'
+      +'<div style="font-size:10px;margin-top:3px;color:'+diffColor+';font-weight:700">Diff '+diffLabel+'<span style="font-weight:400;color:var(--text2)">'+diffNote+'</span></div>'
+      +'</div>';
     var totalOnline=totalActual-totalHanraan;
     var actualSubLine=totalHanraan>0?'Online '+fmt(totalOnline)+' · \u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19 '+fmt(totalHanraan):fmtFull(totalActual);
-    sh+='<div class="gs-card"><div class="gs-l">Total Actual</div><div class="gs-v actual-val">'+fmt(totalActual)+'</div><div class="gs-sub">'+actualSubLine+'</div></div>';
+    sh+='<div class="gs-card"><div class="gs-l">Total Actual</div><div class="gs-v actual-val">'+fmt(totalActual)+'</div>'
+      +'<div class="gs-sub">'+actualSubLine+'</div>'
+      +'<div style="font-size:10px;margin-top:3px;color:'+diffColor+';font-weight:700">Diff '+diffLabel+'<span style="font-weight:400;color:var(--text2)">'+diffNote+'</span></div>'
+      +'</div>';
     sh+='<div class="gs-card"><div class="gs-l">Achievement</div><div class="gs-v" style="color:'+effAchColor+'">'+effAch.toFixed(1)+'%</div><div class="gs-sub">of monthly goal</div></div>';
     sh+='<div class="gs-card" style="border-top:3px solid #16A34A"><div class="gs-l">Over Target</div><div class="gs-v" style="color:#16A34A">'+overCount+'</div><div class="gs-sub">≥ 100%</div></div>';
     sh+='<div class="gs-card" style="border-top:3px solid #CA8A04"><div class="gs-l">On Track</div><div class="gs-v" style="color:#CA8A04">'+onCount+'</div><div class="gs-sub">80–99%</div></div>';
