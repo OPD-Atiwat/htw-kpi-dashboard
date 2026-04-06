@@ -2816,24 +2816,26 @@ function calcMonthForecast(month){
   var prefixMap={'Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04'};
   var daysMap={'Feb 26':28,'Mar 26':31,'Apr 26':30};
   var prefix=prefixMap[month];
-  if(!prefix||!OPD_DAILY||!OPD_DAILY.data)return null;
+  if(!prefix)return null;
   var totalDays=daysMap[month]||30;
-  var actualRev=0,daysWithData=0;
-  var _offlineFc=['หน้าร้าน','Bookfair'];
-  OPD_DAILY.data.forEach(function(d){
-    if(!d.d||d.d.substring(0,7)!==prefix)return;
-    var dayTotal=0;
-    OPD_DAILY.channels.forEach(function(ch){if(_offlineFc.indexOf(ch)===-1)dayTotal+=d[ch]||0;});
-    actualRev+=dayTotal;daysWithData++;
-  });
+  /* ── Actual revenue: ใช้ GOALS_DATA (Product Monitor) เหมือน Revenue card ── */
+  var gdata=GOALS_DATA[month]||[];
+  var pmTotal=gdata.reduce(function(s,p){return s+(p.actual||0);},0);
+  var pmHr=gdata.reduce(function(s,p){return s+((p.channels&&p.channels['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19'])||0);},0);
+  var actualRev=pmTotal-pmHr; /* online only (ตัด Bookfair/หน้าร้านออก) */
+  if(actualRev===0)return null;
+  /* ── Days with data: นับจาก OPD_DAILY (date count ยังถูกต้อง) ── */
+  var daysWithData=0;
+  if(OPD_DAILY&&OPD_DAILY.data){
+    var _seen={};
+    OPD_DAILY.data.forEach(function(d){if(d.d&&d.d.substring(0,7)===prefix)_seen[d.d]=1;});
+    daysWithData=Object.keys(_seen).length;
+  }
   if(daysWithData===0)return null;
   var dailyAvg=actualRev/daysWithData;
   var projected=Math.round(dailyAvg*totalDays);
-  /* Scale factor: how far the projected total is vs current recorded actual in GOALS_DATA */
-  var goalsActual=0;
-  if(GOALS_DATA[month]){GOALS_DATA[month].forEach(function(r){goalsActual+=r.actual||0;});}
-  var scaleFactor=goalsActual>0?(projected/goalsActual):null;
-  return{actual:actualRev,days:daysWithData,totalDays:totalDays,dailyAvg:dailyAvg,projected:projected,goalsActual:goalsActual,scaleFactor:scaleFactor};
+  var scaleFactor=pmTotal>0?(projected/pmTotal):null;
+  return{actual:actualRev,days:daysWithData,totalDays:totalDays,dailyAvg:dailyAvg,projected:projected,goalsActual:pmTotal,scaleFactor:scaleFactor};
 }
 
 function renderGoal(month){
