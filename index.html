@@ -1611,7 +1611,11 @@ function renderOverview(data){
   var _ovMfg=MONTHLY_FINANCE_GOALS[month];
   var ovEffGoal=(_ovMfg&&_ovMfg.onlineGoal>0)?_ovMfg.onlineGoal:goalTotal;
   var ovBookfair=(_ovMfg&&_ovMfg.bookfairGoal>0)?_ovMfg.bookfairGoal:0;
-  var achieve=ovEffGoal>0?(opdOnlineTotal/ovEffGoal*100):0;
+  /* ── Product Monitor actuals (source of truth for Revenue cards) ── */
+  var pmActualTotal=gdata.reduce(function(s,p){return s+(p.actual||0);},0);
+  var pmHanraan=gdata.reduce(function(s,p){return s+((p.channels&&p.channels['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19'])||0);},0);
+  var pmOnlineActual=pmActualTotal-pmHanraan;
+  var achieve=ovEffGoal>0?(pmOnlineActual/ovEffGoal*100):0;
 
   /* ── Status counts ── */
   var sc={ot:0,on:0,wa:0,cr:0};
@@ -1634,19 +1638,19 @@ function renderOverview(data){
     var h=
       '<div class="kpi-card accent" style="position:relative">'
         +'<div class="kpi-label">Revenue vs Goal — '+escH(month)+aprNote+'</div>'
-        +'<div class="kpi-value">'+fmt(opdOnlineTotal)+'</div>'
+        +'<div class="kpi-value">'+fmt(pmOnlineActual)+'</div>'
         +'<div class="kpi-sub">เป้า: '+fmt(ovEffGoal)+(ovBookfair>0?' <span style="font-size:10px;opacity:.75">(รวม Bookfair +'+fmt(ovBookfair)+')</span>':'')+'</div>'
         +'<div style="position:absolute;top:14px;right:16px;font-size:28px;font-weight:800;color:'+achColor+'">'+achieve.toFixed(1)+'%</div>'
       +'</div>'
       /* ── ยอดรวมทุกช่องทาง card ── */
       +(function(){
-        var _hr=chTot['หน้าร้าน']||0;
+        var _hr=pmHanraan;
         var _bf=chTot['Bookfair']||0;
-        var _totalAll=opdOnlineTotal+_hr+_bf;
+        var _totalAll=pmOnlineActual+_hr+_bf;
         var _parts=[];
         if(_hr>0)_parts.push('หน้าร้าน '+fmt(_hr));
         if(_bf>0)_parts.push('Bookfair '+fmt(_bf));
-        var _sub='Online '+fmt(opdOnlineTotal)+(_parts.length>0?' · '+_parts.join(' · '):'');
+        var _sub='Online '+fmt(pmOnlineActual)+(_parts.length>0?' · '+_parts.join(' · '):'');
         return '<div class="kpi-card" style="border-top:3px solid var(--accent)">'
           +'<div class="kpi-label">ยอดรวมทุกช่องทาง</div>'
           +'<div class="kpi-value actual-val">'+fmt(_totalAll)+'</div>'
