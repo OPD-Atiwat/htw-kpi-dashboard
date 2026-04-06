@@ -2930,10 +2930,19 @@ function renderGoal(month){
         var _projProfit=Math.round(_fc.projected*_profitMargin);
         _profitNote=' · Profit ~'+fmt(_projProfit);
       }
+      var _fcTooltip='วิธีคิด Forecast (Online เท่านั้น ไม่รวม Bookfair)\n'
+        +'• ยอด Online จาก Product Monitor: '+fmt(_fc.actual)+'\n'
+        +'• จำนวนวันที่มีข้อมูล: '+_fc.days+' วัน\n'
+        +'• Avg/วัน: '+fmt(Math.round(_fc.dailyAvg))+'\n'
+        +'• Projected: '+fmt(Math.round(_fc.dailyAvg))+' × '+_fc.totalDays+' วัน = '+fmt(_fc.projected)+'\n'
+        +'• Source: Product Monitor (PM)';
       sh+='<div class="gs-card" style="border-top:3px solid #7C3AED">'
-        +'<div class="gs-l" style="color:#7C3AED;font-weight:800">📈 Forecast</div>'
+        +'<div class="gs-l" style="color:#7C3AED;font-weight:800">Forecast'
+          +' <span title="'+_fcTooltip+'" style="cursor:help;font-size:11px;font-weight:400;background:#EDE9FE;color:#7C3AED;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;vertical-align:middle">i</span>'
+        +'</div>'
         +'<div class="gs-v" style="color:#7C3AED">'+fmt(_fc.projected)+'</div>'
         +'<div class="gs-sub"><span style="color:'+_projColor+';font-weight:700">'+_projAch.toFixed(1)+'%</span> · '+_fc.days+'/'+_fc.totalDays+' วัน'+_profitNote+'</div>'
+        +'<div style="font-size:9px;color:var(--text3);margin-top:3px">Avg '+fmt(Math.round(_fc.dailyAvg))+'/วัน × '+_fc.totalDays+' · Online only · ไม่รวม Bookfair</div>'
         +'</div>';
     }
     sumEl.innerHTML=sh;
