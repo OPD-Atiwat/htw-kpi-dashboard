@@ -1579,8 +1579,10 @@ function renderOverview(data){
   opdRows.forEach(function(r){channels.forEach(function(ch){chTot[ch]+=(r[ch]||0);chQty[ch]+=(r[ch+'_q']||0);});});
   var opdTotal=channels.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
   var opdQtyTotal=channels.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
+  var opdOfflineQty=OFFLINE_CHS.reduce(function(s,ch){return s+(chQty[ch]||0);},0);
+  var opdOnlineQty=opdQtyTotal-opdOfflineQty;
   /* Online-only: ตัด offline channels ออก (หน้าร้าน, Bookfair) */
-  var OFFLINE_CHS=['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19','\u0e07\u0e32\u0e19\u0e2b\u0e19\u0e31\u0e07\u0e2a\u0e37\u0e2d'];
+  var OFFLINE_CHS=['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19','Bookfair'];
   var opdOfflineTotal=OFFLINE_CHS.reduce(function(s,ch){return s+(chTot[ch]||0);},0);
   var opdOnlineTotal=opdTotal-opdOfflineTotal;
 
@@ -1644,7 +1646,7 @@ function renderOverview(data){
       +'</div>'
       +'<div class="kpi-card">'
         +'<div class="kpi-label">จำนวนเล่มที่ขาย</div>'
-        +'<div class="kpi-value">'+opdQtyTotal.toLocaleString('th-TH')+'</div>'
+        +'<div class="kpi-value">'+opdOnlineQty.toLocaleString('th-TH')+'</div>'
         +'<div class="kpi-sub">เล่ม · '+opdRows.length+' วัน</div>'
       +'</div>'
       /* Ad Spend */
@@ -3730,9 +3732,12 @@ function showProductDetail(pname){
       var pctRev=totalRev>0?(d.rev/totalRev*100):0;
       // %Ads: prefer CSV value, else compute from spend
       var pctAds=d.pct_ads_csv!=null?d.pct_ads_csv:(d.rev>0?(d.spend/d.rev*100):null);
-      var platCls=p==='Meta'?'badge-meta':p==='Shopee'?'badge-shopee':'badge-tiktok';
+      /* ── CI color per channel: Meta maps to Facebook blue ── */
+      var _chKey=p==='Meta'?'Facebook':p;
+      var _chColor=(CH_COLORS[_chKey]||CH_COLORS[p]||'#64748B');
+      var _chIcon=(CH_ICONS[_chKey]||CH_ICONS[p]||'');
       h+='<tr>'
-        +'<td><span class="plat-badge '+platCls+'" style="'+(p==='Shopee'?'background:#EE4D2D;color:#fff':'')+'">'+escH(p)+'</span></td>'
+        +'<td><span class="plat-badge" style="background:'+_chColor+';color:#fff">'+(_chIcon?_chIcon+' ':'')+escH(p)+'</span></td>'
         +'<td class="num"><b>'+fmtFull(d.rev)+'</b></td>'
         +'<td class="num">'+(hasSpend?fmtFull(d.spend):'<span style="color:var(--text2)">–</span>')+'</td>'
         +'<td class="num">'+(roas!=null?roas.toFixed(2)+'x':'<span style="color:var(--text2)">–</span>')+'</td>'
