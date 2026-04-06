@@ -1554,7 +1554,7 @@ function renderCurrentTab(){
 function ovMonthRange(m){
   if(m==='Feb 26') return {from:'2026-02-01',to:'2026-02-28'};
   if(m==='Mar 26') return {from:'2026-03-01',to:'2026-03-31'};
-  return {from:'2026-04-01',to:'2026-04-02'};
+  return {from:'2026-04-01',to:'2026-04-05'};
 }
 function setOvMonth(m){
   STATE.ovMonth=m;
@@ -1636,7 +1636,7 @@ function renderOverview(data){
       +'<div class="kpi-card" style="border-top:3px solid var(--accent)">'
         +'<div class="kpi-label">ยอดออนไลน์</div>'
         +'<div class="kpi-value actual-val">'+fmt(opdTotal)+'</div>'
-        +'<div class="kpi-sub" style="font-size:10px">Online Channels รวม'+(ovBookfair>0?' · Bookfair +'+fmt(ovBookfair)+' แยก':' · ไม่รวม Consign')+'</div>'
+        +'<div class="kpi-sub" style="font-size:10px">Online Channels รวม · ไม่รวม Bookfair/Consign</div>'
       +'</div>'
       +'<div class="kpi-card">'
         +'<div class="kpi-label">จำนวนเล่มที่ขาย</div>'
