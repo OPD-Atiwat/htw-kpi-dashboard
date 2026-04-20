@@ -3940,7 +3940,10 @@ function renderCreator(data){
     Sources: CONTENT_LOG (field tk, all months) + KMS_CAL_DATA (field tt, Feb/Mar fallback) === */
  (function(){
   var moCodesInData={};
-  data.forEach(function(r){if(r.month)moCodesInData[r.month]=true;});
+  /* ใช้ STATE.filteredData (period-only) แทน data (platform-filtered)
+     เพื่อให้ TikTok organic distribution ทำงานถูกต้องแม้กด TikTok pill */
+  var _baseRows=STATE&&STATE.filteredData&&STATE.filteredData.length?STATE.filteredData:data;
+  _baseRows.forEach(function(r){if(r.month)moCodesInData[r.month]=true;});
   if(typeof OPD_DAILY==='undefined') return;
 
   /* Step 1: Count TikTok posts per creator per month-code from CONTENT_LOG */
