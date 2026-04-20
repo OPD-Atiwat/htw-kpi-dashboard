@@ -4914,8 +4914,8 @@ function renderOvChannelCards(o){
  h+='</div>';
  }
 
- /* %Ads stat — compact inline, ไม่ใช้ progress bar (bar ยิ่งยาว = ดูดี แต่ %Ads ยิ่งสูงยิ่งแย่) */
- if(ch.adSpend>0&&ch.actual>0){
+ /* %Ads stat — hidden (ซ่อนชั่วคราว) */
+ /* if(ch.adSpend>0&&ch.actual>0){
  var pctAds=ch.adSpend/ch.actual*100;
  var adsCol=pctAds>45?'#DC2626':pctAds>35?'#CA8A04':'#16A34A';
  var adsBg=pctAds>45?'rgba(220,38,38,.08)':pctAds>35?'rgba(202,138,4,.08)':'rgba(22,163,74,.07)';
@@ -4926,7 +4926,7 @@ function renderOvChannelCards(o){
  h+='<span style="font-size:18px;font-weight:900;color:'+adsCol+';line-height:1;letter-spacing:-.3px">'+pctAds.toFixed(1)+'%'+adsWarn+'</span>';
  h+='<span style="font-size:10px;color:var(--text3);margin-left:auto;white-space:nowrap">Spend '+fmtCard(ch.adSpend)+'</span>';
  h+='</div>';
- }
+ } */
 
  h+='</div>'; /* end card */
  });
