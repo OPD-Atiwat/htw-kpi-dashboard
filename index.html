@@ -6914,24 +6914,40 @@ function renderChannelTab(){
  qtots[ch]+=(r[ch+'_q']||0);
  });
  });
- var grandTotal =channels.reduce(function(s,ch){ return s+(totals[ch]||0); },0);
- var grandQty =channels.reduce(function(s,ch){ return s+(qtots[ch]||0); },0);
+ var grandTotal=channels.reduce(function(s,ch){ return s+(totals[ch]||0); },0);
+ var grandQty  =channels.reduce(function(s,ch){ return s+(qtots[ch]||0); },0);
 
- /* Core KPI row: Meta vs TikTok brand */
+ /* === STANDARD DEFINITIONS (ตรงกับ Overview Tab) ===
+    Online Total = ตัด Offline (หน้าร้าน, Bookfair) และ TikTok Affi (External) ออก
+    TikTok       = Brand + Live (ไม่รวม Affi)
+    % ทุก card   = คิดจาก onlineTotal เหมือน Overview */
+ var OFFLINE_CHS_CH=['หน้าร้าน','Bookfair'];
+ var ttAffiRev   =totals['TikTok Affi']||0; var ttAffiQty   =qtots['TikTok Affi']||0;
+ var offlineRevCh=OFFLINE_CHS_CH.reduce(function(s,c){return s+(totals[c]||0);},0);
+ var offlineQtyCh=OFFLINE_CHS_CH.reduce(function(s,c){return s+(qtots[c]||0);},0);
+ var onlineTotalCh=grandTotal-ttAffiRev-offlineRevCh;
+ var onlineQtyCh  =grandQty -ttAffiQty -offlineQtyCh;
+
+ /* Meta = Facebook + Instagram */
+ var metaRevCh=(totals['Facebook']||0)+(totals['Instagram']||0);
+ var metaQtyCh=(qtots['Facebook']||0)+(qtots['Instagram']||0);
+ /* TikTok = Brand + Live (standard — matches Overview) */
+ var ttBrandRevCh=totals['TikTok']||0;       var ttBrandQtyCh=qtots['TikTok']||0;
+ var ttLiveRevCh =totals['TikTok Live']||0;  var ttLiveQtyCh =qtots['TikTok Live']||0;
+ var ttRevCh     =ttBrandRevCh+ttLiveRevCh;  var ttQtyCh     =ttBrandQtyCh+ttLiveQtyCh;
+ var spRevCh     =totals['Shopee']||0;       var spQtyCh     =qtots['Shopee']||0;
+
+ /* Core KPI row: Meta vs TikTok (Brand+Live) */
  var coreRow=document.getElementById('ch-core-row');
  if(coreRow){
- var metaRev =(totals['Facebook']||0)+(totals['Instagram']||0);
- var metaQty =(qtots['Facebook']||0)+(qtots['Instagram']||0);
- var ttRev = totals['TikTok']||0;
- var ttQty = qtots['TikTok']||0;
- var metaPct = grandTotal>0?((metaRev/grandTotal)*100).toFixed(1):'0.0';
- var ttPct = grandTotal>0?((ttRev/grandTotal)*100).toFixed(1):'0.0';
+ var metaPct=onlineTotalCh>0?((metaRevCh/onlineTotalCh)*100).toFixed(1):'0.0';
+ var ttPct  =onlineTotalCh>0?((ttRevCh  /onlineTotalCh)*100).toFixed(1):'0.0';
  coreRow.innerHTML=
  '<div class="ch-kpi" style="border-color:#1877F2;display:flex;justify-content:space-between;align-items:flex-start">'
  +'<div>'
  +'<div class="ch-kpi-name" style="color:#1877F2;font-size:13px">Meta (FB+IG)</div>'
- +'<div class="ch-kpi-val" style="color:#1877F2">'+fmt(metaRev)+'</div>'
- +'<div class="ch-kpi-pct">'+metaPct+'% · '+metaQty.toLocaleString('th-TH')+' เล่ม</div>'
+ +'<div class="ch-kpi-val" style="color:#1877F2">'+fmt(metaRevCh)+'</div>'
+ +'<div class="ch-kpi-pct">'+metaPct+'% of Online · '+metaQtyCh.toLocaleString('th-TH')+' เล่ม</div>'
  +'</div>'
  +'<div style="text-align:right">'
  +'<div style="font-size:11px;color:var(--text2);margin-bottom:2px">Facebook</div>'
@@ -6942,15 +6958,16 @@ function renderChannelTab(){
  +'</div>'
  +'<div class="ch-kpi" style="border-color:#FF0050;display:flex;justify-content:space-between;align-items:flex-start">'
  +'<div>'
- +'<div class="ch-kpi-name" style="color:#FF0050;font-size:13px">TikTok (Brand)</div>'
- +'<div class="ch-kpi-val" style="color:#FF0050">'+fmt(ttRev)+'</div>'
- +'<div class="ch-kpi-pct">'+ttPct+'% · '+ttQty.toLocaleString('th-TH')+' เล่ม</div>'
+ +'<div class="ch-kpi-name" style="color:#FF0050;font-size:13px">TikTok (Brand+Live)</div>'
+ +'<div class="ch-kpi-val" style="color:#FF0050">'+fmt(ttRevCh)+'</div>'
+ +'<div class="ch-kpi-pct">'+ttPct+'% of Online · '+ttQtyCh.toLocaleString('th-TH')+' เล่ม</div>'
  +'</div>'
  +'<div style="text-align:right">'
- +'<div style="font-size:11px;color:var(--text2);margin-bottom:2px">TikTok Shop/Live</div>'
- +'<div style="font-size:12px;font-weight:700;color:var(--text1)">'+fmt(ttRev)+'</div>'
- +'<div style="font-size:11px;color:var(--text2);margin-top:4px">TikTok Affiliate</div>'
- +'<div style="font-size:12px;font-weight:700;color:var(--text1)">'+fmt(totals['TikTok Affi']||0)+'</div>'
+ +'<div style="font-size:11px;color:var(--text2);margin-bottom:2px">Brand/Shop</div>'
+ +'<div style="font-size:12px;font-weight:700;color:var(--text1)">'+fmt(ttBrandRevCh)+'</div>'
+ +'<div style="font-size:11px;color:var(--text2);margin-top:4px">Live</div>'
+ +'<div style="font-size:12px;font-weight:700;color:var(--text1)">'+fmt(ttLiveRevCh)+'</div>'
+ +(ttAffiRev>0?'<div style="font-size:10px;color:var(--text3);margin-top:3px">Affi (External) '+fmt(ttAffiRev)+'</div>':'')
  +'</div>'
  +'</div>';
  }
@@ -6962,27 +6979,37 @@ function renderChannelTab(){
  titleEl.textContent='ยอดขายรายวัน แยกช่องทาง ('+fmtD(fromStr)+' – '+fmtD(toStr)+')';
  }
 
- /* Channel KPI cards (scrollable row) */
+ /* Channel KPI cards (scrollable row) — % based on onlineTotal (same standard as Overview) */
  var kpiRow=document.getElementById('ch-kpi-row');
  if(kpiRow){
  var sortedCh=channels.slice().sort(function(a,b){ return (totals[b]||0)-(totals[a]||0); });
  var h='';
- /* total card first */
- h+='<div class="ch-kpi" style="border-color:var(--accent);min-width:140px;flex-shrink:0">'
- +'<div class="ch-kpi-name" style="color:var(--accent)">รวม</div>'
- +'<div class="ch-kpi-val" style="color:var(--accent)">'+fmt(grandTotal)+'</div>'
- +'<div class="ch-kpi-pct">'+grandQty.toLocaleString('th-TH')+' เล่ม · '+rows.length+' วัน</div>'
+ /* Online Total card (standard — ตัด Affi + Offline) */
+ h+='<div class="ch-kpi" style="border-color:var(--accent);min-width:155px;flex-shrink:0">'
+ +'<div class="ch-kpi-name" style="color:var(--accent)">รวม Online</div>'
+ +'<div class="ch-kpi-val" style="color:var(--accent)">'+fmt(onlineTotalCh)+'</div>'
+ +'<div class="ch-kpi-pct">'+onlineQtyCh.toLocaleString('th-TH')+' เล่ม · '+rows.length+' วัน</div>'
+ +(offlineRevCh>0?'<div style="font-size:9px;color:var(--text3);margin-top:2px">+ Offline '+fmt(offlineRevCh)+'</div>':'')
+ +(ttAffiRev>0?'<div style="font-size:9px;color:var(--text3)">+ Affi '+fmt(ttAffiRev)+'</div>':'')
  +'</div>';
  sortedCh.forEach(function(ch){
- var val=totals[ch]||0;
+ var val=totals[ch]||0; if(!val) return;
  var qty=qtots[ch]||0;
- var pct=grandTotal>0?((val/grandTotal)*100).toFixed(1):'0.0';
+ /* % = vs onlineTotal; for offline/affi channels mark as "offline" or "external" */
+ var isOffline=OFFLINE_CHS_CH.indexOf(ch)>=0;
+ var isAffi=(ch==='TikTok Affi');
+ var base=onlineTotalCh||1;
+ var pct=(val/base*100).toFixed(1);
  var color=CH_COLORS[ch]||'#888';
  var icon=CH_ICONS[ch]||'';
- h+='<div class="ch-kpi" style="min-width:130px;flex-shrink:0">'
- +'<div class="ch-kpi-name"><span style="margin-right:5px;font-size:14px">'+icon+'</span>'+escH(ch)+'</div>'
+ var badge=isOffline?'<span style="font-size:9px;background:#64748B22;color:var(--text3);border-radius:3px;padding:1px 4px;margin-left:4px">Offline</span>'
+           :isAffi?'<span style="font-size:9px;background:#64748B22;color:var(--text3);border-radius:3px;padding:1px 4px;margin-left:4px">External</span>':'';
+ var pctLine=(isOffline||isAffi)?'<div class="ch-kpi-pct" style="color:var(--text3)">'+qty.toLocaleString('th-TH')+' เล่ม (ไม่รวมใน Online)</div>'
+             :'<div class="ch-kpi-pct">'+pct+'% · '+qty.toLocaleString('th-TH')+' เล่ม</div>';
+ h+='<div class="ch-kpi" style="min-width:130px;flex-shrink:0'+(isOffline||isAffi?';opacity:0.7':'')+'">'
+ +'<div class="ch-kpi-name"><span style="margin-right:5px;font-size:14px">'+icon+'</span>'+escH(ch)+badge+'</div>'
  +'<div class="ch-kpi-val">'+fmt(val)+'</div>'
- +'<div class="ch-kpi-pct">'+pct+'% · '+qty.toLocaleString('th-TH')+' เล่ม</div>'
+ +pctLine
  +'</div>';
  });
  kpiRow.innerHTML=h;
