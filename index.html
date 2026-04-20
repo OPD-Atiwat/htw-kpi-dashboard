@@ -1617,7 +1617,7 @@ var MONTHLY_FINANCE_GOALS = {
  consignGoal: 1099283, // Goal ที่ตลาด HOW-TO ให้ (Report Monthly Consignment)
  bookfairGoal: 0,
  profitGoal: 0,
- consignActual: 1644243 // Actual HOW-TO (Report Monthly Consignment - Market Value)
+ consignActual: 1894204 // Actual HOW-TO (Consignment + Distributor — ยืนยันจาก Excel Brand Jan 26)
  },
  'Feb 26': {
  totalGoal: 5428571, // ยอดรวม Online + Bookfair + Consign
@@ -1625,7 +1625,7 @@ var MONTHLY_FINANCE_GOALS = {
  consignGoal: 1824257, // Goal ที่ตลาด HOW-TO ให้ (Report Monthly Consignment)
  bookfairGoal: 0, // ไม่มีBookfair Feb
  profitGoal: 599858, // Profit ก่อนผลิต (Base)
- consignActual: 1365816 // Actual HOW-TO (Report Monthly Consignment - Market Value)
+ consignActual: 1601142 // Actual HOW-TO (Consignment + Distributor — ยืนยันจาก Excel Brand Feb 26)
  },
  'Mar 26': {
  totalGoal: 6892899,
@@ -1633,7 +1633,7 @@ var MONTHLY_FINANCE_GOALS = {
  consignGoal: 2142857, // Goal ที่ตลาด HOW-TO ให้ (Report Monthly Consignment)
  bookfairGoal: 581649,
  profitGoal: 897500,
- consignActual: 1668705 // Actual HOW-TO (Report Monthly Consignment - Market Value)
+ consignActual: 0 // Mar 26: ยังไม่ confirm (Excel checkbox ว่าง) — CSV=1,668,705 แต่รอยืนยัน
  },
  'Apr 26': {
  totalGoal: 6900000, // Online 4.5M + Bookfair 0.6M + Consign 1.8M
@@ -1722,9 +1722,11 @@ var FORECAST_ENGINE = {
  /* งานบุ๊คแฟร์ (มีผลบวกต่อยอดขาย 1.36x–4.18x เทียบวันปกติ) */
  BOOKFAIR: {
  /* 2026 Bookfair งาน BIBT (งานบุ๊คแฟร์กรุงเทพฯ 2026)
- Apr 1-6: จัดงาน → ยอด "หน้าร้าน" พุ่งสูง (track ใน หน้าร้าน channel)
+ Mar 26 – Apr 6: จัดงาน → ยอด "หน้าร้าน" พุ่งสูง (track ใน หน้าร้าน channel)
  Apr 7+: หน้าร้าน = Distributor (ไม่ใช่ Bookfair อีกต่อไป)
  ใส่ weight 1.50 เพื่อ normalize passW ให้ baseRate ไม่สูงเกิน */
+ '2026-03-26':1.50,'2026-03-27':1.50,'2026-03-28':1.50,
+ '2026-03-29':1.50,'2026-03-30':1.50,'2026-03-31':1.50,
  '2026-04-01':1.50,'2026-04-02':1.50,'2026-04-03':1.50,
  '2026-04-04':1.50,'2026-04-05':1.50,'2026-04-06':1.50,
  '2025-03-21':1.36,'2025-03-22':1.36,'2025-03-23':1.36,
@@ -2951,7 +2953,7 @@ function renderOverview(data){
  renderTopContentSpotlight(filterChartData(ovContentData,'topContent'));
 
  /* Section Renderers: Brand / Category / Channel / Products */
- /* Bookfair Actual = หน้าร้าน เฉพาะช่วงวันงาน (Apr 1-6 เท่านั้น)
+ /* Bookfair Actual = หน้าร้าน เฉพาะช่วงวันงาน BIBT 2026 (Mar 26–Apr 6)
     หลังงาน Bookfair: หน้าร้าน = Distributor → ไม่นับรวม Bookfair */
  var _bfEventDates=FORECAST_ENGINE.BOOKFAIR;
  var _bfHanraan=OPD_DAILY.data.reduce(function(s,r){
@@ -2977,7 +2979,7 @@ function renderOverview(data){
  var _bfGoal=ovBookfair||0;
  /* Actual = pmSaleOnline (Product Monitor) + consignActual ถ้ามีแล้ว
     ห้ามใช้ consignGoal แทน — CS รายงานช้า (ช่วงวันที่ 20) */
- var _totalActual=pmSaleOnline+_consignActual;
+ var _totalActual=pmSaleOnline+_consignActual+_bfA; /* รวม Bookfair actual ด้วย (consistent กับ totalGoal ที่รวม bfGoal) */
  var _totalGoal=ovEffGoal+_consignGoal+_bfGoal;
  /* Forecast: Online forecast + consignGoal (Consignment track รายเดือน ไม่มี daily)    */
  var _totalFc=isFinal?null:(onlineFc!=null?onlineFc+(_consignGoal||0):null);
