@@ -5291,6 +5291,18 @@ function renderOvBookDrill(selectedProduct){
  var totalPassRate=totalCamp>0?(totalPass/totalCamp*100):0;
  var crColors={'ริว':'#2563EB','มิ้น':'#7C3AED','หมิว':'#D97706'};
  var crList=Object.keys(crMap).sort(function(a,b){return crMap[b].rev-crMap[a].rev;});
+ /* ถ้า Meta ยังไม่มี revenue (฿0) แต่ OPD actual > 0
+    → กระจาย pActual ให้ creator ตามสัดส่วน campaign count (estimated) */
+ var _opdDistributed=false;
+ if(totalRev===0&&pActual>0&&crList.length>0){
+  _opdDistributed=true;
+  var _ttlCamp=crList.reduce(function(s,cr){return s+crMap[cr].total;},0);
+  crList.forEach(function(cr){
+   crMap[cr].rev=_ttlCamp>0?Math.round(pActual*crMap[cr].total/_ttlCamp):Math.round(pActual/crList.length);
+  });
+  totalRev=pActual;
+  crList.sort(function(a,b){return crMap[b].rev-crMap[a].rev;});
+ }
  var bestCr=crList[0]||'–';
  var topMsgs=Object.keys(allMsgsMap).map(function(km){
  var m=allMsgsMap[km];
@@ -5406,7 +5418,7 @@ function renderOvBookDrill(selectedProduct){
  +'<div style="font-size:8px;color:var(--text3)">สัดส่วน '+_crShare+'% ของรวม</div>'
  +'</div>'
  +'<div style="text-align:right">'
- +'<div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Actual</div>'
+ +'<div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Actual'+(_opdDistributed?' <span style="background:#FEF3C7;color:#92400E;border-radius:3px;padding:0 3px;font-size:8px;font-weight:700">ประมาณ</span>':'')+'</div>'
  +'<div style="font-size:16px;font-weight:900;color:var(--text1)">'+fmtCard(c.rev)+'</div>'
  +'</div>'
  +'<div style="text-align:right">'
