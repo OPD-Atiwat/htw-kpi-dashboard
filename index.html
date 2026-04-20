@@ -4033,7 +4033,13 @@ function renderCreator(data){
  (function(){
   var el=document.getElementById('creator-team-kpi');
   if(!el) return;
-  var totRev=creators.reduce(function(s,c){return s+cm[c].rev;},0);
+  /* Detect active platform filter for this chart */
+  var activePlat=(STATE&&STATE.chartPlatforms&&STATE.chartPlatforms['creator'])||'all';
+  var isTKOnly=(activePlat==='TikTok');
+  var isMetaOnly=(activePlat==='Meta');
+  /* Revenue column: TikTok-only → tiktokRev, Meta-only → metaRev, else → rev */
+  var crRevFn=function(c){return isTKOnly?c.tiktokRev:isMetaOnly?c.metaRev:c.rev;};
+  var totRev=creators.reduce(function(s,c){return s+crRevFn(cm[c]);},0);
   var totSpend=creators.reduce(function(s,c){return s+cm[c].spend;},0);
   var totPur=creators.reduce(function(s,c){return s+cm[c].pur;},0);
   var totPass=creators.reduce(function(s,c){return s+cm[c].passRows;},0);
@@ -4051,7 +4057,9 @@ function renderCreator(data){
   var crColors={'หมิว':'#1877F2','ริว':'#16A34A','มิ้น':'#CA8A04'};
   var period=STATE&&STATE.globalPeriod?STATE.globalPeriod:'apr';
   var PLABEL={'feb':'ก.พ. 26','mar':'มี.ค. 26','apr':'เม.ย. 26','all':'ทั้งหมด'};
-  var cols=['Revenue (Meta+TK)','Ad Spend','ROAS (Meta)','Purchases','CPA','Impressions','Reach','Messages','Cost/Msg','Pass Rate','Content'];
+  /* Revenue column header changes with platform filter */
+  var revColLabel=isTKOnly?'Revenue (TK)':isMetaOnly?'Revenue (Meta)':'Revenue (Meta+TK)';
+  var cols=[revColLabel,'Ad Spend','ROAS (Meta)','Purchases','CPA','Impressions','Reach','Messages','Cost/Msg','Pass Rate','Content'];
   // Header
   var h='<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden">'
        +'<table style="width:100%;border-collapse:collapse;font-size:12px">'
@@ -4078,7 +4086,7 @@ function renderCreator(data){
   // Per-creator rows
   creators.forEach(function(cr,ri){
    var c=cm[cr];
-   var crRev=c.rev, crSpend=c.spend, crPur=c.pur;
+   var crRev=crRevFn(c), crSpend=c.spend, crPur=c.pur;
    var crRoas=crSpend>0?c.metaRev/crSpend:0; /* Meta ROAS only */
    var crCpa=crPur>0?crSpend/crPur:0;
    var crPass=c.totalRows>0?c.passRows/c.totalRows*100:0;
@@ -4109,7 +4117,10 @@ function renderCreator(data){
  dc('crDonut');
  var donutCtx=document.getElementById('chart-creator-donut');
  if(donutCtx&&creators.length>0){
- var donutRevs=creators.map(function(c){return cm[c].rev;});
+ var _isTKOnly=(STATE&&STATE.chartPlatforms&&STATE.chartPlatforms['creator'])==='TikTok';
+ var _isMetaOnly=(STATE&&STATE.chartPlatforms&&STATE.chartPlatforms['creator'])==='Meta';
+ var _revFn=function(c){return _isTKOnly?c.tiktokRev:_isMetaOnly?c.metaRev:c.rev;};
+ var donutRevs=creators.map(function(c){return _revFn(cm[c]);});
  var totalDonutRev=donutRevs.reduce(function(s,v){return s+v;},0)||1;
  var donutColors=['#1877F2','#16A34A','#F59E0B','#DC2626','#7C3AED','#DB2777','#0891B2','#65A30D'];
  var donutBg=creators.map(function(c,i){return donutColors[i%donutColors.length];});
@@ -4137,7 +4148,7 @@ function renderCreator(data){
  if(legEl){
  var legHtml='<div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">Revenue Share</div>';
  creators.forEach(function(c,i){
- var rev=cm[c].rev;
+ var rev=_revFn(cm[c]);
  var pct=(rev/totalDonutRev*100).toFixed(1);
  var color=donutColors[i%donutColors.length];
  var roas=cm[c].qspend>0?(cm[c].qrev/cm[c].qspend):0;
