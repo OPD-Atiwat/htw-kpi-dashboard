@@ -2954,14 +2954,10 @@ function renderOverview(data){
  renderTopContentSpotlight(filterChartData(ovContentData,'topContent'));
 
  /* Section Renderers: Brand / Category / Channel / Products */
- /* Bookfair Actual = หน้าร้าน เฉพาะช่วงวันงาน BIBT 2026 (Mar 26–Apr 6)
-    หลังงาน Bookfair: หน้าร้าน = Distributor → ไม่นับรวม Bookfair */
- var _bfEventDates=FORECAST_ENGINE.BOOKFAIR;
- var _bfHanraan=OPD_DAILY.data.reduce(function(s,r){
-   return (r.d>=range.from&&r.d<=range.to&&_bfEventDates[r.d])
-     ?s+(r['\u0e2b\u0e19\u0e49\u0e32\u0e23\u0e49\u0e32\u0e19']||0):s;
- },0);
- var _bfA=(chTot['Bookfair']||0)+_bfHanraan;
+ /* Bookfair Actual = chTot['Bookfair'] จาก OPD_DAILY โดยตรง
+    (Bookfair เป็น channel แยกแล้ว — ไม่ต้องบวก หน้าร้าน อีก
+     หน้าร้าน ช่วงงาน = Distributor เท่านั้น ไม่ใช่ Bookfair) */
+ var _bfA=chTot['Bookfair']||0;
  /* pmSaleOnline ใช้ OPD_DAILY เป็น base เดียวกับ channel cards
     → ทำให้ Meta+TikTok+Shopee+Other รวมกัน = pmSaleOnline (ไม่มี discrepancy)
     pmActualTotal (Product Monitor) เก็บไว้เป็น reference แต่ไม่ใช้เป็น base หลัก */
