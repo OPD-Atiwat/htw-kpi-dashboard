@@ -568,6 +568,14 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
    <option value="10000">Min ฿10K</option>
   </select>
  </div>
+ <!-- Product filter (Content Board only) -->
+ <div class="filter-sep" id="gf-sep-product" style="display:none"></div>
+ <div class="filter-group" id="gf-product-group" style="display:none">
+  <span class="filter-label">หนังสือ</span>
+  <select class="fsel" id="filter-product" onchange="applyFilters()" style="min-width:180px">
+   <option value="">-- ทุกเล่ม --</option>
+  </select>
+ </div>
  <!-- Goal product selector (Goal tab only) -->
  <div class="filter-sep" id="gf-sep-goal" style="display:none"></div>
  <div class="filter-group" id="gf-goal-product-group" style="display:none">
@@ -2409,6 +2417,7 @@ function updateFilterBarForTab(tab){
  var showType=(tab==='content');
  var showRoas=(tab==='content');
  var showGoalProd=(tab==='goal');
+ var showProduct=(tab==='content');
  var showChCustom=(tab==='channels');
  var showPeriod=true;
  var showCount=(tab==='content');
@@ -2425,12 +2434,32 @@ function updateFilterBarForTab(tab){
  tog('gf-content-type-group', showType);
  tog('gf-sep-roas', showRoas);
  tog('gf-roas-group', showRoas);
+ tog('gf-sep-product', showProduct);
+ tog('gf-product-group', showProduct);
  tog('gf-sep-goal', showGoalProd);
  tog('gf-goal-product-group', showGoalProd);
  tog('gf-ch-custom-group', showChCustom);
  tog('filter-count', showCount);
 }
 
+function populateProductFilter(){
+ var sel=document.getElementById('filter-product');
+ if(!sel) return;
+ var cur=sel.value;
+ // Get unique products from current period's data
+ var prods=[...new Set(NORM_DATA.filter(function(r){
+  var p=parseMonthStr(r.month);
+  var mn={'feb':'Feb','mar':'Mar','apr':'Apr','all':''}[STATE.globalPeriod]||'';
+  return (!mn || (p&&p.monthName===mn)) && r.product && r.product.trim();
+ }).map(function(r){return r.product;}))].sort();
+ sel.innerHTML='<option value="">-- ทุกเล่ม --</option>';
+ prods.forEach(function(p){
+  var o=document.createElement('option');
+  o.value=p; o.textContent=p;
+  sel.appendChild(o);
+ });
+ if(cur) sel.value=cur;
+}
 function syncGoalProductSelect(){
  // Sync product list in global bar selector from the hidden goal-product-select
  var src=document.getElementById('goal-product-select');
@@ -2456,12 +2485,14 @@ function applyFilters() {
  var platform = STATE.globalPlatform||'';
  var creator = (document.getElementById('filter-creator')||{}).value||'';
  var contentType = (document.getElementById('filter-content-type')||{}).value||'';
+ var filterProduct = (document.getElementById('filter-product')||{}).value||'';
  STATE.minSpend = parseInt((document.getElementById('filter-min-spend')||{}).value)||0;
 
  STATE.filteredData = NORM_DATA.filter(function(r){
  if(platform && r.platform!==platform) return false;
  if(creator && r.creator!==creator) return false;
  if(contentType && r.content_type!==contentType) return false;
+ if(filterProduct && r.product!==filterProduct) return false;
  var p = parseMonthStr(r.month);
  if(p){
  if(monthN && p.monthName!==monthN) return false;
@@ -2482,7 +2513,7 @@ function applyFilters() {
 }
 
 function resetFilters(){
- ['filter-creator','filter-content-type','filter-min-spend']
+ ['filter-creator','filter-content-type','filter-min-spend','filter-product']
  .forEach(function(id){var e=document.getElementById(id);if(e)e.value=id==='filter-min-spend'?'0':'';});
  setGlobalPeriod('apr');
  setGlobalPlatform('');
@@ -2495,6 +2526,7 @@ function switchTab(name){
  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name);});
  document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.toggle('active',p.id==='tab-'+name);});
  updateFilterBarForTab(name);
+ if(name==='content') populateProductFilter();
  renderCurrentTab();
 }
 function filterChartData(data, key){
