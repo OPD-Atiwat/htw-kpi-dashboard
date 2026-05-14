@@ -6302,9 +6302,10 @@ function renderCreator(data){
  })();
 
  var _FOCUS=['ริว','มิ้น','หมิว'];
+ var _HIDDEN=['Central'];
  var _allCrs=Object.keys(cm).sort(function(a,b){return cm[b].rev-cm[a].rev;});
  var _focusCrs=_FOCUS.filter(function(c){return cm[c];});
- var _otherCrs=_allCrs.filter(function(c){return _FOCUS.indexOf(c)<0;});
+ var _otherCrs=_allCrs.filter(function(c){return _FOCUS.indexOf(c)<0 && _HIDDEN.indexOf(c)<0;});
  var creators=_focusCrs.concat(_otherCrs);
 
  // === TEAM KPI SUMMARY ===
