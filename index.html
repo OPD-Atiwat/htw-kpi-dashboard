@@ -8200,44 +8200,29 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   +'</div>'
   /* ── Channel Revenue Distribution ── */
   +(function(){var _cb=chBar(p);return _cb?'<div style="margin-bottom:3px">'+_cb+'</div>':'';})()
-  /* ── %Ads cost ratio chips (จาก ADSM44 — Ads Cost / Sale per channel) ── */
+  /* ── %Ads pills per channel (compact) ── */
   +(function(){
    var pa=p.pct_ads||{};
-   var ttPct=(pa['TikTok']!=null&&pa['TikTok']>=0)?pa['TikTok']:null;
-   var fbPct=(pa['Facebook']!=null&&pa['Facebook']>=0)?pa['Facebook']:null;
-   var spPct=(pa['Shopee']!=null&&pa['Shopee']>=0)?pa['Shopee']:null;
-   var totalPct=(pa['_total']!=null)?pa['_total']:null;
-   var totalSpend=(pa['_spend']||0); var totalSale=(pa['_sale']||0);
-   /* color: >100% = red (ROAS<1), >60% = orange, >35% = yellow, <=35% = green */
-   function _adsC(pct){return pct>100?'#DC2626':pct>60?'#EA580C':pct>35?'#CA8A04':'#16A34A';}
-   function _adsBg(pct){return pct>100?'rgba(220,38,38,.10)':pct>60?'rgba(234,88,12,.09)':pct>35?'rgba(202,138,4,.09)':'rgba(22,163,74,.09)';}
-   function _adsBdr(pct){return pct>100?'rgba(220,38,38,.3)':pct>60?'rgba(234,88,12,.28)':pct>35?'rgba(202,138,4,.28)':'rgba(22,163,74,.22)';}
-   function adsChip(label,dotColor,pct,spendV,saleV){
-    if(pct===null) return '';
-    var c=_adsC(pct),bg=_adsBg(pct),bdr=_adsBdr(pct);
-    var spendTip=spendV&&saleV?' title="Spend: \u0e3f'+Math.round(spendV/1000)+'K vs Sale: \u0e3f'+Math.round(saleV/1000)+'K"':'';
-    return '<span'+spendTip+' style="display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:'+bg+';border:1px solid '+bdr+';font-size:9px;font-weight:700;color:'+c+';white-space:nowrap;cursor:default">'
-     +'<span style="width:5px;height:5px;border-radius:50%;background:'+dotColor+';flex-shrink:0"></span>'
-     +escH(label)+' <b>'+pct.toFixed(1)+'%</b>'
-     +(spendV?'<span style="font-size:9px;font-weight:600;color:var(--text2);margin-left:3px;border-left:1px solid var(--border);padding-left:3px">\u0e3f'+Math.round(spendV/1000)+'K</span>':'')
+   function _adsC(pct){return pct>100?'#DC2626':pct>60?'#EA580C':pct>35?'#D97706':'#16A34A';}
+   var _defs=[
+    {k:'TikTok',dot:'#000000',pctKey:'TikTok'},
+    {k:'Meta',  dot:'#1877F2',pctKey:'Facebook'},
+    {k:'Shopee',dot:'#EE4D2D',pctKey:'Shopee'}
+   ];
+   var _pills=_defs.map(function(d){
+    var raw=(pa[d.pctKey]!=null&&pa[d.pctKey]>=0)?pa[d.pctKey]:null;
+    if(raw===null) return '';
+    var pct=raw>1?raw:raw*100;
+    var c=_adsC(pct);
+    return '<span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:20px;'
+     +'background:rgba(128,128,128,.07);border:1px solid rgba(128,128,128,.15);white-space:nowrap">'
+     +'<span style="width:5px;height:5px;border-radius:50%;background:'+d.dot+';flex-shrink:0"></span>'
+     +'<span style="font-size:9px;font-weight:600;color:var(--text2)">'+d.k+'</span>'
+     +'<b style="font-size:9px;color:'+c+'">'+pct.toFixed(1)+'%</b>'
      +'</span>';
-   }
-   /* Overall %Ads badge — แสดงก่อนถ้ามี */
-   var overallChip='';
-   if(totalPct!==null&&totalSpend>0){
-    var oc=_adsC(totalPct),obg=_adsBg(totalPct),obdr=_adsBdr(totalPct);
-    overallChip='<span title="Total Ads Spend: \u0e3f'+Math.round(totalSpend/1000)+'K / Sale: \u0e3f'+Math.round(totalSale/1000)+'K" style="display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:'+obg+';border:1.5px solid '+obdr+';font-size:9px;font-weight:800;color:'+oc+';white-space:nowrap;cursor:default">'
-     +'All <b>'+totalPct.toFixed(1)+'%</b>'
-     +'<span style="font-size:9px;font-weight:600;color:var(--text2);margin-left:3px;border-left:1px solid var(--border);padding-left:3px">\u0e3f'+Math.round(totalSpend/1000)+'K</span>'
-     +'</span>';
-   }
-   var chips=overallChip
-    +adsChip('TikTok','#1a1a1a',ttPct,pa['_tt_spend'],pa['_tt_sale'])
-    +adsChip('Meta','#1877F2',fbPct,pa['_fb_spend'],pa['_fb_sale'])
-    +adsChip('Shopee','#EE4D2D',spPct,pa['_sp_spend'],pa['_sp_sale']);
-   return chips?'<div style="display:flex;gap:2px;flex-wrap:nowrap;overflow:hidden;align-items:center">'+chips+'</div>':'';
-  })()
-  +'</div>'
+   }).join('');
+   return _pills?'<div style="display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden;margin-bottom:4px">'+_pills+'</div>':'';
+  })()  +'</div>'
   /* ── Achievement capsule + MoM column (right) ── */
   +_achPanel
   +_momPanel
@@ -10023,7 +10008,22 @@ function showProductDetail(pname){
  });
 
  var platforms=Object.keys(platCurrent).sort(function(a,b){return (platCurrent[b].rev||0)-(platCurrent[a].rev||0);});
- var totalRev=goalRow&&goalRow.actual?goalRow.actual:Object.values(platCurrent).reduce(function(s,d){return s+(d.rev||0);},0);
+ /* ── totalRev: ใช้ OPD actual (MK13) เหมือน card — ดึงจาก STATE.globalPeriod ── */
+ var totalRev=(function(){
+  if(typeof getOpdProdActual!=='function') return null;
+  var _period=(STATE&&STATE.globalPeriod)||'may';
+  var _from,_to;
+  if(_period==='may'){_from='2026-05-01';_to=_mayToDate();}
+  else if(_period==='apr'){_from='2026-04-01';_to='2026-04-30';}
+  else if(_period==='mar'){_from='2026-03-01';_to='2026-03-31';}
+  else if(_period==='feb'){_from='2026-02-01';_to='2026-02-28';}
+  else if(_period==='custom'&&STATE.customFrom&&STATE.customTo){_from=STATE.customFrom;_to=STATE.customTo;}
+  if(!_from||!_to) return null;
+  var _r=getOpdProdActual(pname,_from,_to);
+  return _r?_r.actual:null;
+ })()||
+ (goalRow&&goalRow.actual?goalRow.actual:0)||
+ Object.values(platCurrent).reduce(function(s,d){return s+(d.rev||0);},0);
 
  /* ── KPI Spend/ROAS/%ADS: ใช้ ADSM44 _spend เป็นหลัก (ครอบคลุมทุก channel) ── */
  var totalSpend=_hasAds?ads.reduce(function(s,r){return s+r.spend_thb;},0):0;
@@ -10217,13 +10217,96 @@ function showProductDetail(pname){
   var _channels=Object.keys(_chSet).sort(function(a,b){return _chSet[b]-_chSet[a];});
   if(!_channels.length) return;
   var _chartId='prod-daily-ch-chart';
+  var _SHOW_CH=['Facebook','TikTok','Shopee'];
+  var _colMapH={Facebook:'#1877F2',TikTok:'#1a1a1a',Shopee:'#EE4D2D'};
+  /* Compute per-channel totals for the single stacked bar */
+  var _chTotals={};
+  _SHOW_CH.forEach(function(ch){
+   _chTotals[ch]=_allDates.reduce(function(s,d){return s+(_pdata[d][ch]||0);},0);
+  });
+  var _grandTotal=_SHOW_CH.reduce(function(s,ch){return s+(_chTotals[ch]||0);},0);
+  /* Sort by revenue desc so biggest segment is on the left */
+  var _SHOW_CH_SORTED=_SHOW_CH.slice().sort(function(a,b){return (_chTotals[b]||0)-(_chTotals[a]||0);});
+  /* Build single stacked bar segments */
+  var _segHtml='';
+  var _legendHtml='';
+  _SHOW_CH_SORTED.forEach(function(ch){
+   var _col=_colMapH[ch]||'#94A3B8';
+   var _tot=Math.round(_chTotals[ch]||0);
+   if(_tot<=0) return;
+   var _pct=_grandTotal>0?(_tot/_grandTotal*100):0;
+   var _label=ch==='Facebook'?'Meta':ch;
+   var _totFmt=_tot>=1000?(_tot/1000).toFixed(1)+'K':_tot;
+   _segHtml+='<div style="width:'+_pct.toFixed(2)+'%;background:'+_col+';height:100%;" title="'+escH(_label)+': ฿'+_totFmt+'"></div>';
+   _legendHtml+='<div style="display:inline-flex;align-items:center;gap:4px;margin-right:12px">'
+    +'<span style="width:8px;height:8px;border-radius:2px;background:'+_col+';flex-shrink:0;display:inline-block"></span>'
+    +'<span style="font-size:10px;font-weight:600;color:var(--text2)">'+escH(_label)+'</span>'
+    +'<span style="font-size:10px;font-weight:700;color:var(--text1)">฿'+_totFmt+'</span>'
+    +'</div>';
+  });
   h+='<div style="padding:0 20px 20px">';
   h+='<div style="font-weight:700;font-size:13px;color:var(--text1);margin-bottom:12px">ยอดขายรายวันแยกช่องทาง <span style="font-size:10px;font-weight:500;color:var(--text3)">(MK13)</span></div>';
   h+='<div style="position:relative;height:200px"><canvas id="'+_chartId+'"></canvas></div>';
+  if(_segHtml){
+   h+='<div style="margin-top:10px">'
+    +'<div style="display:flex;height:8px;border-radius:6px;overflow:hidden;background:var(--border)">'+_segHtml+'</div>'
+    +'<div style="margin-top:7px;display:flex;flex-wrap:wrap;align-items:center">'+_legendHtml+'</div>'
+    +'</div>';
+  }
   h+='</div>';
   /* Stash data for post-render initialization */
   window._prodDailyChartData={id:_chartId,dates:_allDates,channels:_channels,pdata:_pdata};
  })();
+
+ /* ── Ads Spend per channel (ADSM44) ── */
+ (function(){
+  var _ttSp=_pa44['_tt_spend']||0;
+  var _fbSp=_pa44['_fb_spend']||0;
+  var _spSp=_pa44['_sp_spend']||0;
+  var _totSp=_pa44['_spend']||(_ttSp+_fbSp+_spSp);
+  var _ttRv=_pa44['_tt_rev']||0;
+  var _fbRv=_pa44['_fb_rev']||0;
+  var _spRv=_pa44['_sp_rev']||0;
+  var _totRv=_pa44['_rev']||(_ttRv+_fbRv+_spRv);
+  if(!_totSp&&!_totRv) return;
+  function _fK(v){return v>=1000?(v/1000).toFixed(1)+'K':Math.round(v)+'';} 
+  function _pctC(pct){return pct>100?'#DC2626':pct>60?'#EA580C':pct>35?'#CA8A04':'#16A34A';}
+  var _rows=[
+   {k:'TikTok',dot:'#1a1a1a',sp:_ttSp,rv:_ttRv},
+   {k:'Meta',  dot:'#1877F2',sp:_fbSp,rv:_fbRv},
+   {k:'Shopee',dot:'#EE4D2D',sp:_spSp,rv:_spRv}
+  ].filter(function(r){return r.sp>0||r.rv>0;});
+  h+='<div style="padding:0 20px 18px">';
+  h+='<div style="font-weight:700;font-size:13px;color:var(--text1);margin-bottom:10px">Ads Spend <span style="font-size:10px;font-weight:500;color:var(--text3)">(ADSM44)</span></div>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">';
+  _rows.forEach(function(r){
+   var _pct=r.rv>0?(r.sp/r.rv*100):null;
+   var _roas=r.sp>0?(r.rv/r.sp):null;
+   h+='<div style="flex:1;min-width:90px;background:var(--bg2);border-radius:8px;padding:9px 12px;border:1px solid var(--border)">'
+    +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">'
+    +'<span style="width:7px;height:7px;border-radius:50%;background:'+r.dot+'"></span>'
+    +'<span style="font-size:11px;font-weight:700;color:var(--text1)">'+r.k+'</span>'
+    +'</div>'
+    +(r.rv>0?'<div style="font-size:10px;color:var(--text2);margin-bottom:2px">Rev <b style="color:var(--text1)">฿'+_fK(r.rv)+'</b></div>':'')
+    +(r.sp>0?'<div style="font-size:10px;color:var(--text2);margin-bottom:2px">Spend <b style="color:var(--text1)">฿'+_fK(r.sp)+'</b></div>':'')
+    +(_pct!==null?'<div style="font-size:10px;font-weight:800;color:'+_pctC(_pct)+'">'+_pct.toFixed(1)+'% Ads'
+      +(_roas!==null?' <span style="font-weight:500;color:var(--text3)">ROAS '+_roas.toFixed(1)+'x</span>':'')+'</div>':'')
+    +'</div>';
+  });
+  h+='</div>';
+  if(_totSp>0){
+   var _tPct=_totRv>0?(_totSp/_totRv*100):null;
+   var _tRoas=_totSp>0?(_totRv/_totSp):null;
+   h+='<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg2);border-radius:6px;border:1px solid var(--border)">'
+    +'<span style="font-size:10px;font-weight:700;color:var(--text2)">Total Spend</span>'
+    +'<b style="font-size:11px;color:var(--text1)">฿'+_fK(_totSp)+'</b>'
+    +(_tPct!==null?'<span style="font-size:10px;font-weight:800;color:'+_pctC(_tPct)+'">'+_tPct.toFixed(1)+'%Ads</span>':'')
+    +(_tRoas!==null?'<span style="font-size:10px;color:var(--text3)">ROAS '+_tRoas.toFixed(1)+'x</span>':'')
+    +'</div>';
+  }
+  h+='</div>';
+ })();
+
 
  // ── Creator Summary (แสดงก่อน Top Content) ──────────────────────────────────
  if(ads.length>0){
@@ -10395,20 +10478,22 @@ function showProductDetail(pname){
    /* Build short date labels: "1", "2", ... */
    var _labels=_cd.dates.map(function(d){return parseInt(d.split('-')[2],10)+'';});
    /* Color palette — fall back to CH_COLORS */
-   var _colMap=typeof CH_COLORS!=='undefined'?CH_COLORS:{};
-   var _fallbacks=['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#84CC16'];
-   var _datasets=_cd.channels.map(function(ch,i){
-    var _col=_colMap[ch]||_fallbacks[i%_fallbacks.length];
+   var _colMap={Facebook:'#1877F2',TikTok:'#1a1a1a',Shopee:'#EE4D2D'};
+   /* Show only these 3 main channels — rename Facebook→Meta for display */
+   var _SHOW=['Facebook','TikTok','Shopee'];
+   var _CH_DISPLAY={Facebook:'Meta',TikTok:'TikTok',Shopee:'Shopee'};
+   var _datasets=_SHOW.filter(function(ch){return _cd.channels.indexOf(ch)>=0;}).map(function(ch){
+    var _col=_colMap[ch]||'#94A3B8';
     return {
-     label:ch,
+     label:_CH_DISPLAY[ch]||ch,
      data:_cd.dates.map(function(d){return Math.round(_cd.pdata[d][ch]||0);}),
      borderColor:_col,
      backgroundColor:_col+'28',
      fill:false,
      tension:0.3,
      pointRadius:3,
-     pointHoverRadius:5,
-     borderWidth:2
+     pointHoverRadius:6,
+     borderWidth:2.5
     };
    });
    /* Remove datasets that are all-zero */
@@ -10422,9 +10507,10 @@ function showProductDetail(pname){
      responsive:true,
      maintainAspectRatio:false,
      plugins:{
+      datalabels:{display:false},
       legend:{
        position:'top',
-       labels:{font:{size:10},boxWidth:10,padding:8,color:'var(--text2)'}
+       labels:{font:{size:11},boxWidth:12,padding:12}
       },
       tooltip:{
        mode:'index',
@@ -10456,6 +10542,8 @@ function showProductDetail(pname){
     }
    });
    _canvas._chartInst=_chart;
+   /* Expose globally so toggle buttons can call setDatasetVisibility */
+   window._prodDailyChart=_chart;
   })();
  }
 }
