@@ -124,19 +124,22 @@ def get_val(row, idx):
 def map_channel(ch, mt):
     ch = (ch or "").strip()
     mt = (mt or "").strip()
+    mt_l = mt.lower()
     if ch == "TikTok":
-        if mt == "Affiliate":                   return "TikTok Affi"
-        if mt in ("Live", "TikTokLive"):        return "TikTok Live"
+        if mt in ("Affiliate", "TikTokAffi"):           return "TikTok Affi"
+        if "live" in mt_l or mt == "TikTokLive":        return "TikTok Live"
         return "TikTok"
     if ch == "Shopee":
-        if mt in ("Live", "ShopeeLive"):        return "Shopee Live"
+        if "live" in mt_l or mt == "ShopeeLive":        return "Shopee Live"
         return "Shopee"
     if ch == "Facebook":
-        if mt in ("Salepage", "Shopify"):       return "Shopify"
+        if mt in ("Salepage", "Shopify", "FBSalepage"):  return "Shopify"
         return "Facebook"
     if ch == "Instagram":                       return "Instagram"
     if ch in ("LINE", "Line"):                  return "LINE"
     if ch == "YouTube":                         return "YouTube"
+    if ch in ("Lazada", "lazada"):              return "Lazada"
+    if ch in ("Web", "web", "Website"):         return "Web"
     if ch == "หน้าร้าน":                        return "หน้าร้าน"
     if ch == "Bookfair":                        return "Bookfair"
     return None

@@ -3770,10 +3770,13 @@ function renderOverview(data){
   ttRev=_finCh.TikTokAds+_finCh.TikTokLive;
   ttAffiRev=_finCh.TikTokAffi||ttAffiRev;
  } else if(_useGoalsChData){metaRev=pmChTot.Facebook;spRev=pmChTot.Shopee;}
- /* ADSM44 Shopee override: live month + ไม่มี Finance → ใช้ _sp_sale รวมทุกสินค้าแทน OPD
+ /* ADSM44 Shopee override: live month + ไม่มี Finance → ใช้ _sp_sale (หรือ _sp_rev fallback) รวมทุกสินค้าแทน OPD
     (OPD มี Shopee data ไม่ครบ ขณะที่ ADSM44 มาจาก MK13 report ที่ครอบคลุมกว่า) */
  if(!_finCh && !isFinal && ADSM44_PCTADS[month]){
-  var _spSaleAdm44=Object.keys(ADSM44_PCTADS[month]).reduce(function(s,pk){return s+(ADSM44_PCTADS[month][pk]._sp_sale||0);},0);
+  var _spSaleAdm44=Object.keys(ADSM44_PCTADS[month]).reduce(function(s,pk){
+   var _p=ADSM44_PCTADS[month][pk];
+   return s+(_p._sp_sale||_p._sp_rev||0); /* _sp_sale = new format, _sp_rev = old format fallback */
+  },0);
   if(_spSaleAdm44>spRev) spRev=_spSaleAdm44;
  }
  /* Recompute pmOnlineActual using Finance Affi (authoritative) if Finance active */
@@ -8230,23 +8233,27 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    var pa=p.pct_ads||{};
    function _adsC(pct){return pct>100?'#DC2626':pct>60?'#EA580C':pct>35?'#D97706':'#16A34A';}
    var _defs=[
-    {k:'TikTok',dot:'#000000',pctKey:'TikTok'},
-    {k:'Meta',  dot:'#1877F2',pctKey:'Facebook'},
-    {k:'Shopee',dot:'#EE4D2D',pctKey:'Shopee'}
+    {k:'TikTok',dot:'#000000',pctKey:'TikTok', saleKey:'_tt_sale'},
+    {k:'Meta',  dot:'#1877F2',pctKey:'Facebook',saleKey:'_fb_sale'},
+    {k:'Shopee',dot:'#EE4D2D',pctKey:'Shopee',  saleKey:'_sp_sale',saleKey2:'_sp_rev'}
    ];
+   function _fmtSale(v){if(!v||v<=0)return '';if(v>=1e6)return '฿'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '฿'+(v/1e3).toFixed(0)+'K';return '฿'+Math.round(v);}
    var _pills=_defs.map(function(d){
     var raw=(pa[d.pctKey]!=null&&pa[d.pctKey]>=0)?pa[d.pctKey]:null;
     if(raw===null) return '';
     var pct=raw>1?raw:raw*100;
     var c=_adsC(pct);
+    var saleV=(pa[d.saleKey]||0)||(d.saleKey2&&pa[d.saleKey2])||0;
+    var saleStr=_fmtSale(saleV);
     return '<span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:20px;'
      +'background:rgba(128,128,128,.07);border:1px solid rgba(128,128,128,.15);white-space:nowrap">'
      +'<span style="width:5px;height:5px;border-radius:50%;background:'+d.dot+';flex-shrink:0"></span>'
      +'<span style="font-size:9px;font-weight:600;color:var(--text2)">'+d.k+'</span>'
+     +(saleStr?'<span style="font-size:9px;color:var(--text3)">'+saleStr+'</span>':'')
      +'<b style="font-size:9px;color:'+c+'">'+pct.toFixed(1)+'%</b>'
      +'</span>';
    }).join('');
-   return _pills?'<div style="display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden;margin-bottom:4px">'+_pills+'</div>':'';
+   return _pills?'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">'+_pills+'</div>':'';
   })()  +'</div>'
   /* ── Achievement capsule + MoM column (right) ── */
   +_achPanel
