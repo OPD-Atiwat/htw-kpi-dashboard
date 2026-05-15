@@ -389,6 +389,10 @@ def update_html(opd_data, prod_data, adsm44_data, html_path=DASHBOARD_PATH):
     content = replace_var(content, "OPD_PROD_DATA",  prod_json)
     content = replace_var(content, "ADSM44_PCTADS",  adsm44_json)
 
+    # อัปเดต timestamp การ sync ล่าสุด
+    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+    content = replace_var(content, "META_PULL_TS", f'"{now_ts}"')
+
     # อัปเดต version tag
     today = datetime.now().strftime("%Y%m%d")
     content = re.sub(r'v\d{8}[a-z]*', f'v{today}as', content)
