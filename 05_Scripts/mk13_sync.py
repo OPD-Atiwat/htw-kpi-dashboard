@@ -290,17 +290,22 @@ def read_adsm44():
         tot_rev = (get_val(row, sale_total_col) if sale_total_col >= 0
                    else tt_rev + fb_rev + sp_rev)
 
+        # %Ads cost ratio = spend/sale × 100 (per channel)
+        def pct(spend, sale):
+            if spend == 0 and sale == 0: return None
+            return round(spend / sale * 100, 2) if sale > 0 else None
+
         result[month_label][product] = {
-            "TikTok":    round(tt_spend / tot_spend, 4) if tot_spend > 0 else None,
-            "Facebook":  round(fb_spend / tot_spend, 4) if tot_spend > 0 else None,
-            "Shopee":    round(sp_spend / tot_spend, 4) if tot_spend > 0 else None,
+            "TikTok":    pct(tt_spend, tt_rev),
+            "Facebook":  pct(fb_spend, fb_rev),
+            "Shopee":    pct(sp_spend, sp_rev),
             "_tt_spend": tt_spend,
             "_fb_spend": fb_spend,
             "_sp_spend": sp_spend,
             "_spend":    tot_spend,
-            "_tt_rev":   tt_rev,
-            "_fb_rev":   fb_rev,
-            "_sp_rev":   sp_rev,
+            "_tt_sale":  tt_rev,
+            "_fb_sale":  fb_rev,
+            "_sp_sale":  sp_rev,
             "_rev":      tot_rev,
         }
 

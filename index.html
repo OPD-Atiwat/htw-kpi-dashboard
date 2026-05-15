@@ -8129,7 +8129,17 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  (function(){
   var _mKey=(STATE&&STATE.ovMonth)||'May 26';
   var _a44=(typeof ADSM44_PCTADS!=='undefined')&&ADSM44_PCTADS[_mKey];
-  if(_a44&&_a44[p.product]) p=Object.assign({},p,{pct_ads:_a44[p.product]});
+  if(!_a44) return;
+  /* Normalize: ตัด [xxx] prefix + lowercase เพื่อ fuzzy match */
+  var _norm=function(s){return (s||'').replace(/^\[[^\]]+\]\s*/,'').toLowerCase().trim();};
+  var _pn=_norm(p.product);
+  /* 1. Exact match */
+  if(_a44[p.product]){p=Object.assign({},p,{pct_ads:_a44[p.product]});return;}
+  /* 2. Normalized match (กัน [หนังสือ] prefix + uppercase) */
+  for(var _k in _a44){if(_norm(_k)===_pn){p=Object.assign({},p,{pct_ads:_a44[_k]});return;}}
+  /* 3. Thai-prefix fallback: match บน 10 chars แรก (Thai เป็น unique identifier) */
+  var _thPfx=_pn.substring(0,10);
+  for(var _k2 in _a44){if(_thPfx&&_norm(_k2).substring(0,10)===_thPfx){p=Object.assign({},p,{pct_ads:_a44[_k2]});return;}}
  })();
  var ach=p.goal>0?(p.actual/p.goal*100):null;
  var achCol=getAchCol(ach);
