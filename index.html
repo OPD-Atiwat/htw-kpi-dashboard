@@ -3761,6 +3761,12 @@ function renderOverview(data){
   ttRev=_finCh.TikTokAds+_finCh.TikTokLive;
   ttAffiRev=_finCh.TikTokAffi||ttAffiRev;
  } else if(_useGoalsChData){metaRev=pmChTot.Facebook;spRev=pmChTot.Shopee;}
+ /* ADSM44 Shopee override: live month + ไม่มี Finance → ใช้ _sp_sale รวมทุกสินค้าแทน OPD
+    (OPD มี Shopee data ไม่ครบ ขณะที่ ADSM44 มาจาก MK13 report ที่ครอบคลุมกว่า) */
+ if(!_finCh && !isFinal && ADSM44_PCTADS[month]){
+  var _spSaleAdm44=Object.keys(ADSM44_PCTADS[month]).reduce(function(s,pk){return s+(ADSM44_PCTADS[month][pk]._sp_sale||0);},0);
+  if(_spSaleAdm44>spRev) spRev=_spSaleAdm44;
+ }
  /* Recompute pmOnlineActual using Finance Affi (authoritative) if Finance active */
  if(_finCh) pmOnlineActual=opdTotal-(chTot['หน้าร้าน']||0)-(chTot['Bookfair']||0)-ttAffiRev;
  /* _finSaleOnlineActual: Finance-based Sale Online actual (incl. TikTok Affi, excl. BF, หน้าร้าน)
