@@ -4467,31 +4467,29 @@ function renderOvUpsell(month){
  var ld=new Date(+yy,+mo,0).getDate();
  var to=yy+'-'+mo+'-'+(String(ld).padStart(2,'0'));
  if(to>td)to=td;
- /* Channel config — matches chBar() colors */
  var CH_CFG=[
-  {keys:['TikTok'],           c:'#1a1a1a', lbl:'TikTok'},
-  {keys:['TikTok Affi'],      c:'#7C3AED', lbl:'TT Affi'},
-  {keys:['TikTok Live'],      c:'#5B21B6', lbl:'TT Live'},
+  {keys:['TikTok'],c:'#1a1a1a',lbl:'TikTok'},
+  {keys:['TikTok Affi'],c:'#7C3AED',lbl:'TT Affi'},
+  {keys:['TikTok Live'],c:'#5B21B6',lbl:'TT Live'},
   {keys:['Facebook','Instagram'],c:'#1877F2',lbl:'Meta'},
-  {keys:['Shopee'],           c:'#EE4D2D', lbl:'Shopee'},
-  {keys:['Shopee Live'],      c:'#B91C1C', lbl:'SP Live'},
-  {keys:['Lazada'],           c:'#0F146D', lbl:'Lazada'}
+  {keys:['Shopee'],c:'#EE4D2D',lbl:'Shopee'},
+  {keys:['Shopee Live'],c:'#B91C1C',lbl:'SP Live'},
+  {keys:['Lazada'],c:'#0F146D',lbl:'Lazada'}
  ];
- function buildChBar(ch, total){
+ function buildBar(ch){
   var segs=CH_CFG.map(function(cfg){
-   var v=cfg.keys.reduce(function(s,k){return s+(ch[k]||0);},0);
-   return {v:v,c:cfg.c,lbl:cfg.lbl};
+   return {v:cfg.keys.reduce(function(s,k){return s+(ch[k]||0);},0),c:cfg.c,lbl:cfg.lbl};
   }).filter(function(s){return s.v>0;}).sort(function(a,b){return b.v-a.v;});
-  if(!segs.length) return '';
+  if(!segs.length)return '';
   var sum=segs.reduce(function(s,x){return s+x.v;},0);
-  var bar='<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;margin:5px 0 4px;gap:1px">';
-  segs.forEach(function(s){bar+='<div style="width:'+(s.v/sum*100).toFixed(1)+'%;background:'+s.c+';border-radius:1px"></div>';});
+  var bar='<div style="display:flex;height:4px;border-radius:2px;overflow:hidden;gap:1px;margin:4px 0 3px">';
+  segs.forEach(function(s){bar+='<div style="width:'+(s.v/sum*100).toFixed(1)+'%;background:'+s.c+'"></div>';});
   bar+='</div>';
   var dots=segs.slice(0,3).map(function(s){
-   return '<span style="font-size:10px;color:var(--text2);white-space:nowrap">'
-    +'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+s.c+';margin-right:2px;vertical-align:middle"></span>'
-    +escH(s.lbl)+' '+(s.v/sum*100).toFixed(1)+'%</span>';
-  }).join('<span style="color:var(--text3);margin:0 3px">·</span>');
+   return '<span style="display:inline-flex;align-items:center;gap:2px;font-size:9px;color:var(--text2);white-space:nowrap">'
+    +'<span style="width:5px;height:5px;border-radius:50%;background:'+s.c+';display:inline-block"></span>'
+    +escH(s.lbl)+' '+(s.v/sum*100).toFixed(0)+'%</span>';
+  }).join('<span style="color:var(--text3);margin:0 2px">·</span>');
   return bar+dots;
  }
  var items=[];
@@ -4508,47 +4506,37 @@ function renderOvUpsell(month){
  });
  items.sort(function(a,b){return b.tot-a.tot;});
  if(!items.length)return;
- var cards=items.map(function(r){
-  var ck=(typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[r.pn])||null;
-  var cs=ck&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[ck]?BOOK_COVERS[ck]:null;
-  var thumb=cs
-   ?'<img src="'+cs+'" style="width:44px;height:62px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)">'
-   :'<div style="width:44px;height:62px;flex-shrink:0;border-radius:4px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px">B</div>';
+ var rows=items.map(function(r){
   var dp=r.pn.replace(/\s*\(.*$/,'')||r.pn;
-  if(dp.length>30)dp=dp.slice(0,28)+'…';
-  var chHtml=buildChBar(r.ch,r.tot);
-  return '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.01));border-color:rgba(124,58,237,.22)">'
-   +'<div style="display:flex;gap:12px;align-items:flex-start">'+thumb
-   +'<div style="flex:1;min-width:0">'
-   +'<div class="gp-top">'
-   +'<div class="gp-name">'+escH(dp)+'</div>'
-   +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 7px;border-radius:8px;font-weight:700;white-space:nowrap;flex-shrink:0">UPSELL</span>'
+  if(dp.length>32)dp=dp.slice(0,30)+'…';
+  return '<div style="padding:7px 12px;border-bottom:1px solid rgba(124,58,237,.12)">'
+   +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px">'
+   +'<span style="font-size:11px;font-weight:600;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(dp)+'</span>'
+   +'<span style="font-size:12px;font-weight:700;color:var(--text1);flex-shrink:0">'+fmt(Math.round(r.tot))+'</span>'
    +'</div>'
-   +'<div class="gp-bot">'
-   +'<div class="gp-nums">Actual: <b class="actual-val">'+fmt(Math.round(r.tot))+'</b></div>'
-   +chHtml
-   +'</div></div></div></div>';
+   +buildBar(r.ch)
+   +'</div>';
  }).join('');
- var gridSt='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px;border:1.5px solid rgba(124,58,237,.22);border-top:none;border-radius:0 0 8px 8px;background:var(--surface2)';
  var isOpen=window._upsellOpen||false;
  var accId='ov-ups-body';
+ var hdrRad=isOpen?'8px 8px 0 0':'8px';
  uEl.innerHTML=
-  '<div>'
-  +'<div onclick="(function(){var b=document.getElementById(\''+accId+'\');var a=document.getElementById(\'ov-ups-arrow\');var open=b.style.display===\'none\';b.style.display=open?\'block\':\'none\';a.style.transform=open?\'rotate(180deg)\':\'rotate(0deg)\';window._upsellOpen=open;})()" '
-  +'style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:rgba(124,58,237,.06);border:1.5px solid rgba(124,58,237,.22);border-radius:'+(isOpen?'8px 8px 0 0':'8px')+';user-select:none" '
-  +'onmouseenter="this.style.background=\'rgba(124,58,237,.11)\'" onmouseleave="this.style.background=\'rgba(124,58,237,.06)\'">'
-  +'<div style="display:flex;align-items:center;gap:8px">'
-  +'<span>📦</span>'
+  '<div style="border:1.5px solid rgba(124,58,237,.25);border-radius:8px;overflow:hidden">'
+  +'<div onclick="(function(){var b=document.getElementById(\''+accId+'\');var a=document.getElementById(\'ov-ups-arrow\');var open=b.style.display===\'none\';b.style.display=open?\'block\':\'none\';a.style.transform=open?\'rotate(180deg)\':\'\';window._upsellOpen=open;})()" '
+  +'style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;background:rgba(124,58,237,.06);user-select:none" '
+  +'onmouseenter="this.style.background=\'rgba(124,58,237,.1)\'" onmouseleave="this.style.background=\'rgba(124,58,237,.06)\'">'
+  +'<div style="display:flex;align-items:center;gap:7px">'
+  +'<span style="font-size:12px">📦</span>'
   +'<span style="font-size:12px;font-weight:700;color:#7C3AED">Upsell Products</span>'
-  +'<span style="font-size:11px;color:var(--text2)">— ยอดขาย MTD ที่ไม่อยู่ใน Goal เดือนนี้</span>'
+  +'<span style="font-size:10px;color:var(--text2)">ยอดขาย MTD ที่ไม่อยู่ใน Goal</span>'
   +'</div>'
-  +'<div style="display:flex;align-items:center;gap:8px">'
-  +'<span style="font-size:11px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 9px;border-radius:12px;font-weight:700">'+items.length+' รายการ</span>'
-  +'<span id="ov-ups-arrow" style="font-size:16px;color:#7C3AED;transition:transform .22s;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'">▾</span>'
+  +'<div style="display:flex;align-items:center;gap:7px">'
+  +'<span style="font-size:10px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 8px;border-radius:10px;font-weight:700">'+items.length+' รายการ</span>'
+  +'<span id="ov-ups-arrow" style="font-size:14px;color:#7C3AED;transition:transform .2s">▾</span>'
   +'</div>'
   +'</div>'
-  +'<div id="'+accId+'" style="display:'+(isOpen?'block':'none')+'">'
-  +'<div style="'+gridSt+'">'+cards+'</div>'
+  +'<div id="'+accId+'" style="display:'+(isOpen?'block':'none')+';background:var(--surface)">'
+  +rows
   +'</div>'
   +'</div>';
 }
