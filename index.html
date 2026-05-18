@@ -4467,8 +4467,8 @@ function renderOvUpsell(month){
  var ld=new Date(+yy,+mo,0).getDate();
  var to=yy+'-'+mo+'-'+(String(ld).padStart(2,'0'));
  if(to>td)to=td;
- var dotC={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
- var cards=[];
+ var dotC={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C','Lazada':'#0F146D'};
+ var rows=[];
  Object.keys(OPD_PROD_DATA).forEach(function(pn){
   if(_gs[pn])return;
   var ch={};
@@ -4478,55 +4478,45 @@ function renderOvUpsell(month){
   });
   var tot=Object.keys(ch).reduce(function(s,k){return s+(ch[k]||0);},0);
   if(tot<=0)return;
-  var ck=typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[pn]||null;
-  var img=ck&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[ck]?BOOK_COVERS[ck]:null;
-  var thumb=img
-   ?'<img src="'+img+'" style="width:40px;height:56px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,.2)">'
-   :'<div style="width:40px;height:56px;flex-shrink:0;border-radius:3px;background:var(--surface2);border:1px solid rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:18px">📦</div>';
-  var dots=Object.keys(ch).filter(function(c){return ch[c]>0;}).sort(function(a,b){return ch[b]-ch[a];}).slice(0,3)
-   .map(function(c){var p=(ch[c]/tot*100).toFixed(1);var cl=dotC[c]||'#94A3B8';
-    return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+cl+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+p+'%</span>';
-   }).join(' ');
-  var dp=pn.length>28?pn.slice(0,26)+'…':pn;
-  cards.push(
-   '<div class="kpi-card" style="padding:10px 12px;background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.22)">'
-   +'<div style="display:flex;gap:10px;align-items:flex-start">'+thumb
-   +'<div style="flex:1;min-width:0">'
-   +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:5px">'
-   +'<div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.35">'+escH(dp)+'</div>'
-   +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 6px;border-radius:8px;font-weight:700;white-space:nowrap;flex-shrink:0">UPSELL</span>'
-   +'</div>'
-   +'<div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:5px">'+fmt(Math.round(tot))+'</div>'
-   +'<div style="display:flex;gap:4px;flex-wrap:wrap">'+dots+'</div>'
-   +'</div></div></div>'
-  );
+  /* top channel */
+  var topCh=Object.keys(ch).sort(function(a,b){return ch[b]-ch[a];})[0]||'';
+  var topDot=dotC[topCh]||'#94A3B8';
+  rows.push({pn:pn,tot:tot,topCh:topCh,topDot:topDot});
  });
- if(cards.length===0)return;
- /* Sort by revenue desc already done via cards array order */
- var totalUpsell=0;
- /* ── Accordion wrapper ── */
- var accId='ov-upsell-body-'+Date.now();
+ rows.sort(function(a,b){return b.tot-a.tot;});
+ if(rows.length===0)return;
+ /* Accordion */
+ var accId='ov-ups-body';
  var isOpen=window._upsellOpen||false;
- var gridStyle='display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding:12px 0 4px 0;';
+ var rowsHtml=rows.map(function(r){
+  var dp=r.pn.length>35?r.pn.slice(0,33)+'…':r.pn;
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--border)">'
+   +'<div style="display:flex;align-items:center;gap:7px;min-width:0;flex:1">'
+   +'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+r.topDot+';flex-shrink:0"></span>'
+   +'<span style="font-size:12px;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(dp)+'</span>'
+   +'</div>'
+   +'<div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:10px">'
+   +'<span style="font-size:10px;color:var(--text2)">'+escH(r.topCh)+'</span>'
+   +'<span style="font-size:12px;font-weight:700;color:var(--text1);min-width:72px;text-align:right">'+fmt(Math.round(r.tot))+'</span>'
+   +'</div></div>';
+ }).join('');
  uEl.innerHTML=
-  '<div style="border:1.5px solid rgba(124,58,237,.3);border-radius:10px;overflow:hidden;margin-bottom:4px">'
-  /* Header / toggle */
-  +'<div id="ov-upsell-hdr" onclick="(function(){var b=document.getElementById(\''+accId+'\');var a=document.getElementById(\'ov-upsell-arrow\');var open=b.style.display===\'none\';b.style.display=open?\'block\':\'none\';a.style.transform=open?\'rotate(180deg)\':\'rotate(0deg)\';window._upsellOpen=open;})()" '
-  +'style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:rgba(124,58,237,.06);user-select:none;" '
+  '<div style="border:1.5px solid rgba(124,58,237,.28);border-radius:10px;overflow:hidden">'
+  +'<div onclick="(function(){var b=document.getElementById(\''+accId+'\');var a=document.getElementById(\'ov-ups-arrow\');var open=b.style.display===\'none\';b.style.display=open?\'block\':\'none\';a.style.transform=open?\'rotate(180deg)\':\'rotate(0deg)\';window._upsellOpen=open;})()" '
+  +'style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:rgba(124,58,237,.06);user-select:none" '
   +'onmouseenter="this.style.background=\'rgba(124,58,237,.1)\'" onmouseleave="this.style.background=\'rgba(124,58,237,.06)\'">'
   +'<div style="display:flex;align-items:center;gap:8px">'
-  +'<span style="font-size:13px">📦</span>'
+  +'<span>📦</span>'
   +'<span style="font-size:12px;font-weight:700;color:#7C3AED">Upsell Products</span>'
-  +'<span style="font-size:11px;color:var(--text2);font-weight:400">สินค้าที่มียอดขาย MTD แต่ไม่อยู่ใน Goal</span>'
+  +'<span style="font-size:11px;color:var(--text2)">— สินค้าที่มียอดขาย MTD แต่ไม่อยู่ใน Goal</span>'
   +'</div>'
   +'<div style="display:flex;align-items:center;gap:8px">'
-  +'<span style="font-size:11px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 8px;border-radius:12px;font-weight:700">'+cards.length+' รายการ</span>'
-  +'<span id="ov-upsell-arrow" style="font-size:14px;color:#7C3AED;transition:transform .25s;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'">▾</span>'
+  +'<span style="font-size:11px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 9px;border-radius:12px;font-weight:700">'+rows.length+' รายการ</span>'
+  +'<span id="ov-ups-arrow" style="font-size:16px;color:#7C3AED;transition:transform .22s;transform:'+(isOpen?'rotate(180deg)':'rotate(0deg)')+'">▾</span>'
   +'</div>'
   +'</div>'
-  /* Body */
-  +'<div id="'+accId+'" style="display:'+(isOpen?'block':'none')+';padding:8px 12px 12px 12px;background:var(--surface2)">'
-  +'<div style="'+gridStyle+'">'+cards.join('')+'</div>'
+  +'<div id="'+accId+'" style="display:'+(isOpen?'block':'none')+';background:var(--surface)">'
+  +rowsHtml.replace(/border-bottom:1px solid var\(--border\)(?=[^"]*<\/div><\/div>$)/,'')
   +'</div>'
   +'</div>';
 }
