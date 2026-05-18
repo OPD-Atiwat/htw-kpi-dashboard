@@ -327,8 +327,12 @@ def replace_var(html, var_name, new_value):
         f"const {var_name} = ",
         f"var {var_name} = ",
         f"let {var_name} = ",
+        f"const {var_name} =",
+        f"var {var_name} =",
+        f"let {var_name} =",
         f"const {var_name}=",
         f"var {var_name}=",
+        f"let {var_name}=",
     ]
     value_start = -1
     for prefix in candidates:
