@@ -281,7 +281,9 @@ def read_adsm44():
         if month_label not in result:
             result[month_label] = {}
 
-        tt_spend  = get_val(row, tt_ads_col) + get_val(row, tt_aff_col)
+        tt_ads_spend = get_val(row, tt_ads_col)
+        tt_aff_spend = get_val(row, tt_aff_col)
+        tt_spend  = tt_ads_spend + tt_aff_spend
         fb_spend  = get_val(row, fb_msg_col) + get_val(row, fb_sp_col)
         sp_spend  = get_val(row, sp_ads_col)
         tot_spend = (get_val(row, total_ad_col) if total_ad_col >= 0
@@ -299,17 +301,19 @@ def read_adsm44():
             return round(spend / sale * 100, 2) if sale > 0 else None
 
         result[month_label][product] = {
-            "TikTok":    pct(tt_spend, tt_rev),
-            "Facebook":  pct(fb_spend, fb_rev),
-            "Shopee":    pct(sp_spend, sp_rev),
-            "_tt_spend": tt_spend,
-            "_fb_spend": fb_spend,
-            "_sp_spend": sp_spend,
-            "_spend":    tot_spend,
-            "_tt_sale":  tt_rev,
-            "_fb_sale":  fb_rev,
-            "_sp_sale":  sp_rev,
-            "_rev":      tot_rev,
+            "TikTok":         pct(tt_spend, tt_rev),
+            "Facebook":       pct(fb_spend, fb_rev),
+            "Shopee":         pct(sp_spend, sp_rev),
+            "_tt_spend":      tt_spend,           # TikTok Ads + Affi รวม
+            "_tt_ads_spend":  tt_ads_spend,        # TikTok Ads เท่านั้น
+            "_tt_aff_spend":  tt_aff_spend,        # TikTok Affi commission
+            "_fb_spend":      fb_spend,
+            "_sp_spend":      sp_spend,
+            "_spend":         tot_spend,
+            "_tt_sale":       tt_rev,
+            "_fb_sale":       fb_rev,
+            "_sp_sale":       sp_rev,
+            "_rev":           tot_rev,
         }
 
     print(f"   ✅ {len(result)} เดือน | {list(result.keys())}")
@@ -336,10 +340,28 @@ def replace_var(html, var_name, new_value):
         print(f"   ⚠️  ไม่เจอตัวแปร '{var_name}'")
         return html
 
-    # หา start bracket
+    # หา start bracket หรือ string quote
     ch = html[value_start]
+
+    # ── กรณีที่ค่าเป็น string ที่ขึ้นต้นด้วย " ' ` ──────────────────
+    if ch in ('"', "'", '`'):
+        quote = ch
+        i = value_start + 1
+        while i < len(html):
+            c = html[i]
+            if c == '\\':          # escape → ข้ามตัวถัดไป
+                i += 2
+                continue
+            if c == quote:         # ปิด string
+                break
+            i += 1
+        result = html[:value_start] + new_value + html[i+1:]
+        print(f"   ✅ แทนที่ {var_name} สำเร็จ ({len(new_value):,} chars)")
+        return result
+
+    # ── กรณีที่ค่าเป็น object/array ────────────────────────────────
     if ch not in ('{', '['):
-        print(f"   ⚠️  '{var_name}' ไม่ได้เริ่มด้วย {{ หรือ [")
+        print(f"   ⚠️  '{var_name}' ไม่ได้เริ่มด้วย {{ หรือ [ หรือ quote")
         return html
 
     open_b  = ch
