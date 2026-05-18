@@ -527,7 +527,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .cal-det-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260518-D1</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260518-D2</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -697,6 +697,9 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <!-- SECTION 4b — BOOK DRILL-DOWN -->
  <!-- -->
  <div id="ov-book-drill" style="margin-bottom:24px"></div>
+
+ <!-- SECTION 4c — UPSELL PRODUCTS (OPD ที่ไม่มีใน Goal) -->
+ <div id="ov-upsell-section" style="margin-bottom:24px"></div>
 
  <!-- -->
  <!-- SECTION 5 — TOP CONTENT -->
@@ -4444,6 +4447,68 @@ STATE.lbProduct=_lbProdForMult;
  var _epb=document.getElementById('ov-row-products');
  if(_epb)_epb.innerHTML='<div style="padding:16px;color:var(--danger);font-size:12px">Product render error: '+e.message+'</div>';
  }
+ try{renderOvUpsell(month);}catch(e){console.error('renderOvUpsell:',e);}
+}
+
+/* ── UPSELL SECTION in OVERVIEW (OPD products not in Goal) ── */
+function renderOvUpsell(month){
+ var uEl=document.getElementById('ov-upsell-section');
+ if(!uEl)return;
+ uEl.innerHTML='';
+ if(typeof OPD_PROD_DATA==='undefined'||!month||!GOALS_DATA||!GOALS_DATA[month]){uEl.innerHTML='';return;}
+ var _gs={};
+ GOALS_DATA[month].forEach(function(r){if(r.product)_gs[r.product]=1;});
+ var pts=(month||'').split(' ');
+ var yy='20'+(pts[1]||'26');
+ var moN={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
+ var mo=moN[pts[0]]||'05';
+ var fr=yy+'-'+mo+'-01';
+ var td=(new Date()).toISOString().slice(0,10);
+ var ld=new Date(+yy,+mo,0).getDate();
+ var to=yy+'-'+mo+'-'+(String(ld).padStart(2,'0'));
+ if(to>td)to=td;
+ var dotC={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
+ var gridSt='display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding:12px;border:1.5px solid rgba(124,58,237,.25);border-top:none;border-radius:0 0 8px 8px;background:var(--surface2);width:100%;box-sizing:border-box';
+ var cards=[];
+ Object.keys(OPD_PROD_DATA).forEach(function(pn){
+  if(_gs[pn])return;
+  var ch={};
+  Object.keys(OPD_PROD_DATA[pn]).forEach(function(d){
+   if(d<fr||d>to)return;
+   Object.keys(OPD_PROD_DATA[pn][d]).forEach(function(c){ch[c]=(ch[c]||0)+(OPD_PROD_DATA[pn][d][c]||0);});
+  });
+  var tot=Object.keys(ch).reduce(function(s,k){return s+(ch[k]||0);},0);
+  if(tot<=0)return;
+  var ck=typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[pn]||null;
+  var img=ck&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[ck]?BOOK_COVERS[ck]:null;
+  var thumb=img
+   ?'<img src="'+img+'" style="width:40px;height:56px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 2px 5px rgba(0,0,0,.2)">'
+   :'<div style="width:40px;height:56px;flex-shrink:0;border-radius:3px;background:var(--surface2);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:18px">📦</div>';
+  var dots=Object.keys(ch).filter(function(c){return ch[c]>0;}).sort(function(a,b){return ch[b]-ch[a];}).slice(0,3)
+   .map(function(c){var p=(ch[c]/tot*100).toFixed(1);var cl=dotC[c]||'#94A3B8';
+    return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+cl+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+p+'%</span>';
+   }).join(' ');
+  var dp=pn.length>28?pn.slice(0,26)+'…':pn;
+  cards.push(
+   '<div class="kpi-card" style="padding:10px;background:linear-gradient(135deg,rgba(124,58,237,.07),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
+   +'<div style="display:flex;gap:10px;align-items:flex-start">'+thumb
+   +'<div style="flex:1;min-width:0">'
+   +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:4px">'
+   +'<div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.3">'+escH(dp)+'</div>'
+   +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 6px;border-radius:8px;font-weight:700;white-space:nowrap;flex-shrink:0">UPSELL</span>'
+   +'</div>'
+   +'<div style="font-size:12px;font-weight:700;color:var(--text1);margin-bottom:4px">'+fmt(Math.round(tot))+'</div>'
+   +'<div style="display:flex;gap:4px;flex-wrap:wrap">'+dots+'</div>'
+   +'</div></div></div>'
+  );
+ });
+ if(cards.length===0){uEl.innerHTML='';return;}
+ uEl.innerHTML=
+  '<div class="ov-sec" style="margin-bottom:0">'
+  +'<span class="ov-sec-label" style="color:#7C3AED">📦 Upsell Products</span>'
+  +'<span style="font-size:11px;color:var(--text2);margin-left:8px">สินค้าที่มียอดขาย MTD แต่ไม่อยู่ใน Goal เดือนนี้ ('+cards.length+' รายการ)</span>'
+  +'</div>'
+  +'<div style="'+gridSt+'">'+cards.join('')+'</div>';
 }
 
 /* ════════════════════════════════
