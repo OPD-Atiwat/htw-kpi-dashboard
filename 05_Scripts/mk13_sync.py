@@ -295,6 +295,26 @@ def read_adsm44():
         tot_rev = (get_val(row, sale_total_col) if sale_total_col >= 0
                    else tt_rev + fb_rev + sp_rev)
 
+        # ── MERGE per-channel: ถ้ามีหลาย row ต่อเล่ม ใช้ max() per field ──
+        # Logic: max() ทำงานถูกต้องทุก pattern:
+        #   • 1 row/product       → ไม่ถูก trigger เลย ✅
+        #   • sub-rows only       → max(0, X) = X เก็บค่าสูงสุดรายช่อง ✅
+        #   • total+sub-rows      → max(total, partial) = total ไม่ double-count ✅
+        if product in result[month_label]:
+            ex = result[month_label][product]
+            tt_ads_spend = max(tt_ads_spend, ex["_tt_ads_spend"])
+            tt_aff_spend = max(tt_aff_spend, ex["_tt_aff_spend"])
+            tt_spend     = max(tt_spend,     ex["_tt_spend"])
+            fb_spend     = max(fb_spend,     ex["_fb_spend"])
+            sp_spend     = max(sp_spend,     ex["_sp_spend"])
+            tt_rev       = max(tt_rev,       ex["_tt_sale"])
+            fb_rev       = max(fb_rev,       ex["_fb_sale"])
+            sp_rev       = max(sp_rev,       ex["_sp_sale"])
+
+        # _spend / _rev: คำนวณใหม่จาก per-channel เสมอ
+        tot_spend = tt_spend + fb_spend + sp_spend
+        tot_rev   = tt_rev   + fb_rev   + sp_rev
+
         # %Ads cost ratio = spend/sale × 100 (per channel)
         def pct(spend, sale):
             if spend == 0 and sale == 0: return None
@@ -309,13 +329,17 @@ def read_adsm44():
             "_tt_aff_spend":  tt_aff_spend,        # TikTok Affi commission
             "_fb_spend":      fb_spend,
             "_sp_spend":      sp_spend,
-            "_spend":         tot_spend,
+            "_spend":         tot_spend,           # คำนวณจาก TT+FB+SP เสมอ
             "_tt_sale":       tt_rev,
             "_fb_sale":       fb_rev,
             "_sp_sale":       sp_rev,
-            "_rev":           tot_rev,
+            "_rev":           tot_rev,             # คำนวณจาก TT+FB+SP เสมอ
         }
 
+    # Summary log
+    for mo, prods in result.items():
+        with_spend = sum(1 for d in prods.values() if (d.get("_spend") or 0) > 0)
+        print(f"   {mo}: {len(prods)} products, {with_spend} with spend>0")
     print(f"   ✅ {len(result)} เดือน | {list(result.keys())}")
     return result
 
