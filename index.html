@@ -9505,79 +9505,70 @@ function renderGoal(month){
  }
 
  /* ── UPSELL PRODUCTS SECTION ── */
- (function(){
-  var UPSELL_NAMES=['Ohm Lucky Me เซียมซีชี้ชะตา'];
-  /* หาช่วงวันที่จาก month key (e.g. "May 26" → 2026-05) */
-  var _mmap={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',
+ var _uNames=['Ohm Lucky Me เซียมซีชี้ชะตา'];
+ var _uMmap={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',
              'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
-  var _mparts=(month||'').split(' ');
-  var _yyyy=_mparts[1]?'20'+_mparts[1]:'2026';
-  var _mm=_mmap[_mparts[0]]||'05';
-  var _uf=''+_yyyy+'-'+_mm+'-01';
-  var _lastDay=new Date(+_yyyy,+_mm,0).getDate();
-  var _ut=''+_yyyy+'-'+_mm+'-'+(String(_lastDay).padStart(2,'0'));
-  /* Cap to today for current month */
-  var _todayStr=(function(){var d=new Date();return d.toISOString().slice(0,10);})();
-  if(_ut>_todayStr)_ut=_todayStr;
-
-  var uCards=[];
-  UPSELL_NAMES.forEach(function(pname){
-   if(typeof OPD_PROD_DATA==='undefined'||!OPD_PROD_DATA[pname])return;
-   var chs={};
-   Object.keys(OPD_PROD_DATA[pname]).forEach(function(d){
-    if(d<_uf||d>_ut)return;
-    Object.keys(OPD_PROD_DATA[pname][d]).forEach(function(ch){
-     chs[ch]=(chs[ch]||0)+OPD_PROD_DATA[pname][d][ch];
-    });
+ var _uMparts=(month||'').split(' ');
+ var _uYyyy=_uMparts[1]?'20'+_uMparts[1]:'2026';
+ var _uMm=_uMmap[_uMparts[0]]||'05';
+ var _uFrom=''+_uYyyy+'-'+_uMm+'-01';
+ var _uLastDay=new Date(+_uYyyy,+_uMm,0).getDate();
+ var _uTo=''+_uYyyy+'-'+_uMm+'-'+(String(_uLastDay).padStart(2,'0'));
+ var _uToday=(new Date()).toISOString().slice(0,10);
+ if(_uTo>_uToday)_uTo=_uToday;
+ var _uCards=[];
+ _uNames.forEach(function(_uPname){
+  if(typeof OPD_PROD_DATA==='undefined'||!OPD_PROD_DATA[_uPname])return;
+  var _uChs={};
+  Object.keys(OPD_PROD_DATA[_uPname]).forEach(function(_uD){
+   if(_uD<_uFrom||_uD>_uTo)return;
+   Object.keys(OPD_PROD_DATA[_uPname][_uD]).forEach(function(_uCh){
+    _uChs[_uCh]=(_uChs[_uCh]||0)+OPD_PROD_DATA[_uPname][_uD][_uCh];
    });
-   var tot=Object.keys(chs).reduce(function(s,k){return s+(chs[k]||0);},0);
-   if(tot<=0)return;
-   /* cover image */
-   var _ck=(typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[pname])||'เซียมซีชี้ชะตา';
-   var _cs=_ck&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[_ck]?BOOK_COVERS[_ck]:null;
-   var _th=_cs
-    ?'<img src="'+_cs+'" style="width:44px;height:62px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)">'
-    :'<div style="width:44px;height:62px;flex-shrink:0;border-radius:4px;background:var(--surface2);border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;font-size:20px">🎫</div>';
-   /* channel dots */
-   var CH_DOT={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
-   var dots=Object.keys(chs).filter(function(c){return chs[c]>0;})
-    .sort(function(a,b){return chs[b]-chs[a];}).slice(0,4)
-    .map(function(c){
-     var pct=(chs[c]/tot*100).toFixed(1);
-     var col=CH_DOT[c]||'#94A3B8';
-     return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+col+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+pct+'%</span>';
-    }).join(' ');
-   /* short display name */
-   var dispName=pname.replace(/^Ohm Lucky Me\s*/i,'');
-   uCards.push(
-    '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
-    +'<div style="display:flex;gap:12px;align-items:flex-start">'+_th
-    +'<div style="flex:1;min-width:0">'
-    +'<div class="gp-top">'
-    +'<div class="gp-name" style="font-size:12px">'+escH(dispName)+'</div>'
-    +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 7px;border-radius:8px;font-weight:700;white-space:nowrap">UPSELL</span>'
-    +'</div>'
-    +'<div class="gp-bot">'
-    +'<div class="gp-nums">Actual: <b class="actual-val">'+fmt(Math.round(tot))+'</b></div>'
-    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">'+dots+'</div>'
-    +'</div>'
-    +'</div></div></div>'
-   );
   });
-
-  if(uCards.length>0){
-   lh+='<div style="width:100%;margin-top:20px">'
-    +'<div class="prod-group-hdr nonfocus" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05)">'
-    +'<div class="prod-group-hdr-left">'
-    +'<span class="prod-group-hdr-label" style="color:#7C3AED">🎫 Upsell Products</span>'
-    +'<span class="prod-group-hdr-count">'+uCards.length+' สินค้า</span>'
-    +'</div>'
-    +'</div>'
-    +'<div style="'+_gridStyleNF+'">'
-    +uCards.join('')
-    +'</div></div>';
-  }
- })();
+  var _uTot=Object.keys(_uChs).reduce(function(s,k){return s+(_uChs[k]||0);},0);
+  if(_uTot<=0)return;
+  var _uCk=(typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[_uPname])||'เซียมซีชี้ชะตา';
+  var _uCs=_uCk&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[_uCk]?BOOK_COVERS[_uCk]:null;
+  var _uTh=_uCs
+   ?'<img src="'+_uCs+'" style="width:44px;height:62px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)">'
+   :'<div style="width:44px;height:62px;flex-shrink:0;border-radius:4px;background:var(--surface2);border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;font-size:20px">🎫</div>';
+  var _uChDot={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
+  var _uDots=Object.keys(_uChs).filter(function(c){return _uChs[c]>0;})
+   .sort(function(a,b){return _uChs[b]-_uChs[a];}).slice(0,4)
+   .map(function(c){
+    var _uP=(_uChs[c]/_uTot*100).toFixed(1);
+    var _uCol=_uChDot[c]||'#94A3B8';
+    return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+_uCol+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+_uP+'%</span>';
+   }).join(' ');
+  var _uDisp=_uPname.replace(/^Ohm Lucky Me\s*/i,'');
+  _uCards.push(
+   '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
+   +'<div style="display:flex;gap:12px;align-items:flex-start">'+_uTh
+   +'<div style="flex:1;min-width:0">'
+   +'<div class="gp-top">'
+   +'<div class="gp-name" style="font-size:12px">'+escH(_uDisp)+'</div>'
+   +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 7px;border-radius:8px;font-weight:700;white-space:nowrap">UPSELL</span>'
+   +'</div>'
+   +'<div class="gp-bot">'
+   +'<div class="gp-nums">Actual: <b class="actual-val">'+fmt(Math.round(_uTot))+'</b></div>'
+   +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">'+_uDots+'</div>'
+   +'</div>'
+   +'</div></div></div>'
+  );
+ });
+ if(_uCards.length>0){
+  lh+='<div style="width:100%;margin-top:20px">'
+   +'<div class="prod-group-hdr nonfocus" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05)">'
+   +'<div class="prod-group-hdr-left">'
+   +'<span class="prod-group-hdr-label" style="color:#7C3AED">🎫 Upsell Products</span>'
+   +'<span class="prod-group-hdr-count">'+_uCards.length+' สินค้า</span>'
+   +'</div>'
+   +'</div>'
+   +'<div style="'+_gridStyleNF+'">'
+   +_uCards.join('')
+   +'</div></div>';
+ }
 
  listEl.innerHTML=lh;
  /* Force vertical stacking — override any CSS class 2-column grid */
@@ -10282,7 +10273,7 @@ function showProductDetail(pname){
  }
  /* ── Enrich per-channel spend from ADSM44 where NORM_DATA has none ── */
  /* ── Enrich per-channel spend from ADSM44 (ใช้ OPD channel name ตรงๆ) ── */
- var _pa44SpMap={'TikTok':'_tt_spend','TikTok Live':'_tt_spend','Facebook':'_fb_spend','Shopee':'_sp_spend','Shopee Live':'_sp_spend'};
+ var _pa44SpMap={'TikTok':'_tt_spend','TikTok Affi':'_tt_aff_spend','TikTok Live':'_tt_spend','Facebook':'_fb_spend','Shopee':'_sp_spend','Shopee Live':'_sp_spend'};
  Object.keys(_pa44SpMap).forEach(function(dk){
   if(!platCurrent[dk]) return;
   var spKey=_pa44SpMap[dk];
