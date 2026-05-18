@@ -527,7 +527,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .cal-det-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260518as</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260518-D1</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -969,6 +969,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <div id="goal-focus-compare" style="margin-bottom:20px"></div>
 
  <div id="goal-product-list"></div>
+ <div id="goal-upsell-section" style="width:100%;margin-top:20px"></div>
 
  <!-- Workload Track Sub-Tab -->
  <div id="workload-track" style="display:none"></div>
@@ -9504,64 +9505,9 @@ function renderGoal(month){
  +'</div>';
  }
 
- /* ── UPSELL PRODUCTS (OPD products not in Goal list) ── */
- if(typeof OPD_PROD_DATA!=='undefined'){
-  var _uGS={};rows.forEach(function(r){if(r.product)_uGS[r.product]=1;});
-  var _uPts=(month||'').split(' ');
-  var _uYy='20'+(_uPts[1]||'26');
-  var _uMoN={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
-  var _uMo=_uMoN[_uPts[0]]||'05';
-  var _uFr=_uYy+'-'+_uMo+'-01';
-  var _uLd=new Date(+_uYy,+_uMo,0).getDate();
-  var _uTd=(new Date()).toISOString().slice(0,10);
-  var _uTo=_uYy+'-'+_uMo+'-'+(String(_uLd).padStart(2,'0'));
-  if(_uTo>_uTd)_uTo=_uTd;
-  var _uDotC={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
-  var _uCards=[];
-  Object.keys(OPD_PROD_DATA).forEach(function(_uPn){
-   if(_uGS[_uPn])return;
-   var _uCh={};
-   Object.keys(OPD_PROD_DATA[_uPn]).forEach(function(d){
-    if(d<_uFr||d>_uTo)return;
-    Object.keys(OPD_PROD_DATA[_uPn][d]).forEach(function(c){_uCh[c]=(_uCh[c]||0)+OPD_PROD_DATA[_uPn][d][c];});
-   });
-   var _uT=Object.keys(_uCh).reduce(function(s,k){return s+(_uCh[k]||0);},0);
-   if(_uT<=0)return;
-   var _uCk=typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[_uPn]||null;
-   var _uImg=_uCk&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[_uCk]?BOOK_COVERS[_uCk]:null;
-   var _uTh=_uImg
-    ?'<img src="'+_uImg+'" style="width:44px;height:62px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)">'
-    :'<div style="width:44px;height:62px;flex-shrink:0;border-radius:4px;background:var(--surface2);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:20px">📦</div>';
-   var _uDts=Object.keys(_uCh).filter(function(c){return _uCh[c]>0;}).sort(function(a,b){return _uCh[b]-_uCh[a];}).slice(0,4)
-    .map(function(c){var _p=(_uCh[c]/_uT*100).toFixed(1);var _cl=_uDotC[c]||'#94A3B8';
-     return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+_cl+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+_p+'%</span>';
-    }).join(' ');
-   var _uDp=_uPn.length>30?_uPn.slice(0,28)+'…':_uPn;
-   _uCards.push(
-    '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
-    +'<div style="display:flex;gap:12px;align-items:flex-start">'+_uTh
-    +'<div style="flex:1;min-width:0">'
-    +'<div class="gp-top"><div class="gp-name" style="font-size:12px">'+escH(_uDp)+'</div>'
-    +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 7px;border-radius:8px;font-weight:700;white-space:nowrap">UPSELL</span>'
-    +'</div>'
-    +'<div class="gp-bot"><div class="gp-nums">Actual: <b class="actual-val">'+fmt(Math.round(_uT))+'</b></div>'
-    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">'+_uDts+'</div>'
-    +'</div></div></div></div>'
-   );
-  });
-  if(_uCards.length>0){
-   lh+='<div style="width:100%;margin-top:20px">'
-    +'<div class="prod-group-hdr nonfocus" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05)">'
-    +'<div class="prod-group-hdr-left"><span class="prod-group-hdr-label" style="color:#7C3AED">📦 Upsell Products</span>'
-    +'<span class="prod-group-hdr-count">'+_uCards.length+' สินค้า</span></div></div>'
-    +'<div style="'+_gridStyleNF+'">'+_uCards.join('')+'</div></div>';
-  }
- }
-
  listEl.innerHTML=lh;
- /* Force vertical stacking — override any CSS class 2-column grid */
- listEl.style.cssText='display:flex!important;flex-direction:column;gap:0;width:100%';
- renderGoalAnalysis(rows);
+ try{renderUpsell(month);}catch(e){console.error('renderUpsell error:',e);var _uel=document.getElementById('goal-upsell-section');if(_uel){_uel.innerHTML='<div style="background:#DC2626;color:#fff;padding:6px 10px;border-radius:4px;font-size:11px">❌ renderUpsell JS ERROR: '+e+'</div>';}}
+ try{renderGoalAnalysis(rows);}catch(e){}
  /* If Workload sub-tab is currently active, refresh it too */
  if(STATE.goalSubTab==='workload'){
  setGoalSubTab('workload');
@@ -9570,6 +9516,71 @@ function renderGoal(month){
  var btns=document.querySelectorAll('.gsub-btn');
  btns.forEach(function(b){b.classList.toggle('active',b.dataset.tab==='goal');});
  }
+}
+
+/* ── UPSELL SECTION (separate div, immune to renderGoal reruns) ── */
+function renderUpsell(month){
+ var uEl=document.getElementById('goal-upsell-section');
+ if(!uEl){console.error('[UPSELL] div not found');return;}
+ uEl.innerHTML='<div style="font-size:10px;color:#888;padding:4px 0">⏳ upsell loading…</div>';
+ var _opdOk=(typeof OPD_PROD_DATA!=='undefined');
+ var _goalsOk=!!(month&&GOALS_DATA&&GOALS_DATA[month]);
+ if(!_opdOk||!month||!_goalsOk){
+  uEl.innerHTML='<div style="background:#F59E0B;color:#000;padding:6px 10px;border-radius:4px;font-size:11px">⚠️ Upsell skip: OPD='+_opdOk+' month='+(month||'null')+' goals='+(month&&GOALS_DATA?!!GOALS_DATA[month]:false)+'</div>';
+  return;
+ }
+ var _gs={};
+ GOALS_DATA[month].forEach(function(r){if(r.product)_gs[r.product]=1;});
+ var pts=(month||'').split(' ');
+ var yy='20'+(pts[1]||'26');
+ var moN={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
+ var mo=moN[pts[0]]||'05';
+ var fr=yy+'-'+mo+'-01';
+ var td=(new Date()).toISOString().slice(0,10);
+ var ld=new Date(+yy,+mo,0).getDate();
+ var to=yy+'-'+mo+'-'+(String(ld).padStart(2,'0'));
+ if(to>td)to=td;
+ var dotC={'TikTok':'#000','TikTok Affi':'#7C3AED','TikTok Live':'#5B21B6','Shopee':'#EE4D2D','Shopee Live':'#B91C1C','Facebook':'#1877F2','Instagram':'#E1306C'};
+ var gridSt='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px;border:1.5px solid rgba(124,58,237,.25);border-top:none;border-radius:0 0 8px 8px;background:var(--surface2);width:100%;box-sizing:border-box';
+ var cards=[];
+ Object.keys(OPD_PROD_DATA).forEach(function(pn){
+  if(_gs[pn])return;
+  var ch={};
+  Object.keys(OPD_PROD_DATA[pn]).forEach(function(d){
+   if(d<fr||d>to)return;
+   Object.keys(OPD_PROD_DATA[pn][d]).forEach(function(c){ch[c]=(ch[c]||0)+(OPD_PROD_DATA[pn][d][c]||0);});
+  });
+  var tot=Object.keys(ch).reduce(function(s,k){return s+(ch[k]||0);},0);
+  if(tot<=0)return;
+  var ck=typeof BOOK_COVER_MAP!=='undefined'&&BOOK_COVER_MAP[pn]||null;
+  var img=ck&&typeof BOOK_COVERS!=='undefined'&&BOOK_COVERS[ck]?BOOK_COVERS[ck]:null;
+  var thumb=img
+   ?'<img src="'+img+'" style="width:44px;height:62px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)">'
+   :'<div style="width:44px;height:62px;flex-shrink:0;border-radius:4px;background:var(--surface2);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:20px">📦</div>';
+  var dots=Object.keys(ch).filter(function(c){return ch[c]>0;}).sort(function(a,b){return ch[b]-ch[a];}).slice(0,4)
+   .map(function(c){var p=(ch[c]/tot*100).toFixed(1);var cl=dotC[c]||'#94A3B8';
+    return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+cl+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+p+'%</span>';
+   }).join(' ');
+  var dp=pn.length>30?pn.slice(0,28)+'…':pn;
+  cards.push(
+   '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
+   +'<div style="display:flex;gap:12px;align-items:flex-start">'+thumb
+   +'<div style="flex:1;min-width:0">'
+   +'<div class="gp-top"><div class="gp-name" style="font-size:12px">'+escH(dp)+'</div>'
+   +'<span style="font-size:9px;background:rgba(124,58,237,.15);color:#7C3AED;padding:2px 7px;border-radius:8px;font-weight:700;white-space:nowrap">UPSELL</span>'
+   +'</div>'
+   +'<div class="gp-bot"><div class="gp-nums">Actual: <b class="actual-val">'+fmt(Math.round(tot))+'</b></div>'
+   +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">'+dots+'</div>'
+   +'</div></div></div></div>'
+  );
+ });
+ if(cards.length===0){uEl.innerHTML='<div style="background:#F59E0B;color:#000;padding:6px 10px;border-radius:4px;font-size:11px">⚠️ Upsell: 0 cards — all OPD products matched goals OR no May sales</div>';return;}
+ uEl.innerHTML=
+  '<div class="prod-group-hdr nonfocus" style="border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05)">'
+  +'<div class="prod-group-hdr-left"><span class="prod-group-hdr-label" style="color:#7C3AED">📦 Upsell Products</span>'
+  +'<span class="prod-group-hdr-count">'+cards.length+' สินค้า</span></div></div>'
+  +'<div style="'+gridSt+'">'+cards.join('')+'</div>';
+ uEl.style.display='block';
 }
 
 /* GOAL SUB-TAB TOGGLE */
