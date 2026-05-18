@@ -4456,8 +4456,12 @@ function renderOvUpsell(month){
  if(!uEl)return;
  uEl.innerHTML='';
  if(typeof OPD_PROD_DATA==='undefined'||!month||!GOALS_DATA||!GOALS_DATA[month])return;
+ // ── _gs: เก็บทุกเล่มที่เคยมี goal ใน *ทุกเดือน* ──
+ // เพื่อกัน BOXSET / เล่มหลักที่ไม่มี goal เดือนนี้ไม่โผล่ใน Upsell
  var _gs={};
- GOALS_DATA[month].forEach(function(r){if(r.product)_gs[r.product]=1;});
+ Object.keys(GOALS_DATA).forEach(function(mo){
+  GOALS_DATA[mo].forEach(function(r){if(r.product)_gs[r.product]=1;});
+ });
  var pts=(month||'').split(' ');
  var yy='20'+(pts[1]||'26');
  var moN={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
