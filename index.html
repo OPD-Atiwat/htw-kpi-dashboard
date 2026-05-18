@@ -9505,7 +9505,12 @@ function renderGoal(month){
  }
 
  /* ── UPSELL PRODUCTS SECTION ── */
- var _uNames=['Ohm Lucky Me เซียมซีชี้ชะตา'];
+ var _uNames=[
+  'Ohm Lucky Me เซียมซีชี้ชะตา',
+  'Cheap Dopamine ปลดความสุขราคาถูกที่ผูกมัดคุณไว้',
+  'MANIFEST GUIDELINE',
+  'SHEET Hello My Mind สบายดีไหมตัวฉัน',
+ ];
  var _uMmap={'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',
              'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'};
  var _uMparts=(month||'').split(' ');
@@ -9541,7 +9546,8 @@ function renderGoal(month){
     var _uCol=_uChDot[c]||'#94A3B8';
     return '<span style="font-size:10px;color:var(--text2);white-space:nowrap"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+_uCol+';margin-right:3px;vertical-align:middle"></span>'+escH(c)+' '+_uP+'%</span>';
    }).join(' ');
-  var _uDisp=_uPname.replace(/^Ohm Lucky Me\s*/i,'');
+  var _uDisp=_uPname.replace(/^Ohm Lucky Me\s*/i,'').replace(/^Cheap\s*/i,'').replace(/^SHEET\s+/i,'');
+  if(_uDisp.length>28)_uDisp=_uDisp.slice(0,26)+'…';
   _uCards.push(
    '<div class="gp-item" style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid rgba(124,58,237,.25)">'
    +'<div style="display:flex;gap:12px;align-items:flex-start">'+_uTh
