@@ -31,6 +31,23 @@ ok2 = run_py("opd_pull.py")
 w("[3/3] KMS Sheet Pull...")
 ok3 = run_py("kms_pull.py")
 
+# Failsafe: อัปเดต META_PULL_TS ให้ตรงกับเวลา run ปัจจุบัน
+# (ป้องกันกรณี mk13_sync fail แบบเงียบ ทำให้ timestamp ค้าง)
+import re as _re
+_dash = os.path.join(BASE, "index.html")
+try:
+    with open(_dash, "r", encoding="utf-8") as _f:
+        _html = _f.read()
+    _now_ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    _html2 = _re.sub(r'var META_PULL_TS\s*=\s*"[^"]*"',
+                     f'var META_PULL_TS = "{_now_ts}"', _html)
+    if _html2 != _html:
+        with open(_dash, "w", encoding="utf-8") as _f:
+            _f.write(_html2)
+        w(f"  META_PULL_TS → {_now_ts}")
+except Exception as _e:
+    w(f"  META_PULL_TS update fail: {_e}")
+
 w("--- สรุป ---")
 w(f"  {'OK' if ok1 else 'FAIL'} meta_pull.py")
 w(f"  {'OK' if ok2 else 'FAIL'} opd_pull.py")
