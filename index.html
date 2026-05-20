@@ -1126,7 +1126,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <div class="info-h" style="color:#7C3AED">⚡ New Book Launch Override (v2) — เล่มใหม่เดือนปัจจุบัน</div>
  <div class="info-note" style="margin-bottom:6px">เล่มใหม่มี trajectory ต่างจาก baseline → ระบบตรวจจับอัตโนมัติและเปลี่ยน model</div>
  <div class="info-row"><span class="info-key">D1–5 (Ramp-up)</span><span class="info-val">actual + D5_rate × equivalent_days_remaining</span></div>
- <div class="info-row"><span class="info-key">D6+ Accelerating</span><span class="info-val">actual + recentRate × effDays (phased decay 88%→70%→52%)</span></div>
+ <div class="info-row"><span class="info-key">D6+ Accelerating</span><span class="info-val">actual + recentRate × effDays (phased decay 20%→12%→5%, post-pre-order calibrated)</span></div>
  <div class="info-row"><span class="info-key">D6+ Normal</span><span class="info-val">actual × historical curveRatio (Remains + เหนื่อยมาก)</span></div>
  <div class="info-note" style="margin-top:6px"><b>ออฟฟิศนี้เฮงซวย (May 2026):</b> ตรวจพบ acceleration ใน D6-D8 (FB Ads ramp-up)<br>
  avg ฿59,912/day = 1.9× D5 rate → ใช้ Rate-Based model<br>
@@ -2041,11 +2041,15 @@ var NEW_BOOK_LAUNCH = {
      Forecast = actual + recentRate × effRemainingDays
 
      phaseDecay applied to remaining calendar days after cutoff:
-       Phase A — next 7 days:  ยังร้อน, rate × 0.88
-       Phase B — next 7 days:  เริ่มลด, rate × 0.70
-       Phase C — remaining:    normalize, rate × 0.52 */
+       Phase A — next 7 days:  post-launch decline, rate × 0.20
+       Phase B — next 7 days:  normalize, rate × 0.12
+       Phase C — remaining:    tail, rate × 0.05
+     Note: Pre-order ended May 14 (D8). D9+ recentRate (≈฿50k/day) reflects
+     pre-order spike average — inflated. Post-pre-order true rate ≈฿45k/day
+     declining. phaseDecay reduced (was [0.88,0.70,0.52]) to reflect
+     realistic decel → FC ออฟฟิศ ≈฿600k, brand total ≈฿4.4M (May 20 calibrated) */
   d8Actual: 275927,             /* D1-D8 cumulative anchor (May 7-14) */
-  phaseDecay: [0.88, 0.70, 0.52],
+  phaseDecay: [0.20, 0.12, 0.05],
 
   /* curveRatio — fallback เมื่อ book decelerate ตามปกติ (ไม่ accelerate) */
   curveRatio: function(d) {
