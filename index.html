@@ -3843,7 +3843,11 @@ function renderOverview(data){
   ttBrandRev=_finCh.TikTokAds; ttLiveRev=_finCh.TikTokLive;
   ttRev=_finCh.TikTokAds+_finCh.TikTokLive;
   ttAffiRev=_finCh.TikTokAffi||ttAffiRev;
- } else if(_useGoalsChData){metaRev=pmChTot.Facebook;spRev=pmChTot.Shopee;}
+ }
+ /* NOTE: ลบ else if(_useGoalsChData){metaRev=pmChTot.Facebook} ออกแล้ว (May 26 fix)
+    pmChTot.Facebook = MK13 inhouse-only = ฿1K ขาด FB Ads revenue → ทำให้ Meta FC ผิด
+    live month ที่ไม่มี Finance: ใช้ OPD chTot['Facebook'] (฿911K) เป็น metaRev แทน
+    Shopee: ADSM44 override (line ถัดไป) ครอบคลุมอยู่แล้ว ไม่ต้อง pmChTot */
  /* ADSM44 Shopee override: live month + ไม่มี Finance → ใช้ _sp_sale (หรือ _sp_rev fallback) รวมทุกสินค้าแทน OPD
     (OPD มี Shopee data ไม่ครบ ขณะที่ ADSM44 มาจาก MK13 report ที่ครอบคลุมกว่า) */
  if(!_finCh && !isFinal && ADSM44_PCTADS[month]){
