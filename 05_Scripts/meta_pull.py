@@ -133,7 +133,8 @@ def api_get(url, params, retries=3):
 
 
 def fetch_all_pages(url, params):
-    """ดึงข้อมูลครบทุกหน้า (auto pagination)"""
+    """ดึงข้อมูลครบทุกหน้า (auto pagination + retry เมื่อโดน rate limit)"""
+    import time
     rows = []
     data = api_get(url, params)
     rows.extend(data.get("data", []))
@@ -146,8 +147,24 @@ def fetch_all_pages(url, params):
             r2 = requests.get(next_url, timeout=120)
             d2 = r2.json()
             if "error" in d2:
-                print(f"\n   ⚠️  Pagination error: {d2['error'].get('message')}")
-                break
+                err_msg  = d2['error'].get('message', '')
+                err_code = d2['error'].get('code', 0)
+                # Rate limit → รอแล้ว retry สูงสุด 3 ครั้ง
+                if err_code in (4, 17, 32, 613) or 'limit' in err_msg.lower():
+                    for attempt in range(1, 4):
+                        wait = 60 * attempt
+                        print(f"\n   ⏳ Rate limit — รอ {wait} วิ แล้ว retry ({attempt}/3)...")
+                        time.sleep(wait)
+                        r2 = requests.get(next_url, timeout=120)
+                        d2 = r2.json()
+                        if "error" not in d2:
+                            break
+                    else:
+                        print(f"\n   ❌ Rate limit ไม่หาย หยุด pagination (ได้ {len(rows):,} records)")
+                        break
+                else:
+                    print(f"\n   ⚠️  Pagination error: {err_msg}")
+                    break
             rows.extend(d2.get("data", []))
             next_url = d2.get("paging", {}).get("next")
         except Exception as e:
