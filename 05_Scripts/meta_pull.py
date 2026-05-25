@@ -456,8 +456,21 @@ def update_raw_data(rows, html_path):
     kept = [r for r in existing
             if not (r.get("month") == cur_month and r.get("platform") == "Meta")]
 
-    new_recs = [r for r in rows if r.get("platform") == "Meta"]
-    merged   = kept + new_recs
+    new_recs   = [r for r in rows if r.get("platform") == "Meta"]
+    new_dates  = set(r.get("ad_date", "") for r in new_recs)
+
+    # ── Rate-limit safeguard ──────────────────────────────────────
+    # ถ้า API ส่งมาแค่บางวัน (rate limit) ให้คงข้อมูลวันที่ยังไม่ได้ดึงไว้
+    existing_meta  = [r for r in existing
+                      if r.get("month") == cur_month and r.get("platform") == "Meta"]
+    existing_dates = set(r.get("ad_date", "") for r in existing_meta)
+    missed_dates   = existing_dates - new_dates          # วันที่ API ไม่ส่งมา
+    rescued        = [r for r in existing_meta if r.get("ad_date", "") in missed_dates]
+    if rescued:
+        print(f"   ⚠️  API ได้ {len(new_dates)} วัน / มีอยู่แล้ว {len(existing_dates)} วัน"
+              f" — คงข้อมูล {len(missed_dates)} วันที่ขาด ({sorted(missed_dates)[0]} → {sorted(missed_dates)[-1]})")
+
+    merged = kept + new_recs + rescued
     merged.sort(key=lambda r: (
         r.get("month", ""), r.get("ad_date", ""), r.get("creator", "")
     ))
@@ -477,8 +490,10 @@ def update_raw_data(rows, html_path):
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"   ✅ คงไว้: {len(kept):,} records")
-    print(f"   ✅ เพิ่มใหม่: {len(new_recs):,} Meta records ({cur_month})")
+    print(f"   ✅ คงไว้ (platform อื่น): {len(kept):,} records")
+    print(f"   ✅ Meta ใหม่จาก API: {len(new_recs):,} records ({cur_month})")
+    if rescued:
+        print(f"   ✅ Meta คงไว้ (ขาดจาก API): {len(rescued):,} records")
     print(f"   ✅ รวม: {len(merged):,} records")
     return True
 
