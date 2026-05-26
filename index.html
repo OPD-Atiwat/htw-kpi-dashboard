@@ -661,7 +661,13 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <!-- SECTION 1 — BRAND OVERVIEW -->
  <!-- -->
  <div class="ov-sec"><span class="ov-sec-label">Brand Overview</span></div>
- <div id="ov-row-brand" style="margin-bottom:24px"></div>
+ <div id="ov-row-brand" style="margin-bottom:16px"></div>
+
+ <!-- Daily MK13 Total Sales Line -->
+ <div class="chart-card" style="margin-bottom:20px">
+  <div class="chart-head" id="ov-mk13-head">ยอดขายรายวัน (MK13 Total)</div>
+  <div style="position:relative;height:180px"><canvas id="ov-mk13-total"></canvas></div>
+ </div>
 
  <!-- -->
  <!-- SECTION 1B — GOAL MARGIN -->
@@ -4448,6 +4454,38 @@ STATE.lbProduct=_lbProdForMult;
  momLabel:_prevMoLabel
  };
  try{renderOvBrandHero(_o);}catch(e){console.error('renderOvBrandHero:',e);}
+ /* MK13 Total Daily Sales Line */
+ try{
+  dc('ovMk13Total');
+  var _mk13Cvs=document.getElementById('ov-mk13-total');
+  var _mk13Head=document.getElementById('ov-mk13-head');
+  if(_mk13Head) _mk13Head.textContent='ยอดขายรายวัน — MK13 Total ('+month+')';
+  if(_mk13Cvs&&opdRows.length){
+   var _mk13Labels=opdRows.map(function(r){var p=r.d.split('-');return p[2]+'/'+p[1];});
+   var _mk13Total=opdRows.map(function(r){var s=0;Object.keys(r).forEach(function(k){if(k!=='d')s+=r[k]||0;});return Math.round(s);});
+   /* 7-day MA */
+   var _mk13MA=_mk13Total.map(function(v,i){var sl=_mk13Total.slice(Math.max(0,i-6),i+1);return Math.round(sl.reduce(function(a,b){return a+b;},0)/sl.length);});
+   STATE.charts.ovMk13Total=new Chart(_mk13Cvs.getContext('2d'),{
+    type:'line',
+    data:{labels:_mk13Labels,datasets:[
+     {label:'ยอดรวม',data:_mk13Total,borderColor:'#4aeabc',backgroundColor:'rgba(74,234,188,0.08)',fill:true,tension:0.4,pointRadius:0,pointHoverRadius:4,borderWidth:2.5},
+     {label:'7d MA',data:_mk13MA,borderColor:'#f5a623',backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:0,borderWidth:2,borderDash:[5,3]}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+     interaction:{mode:'index',intersect:false},
+     plugins:{
+      legend:{position:'bottom',labels:{color:tc(),boxWidth:8,padding:12,font:{size:10}}},
+      datalabels:{display:false},
+      tooltip:{callbacks:{label:function(c){return ' '+c.dataset.label+': '+fmt(c.parsed.y);}}}
+     },
+     scales:{
+      x:{ticks:{color:tc(),font:{size:10},maxTicksLimit:opdRows.length>20?15:opdRows.length,maxRotation:0},grid:{color:gc()}},
+      y:{ticks:{color:tc(),font:{size:10},callback:function(v){if(v>=1e6)return '฿'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '฿'+(v/1e3).toFixed(0)+'K';return '฿'+v;}},grid:{color:gc()}}
+     }
+    }
+   });
+  }
+ }catch(e){console.error('ovMk13Total:',e);}
  try{renderOvMarginCards(_o);}catch(e){console.error('renderOvMarginCards:',e);}
  try{renderOvCategoryCards(_o);}catch(e){console.error('renderOvCategoryCards:',e);}
  try{renderOvChannelCards(_o);}catch(e){
