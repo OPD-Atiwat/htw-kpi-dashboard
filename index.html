@@ -7385,11 +7385,11 @@ function renderOvMarginCards(o){
      +(_fcAch!=null?'<div style="font-size:9px;color:'+_fcCol+';font-weight:700">'+_fcAch.toFixed(1)+'%</div>':'')
      +'</div>';
    }
-   if(cfg.profitFc!=null&&cfg.profit!=null){
-    var _diff=cfg.profitFc-cfg.profit;
+   if(cfg.profitFc!=null&&cfg.profitGoal>0){
+    var _diff=cfg.profitFc-cfg.profitGoal;
     var _dCol=_diff>=0?'var(--success)':'var(--danger)';
     h+='<div style="margin-left:auto;text-align:right">'
-     +'<div style="font-size:8px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:1px">FC − Actual</div>'
+     +'<div style="font-size:8px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:1px">FC − GOAL</div>'
      +'<div style="font-size:18px;font-weight:900;color:'+_dCol+'">'+(_diff>=0?'+':'')+fmtCard(_diff)+'</div></div>';
    }
    h+='</div>';
