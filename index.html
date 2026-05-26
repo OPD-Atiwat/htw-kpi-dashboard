@@ -5171,7 +5171,8 @@ function renderDailyTrendChart(_unused){
   var cur=new Date(_dtRange.from+'T00:00:00');
   var end=new Date(_dtRange.to+'T00:00:00');
   while(cur<=end){
-   var ds=cur.toISOString().slice(0,10);
+   var _cy=cur.getFullYear(),_cm=cur.getMonth()+1,_cd=cur.getDate();
+   var ds=_cy+'-'+(_cm<10?'0':'')+_cm+'-'+(_cd<10?'0':'')+_cd;
    dates.push(ds);
    cur.setDate(cur.getDate()+1);
   }
