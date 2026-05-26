@@ -14074,8 +14074,8 @@ function aoInit() {
   var grpOrder = ['Broad','Interest — Books','Interest — Other','Retarget — Page','Retarget — Video','Retarget — Conversion','Other'];
   var groups = grpOrder.filter(function(g){ return AO_DATA.ads.some(function(a){ return (a.audience_group||'Other')===g; }); });
   var gb = document.getElementById('ao-aud-btns');
-  if(gb) gb.innerHTML = '<button class="ao-tbtn ao-tbtn-on" data-ag="" onclick="aoToggleAud(this,'')" style="margin-right:2px">ทุก Audience</button>'
-    + groups.map(function(g){ return '<button class="ao-tbtn" data-ag="'+g+'" onclick="aoToggleAud(this,''+g+')" style="margin-right:2px">'+g+'</button>'; }).join('');
+  if(gb) gb.innerHTML = '<button class="ao-tbtn ao-tbtn-on" data-ag="" onclick="aoToggleAud(this,this.dataset.ag)" style="margin-right:2px">ทุก Audience</button>'
+    + groups.map(function(g){ return '<button class="ao-tbtn" data-ag="'+g+'" onclick="aoToggleAud(this,this.dataset.ag)" style="margin-right:2px">'+g+'</button>'; }).join('');
 
   // audience detail dropdown
   var auds = [...new Set(AO_DATA.ads.map(a=>a.audience||'No Audience'))].sort();
