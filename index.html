@@ -5323,6 +5323,27 @@ function renderDailyTrendChart(_unused){
  /* ── Inline legend (colored dots) ── */
  var activeKeys=Object.keys(_dailyActiveMetrics).filter(function(k){return _dailyActiveMetrics[k];});
 
+ /* ── No-data guard ── */
+ var _hasAnyData=Object.keys(byDate).length>0;
+ var _noDataEl=document.getElementById('daily-trend-nodata');
+ if(!_noDataEl){
+  _noDataEl=document.createElement('div');
+  _noDataEl.id='daily-trend-nodata';
+  _noDataEl.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none';
+  canvas.parentNode.appendChild(_noDataEl);
+ }
+ if(!_hasAnyData){
+  var _fr=_useCustomRange?(_dtRange.from.slice(5).split('-').reverse().join('/')+' – '+_dtRange.to.slice(5).split('-').reverse().join('/')):selPeriod.toUpperCase();
+  var _reason=bookF?('ไม่มีข้อมูล Ads สำหรับ <b>'+bookF+'</b><br><span style="font-size:11px;font-weight:400;color:var(--text3)">ช่วง '+_fr+'</span>'):('ไม่มีข้อมูล Ads ในช่วงที่เลือก<br><span style="font-size:11px;font-weight:400;color:var(--text3)">'+_fr+'</span>');
+  _noDataEl.innerHTML='<div style="font-size:13px;font-weight:600;color:var(--text2);text-align:center;line-height:2">📭 '+_reason+'</div>';
+  _noDataEl.style.display='flex';
+  if(_dailyTrendChart){_dailyTrendChart.destroy();_dailyTrendChart=null;}
+  canvas.style.opacity='0';
+  return;
+ }
+ _noDataEl.style.display='none';
+ canvas.style.opacity='1';
+
  /* ── Chart ── */
  if(_dailyTrendChart) _dailyTrendChart.destroy();
  _dailyTrendChart=new Chart(canvas,{
