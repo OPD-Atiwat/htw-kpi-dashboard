@@ -235,6 +235,99 @@ def enrich(rows, min_spend=50):
     return enrich_ads(rows, min_spend)
 
 
+def fetch_ad_creatives(ad_ids):
+    """
+    ดึง creative assets สำหรับแต่ละ ad_id:
+      - thumbnail_url  (รูป preview)
+      - image_url      (รูปเต็มสำหรับ image ads)
+      - video_id       (สำหรับ video ads → ดึง video_url ต่อ)
+      - object_type    (VIDEO / IMAGE / etc.)
+    Return: dict {ad_id: {...}}
+    """
+    result = {}
+    ad_ids = list(set(ad_ids))
+    BATCH  = 50
+
+    for i in range(0, len(ad_ids), BATCH):
+        chunk   = ad_ids[i:i+BATCH]
+        ids_str = ",".join(chunk)
+        params  = urllib.parse.urlencode({
+            "ids":          ids_str,
+            "fields":       "id,creative{thumbnail_url,image_url,video_id,object_type}",
+            "access_token": ACCESS_TOKEN,
+        })
+        url = f"{BASE_URL}/?{params}"
+        try:
+            data = fetch(url)
+            for ad_id, ad_data in data.items():
+                cr = ad_data.get("creative", {})
+                result[ad_id] = {
+                    "thumbnail_url": cr.get("thumbnail_url"),
+                    "image_url":     cr.get("image_url"),
+                    "video_id":      cr.get("video_id"),
+                    "object_type":   cr.get("object_type", ""),
+                }
+        except Exception as e:
+            print(f"  ⚠ creative fetch error (batch {i}): {e}")
+    return result
+
+
+def fetch_video_urls(video_ids):
+    """
+    ดึง MP4 source URL จาก video_id
+    Return: dict {video_id: {"video_url": ..., "picture": ...}}
+    """
+    result = {}
+    video_ids = list(set(v for v in video_ids if v))
+    if not video_ids:
+        return result
+    BATCH = 50
+
+    for i in range(0, len(video_ids), BATCH):
+        chunk   = video_ids[i:i+BATCH]
+        ids_str = ",".join(chunk)
+        params  = urllib.parse.urlencode({
+            "ids":          ids_str,
+            "fields":       "id,source,picture",   # source = MP4 URL
+            "access_token": ACCESS_TOKEN,
+        })
+        url = f"{BASE_URL}/?{params}"
+        try:
+            data = fetch(url)
+            for vid_id, vid_data in data.items():
+                result[vid_id] = {
+                    "video_url": vid_data.get("source"),
+                    "picture":   vid_data.get("picture"),
+                }
+        except Exception as e:
+            print(f"  ⚠ video URL fetch error (batch {i}): {e}")
+    return result
+
+
+# backward-compat alias for old code
+def fetch_ad_thumbnails(ad_ids):
+    return fetch_ad_creatives(ad_ids)
+
+
+def merge_thumbnails(ads, creative_map, video_map=None):
+    """inject thumbnail_url / image_url / video_url into each ad dict"""
+    video_map = video_map or {}
+    for ad in ads:
+        c = creative_map.get(ad.get("ad_id", ""), {})
+        ad["thumbnail_url"]  = c.get("thumbnail_url")
+        ad["image_url"]      = c.get("image_url")
+        ad["creative_type"]  = c.get("object_type", "")
+        vid_id = c.get("video_id")
+        if vid_id and vid_id in video_map:
+            ad["video_url"]  = video_map[vid_id].get("video_url")
+            # use video picture as fallback thumbnail
+            if not ad["thumbnail_url"]:
+                ad["thumbnail_url"] = video_map[vid_id].get("picture")
+        else:
+            ad["video_url"]  = None
+    return ads
+
+
 def main():
     today     = datetime.now()
     yesterday = today - timedelta(days=1)
@@ -257,6 +350,29 @@ def main():
     # ── Ad Set level (MTD เท่านั้น — ใช้ใน Ads Optimize tab) ───
     print(f"  ดึง Ad Set level MTD...")
     mtd_adsets = enrich_adsets(get_adset_insights(mtd_start_str, mtd_end_str), min_spend=100)
+
+    # ── Creatives: thumbnail + video_url ────────────────────────
+    all_ad_ids = list(set(
+        [a["ad_id"] for a in daily_rows if a.get("ad_id")] +
+        [a["ad_id"] for a in mtd_rows   if a.get("ad_id")]
+    ))
+    print(f"  ดึง creative assets สำหรับ {len(all_ad_ids)} ads...")
+    creative_map = fetch_ad_creatives(all_ad_ids)
+
+    # ดึง video source URLs สำหรับ video ads
+    video_ids = list(set(
+        v["video_id"] for v in creative_map.values()
+        if v.get("video_id")
+    ))
+    print(f"  ดึง video URLs สำหรับ {len(video_ids)} videos...")
+    video_map  = fetch_video_urls(video_ids)
+
+    daily_rows = merge_thumbnails(daily_rows, creative_map, video_map)
+    mtd_rows   = merge_thumbnails(mtd_rows,   creative_map, video_map)
+
+    vid_count   = sum(1 for a in mtd_rows if a.get("video_url"))
+    thumb_count = sum(1 for a in mtd_rows if a.get("thumbnail_url"))
+    print(f"  video_url: {vid_count}  thumbnail: {thumb_count}  / {len(mtd_rows)} MTD ads")
 
     print(f"  daily ads: {len(daily_rows)}, MTD ads: {len(mtd_rows)}, MTD adsets: {len(mtd_adsets)}")
 
