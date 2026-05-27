@@ -796,6 +796,34 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <div id="creator-top5-wrap" style="margin-bottom:14px"></div>
 
  <!-- ╔══════════════════════════════════════════════════════╗ -->
+ <!-- ║  AD CREATIVES GALLERY                               ║ -->
+ <!-- ╚══════════════════════════════════════════════════════╝ -->
+ <div id="cb-ad-gallery-section" style="margin-bottom:16px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+   <span style="font-size:13px;font-weight:700;color:var(--text1)">📢 สื่อที่ยิง Ads</span>
+   <span id="cb-adgal-count" style="font-size:11px;color:var(--text3)"></span>
+   <span id="cb-adgal-toggle" onclick="cbAdGalToggle()" style="font-size:10px;font-weight:600;color:var(--accent);cursor:pointer;margin-left:auto;padding:3px 10px;border:1px solid var(--accent);border-radius:6px">ซ่อน</span>
+  </div>
+  <div id="cb-adgal-body">
+   <div id="cb-adgal-filter" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+    <select id="cb-adgal-book" onchange="renderCbAdGallery()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text1)"><option value="">ทุกเล่ม</option></select>
+    <select id="cb-adgal-roas" onchange="renderCbAdGallery()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text1)">
+     <option value="">ทุก ROAS</option>
+     <option value="ex">Excellent (≥2.5x)</option>
+     <option value="go">Good (≥2.0x)</option>
+     <option value="ok">Monitor (≥1.7x)</option>
+     <option value="po">Poor (&lt;1.7x)</option>
+    </select>
+    <label style="font-size:11px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer">
+     <input type="checkbox" id="cb-adgal-ononly" onchange="renderCbAdGallery()" style="cursor:pointer"> เฉพาะ ON
+    </label>
+   </div>
+   <div id="cb-adgal-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px"></div>
+   <div id="cb-adgal-empty" style="display:none;font-size:12px;color:var(--text3);padding:16px 0">ไม่มีสื่อที่ตรงกัน</div>
+  </div>
+ </div>
+
+ <!-- ╔══════════════════════════════════════════════════════╗ -->
  <!-- ║  CONTENT TABLE SECTION                              ║ -->
  <!-- ╚══════════════════════════════════════════════════════╝ -->
  <div id="content-type-summary" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px"></div>
@@ -3475,6 +3503,7 @@ function renderCurrentTab(){
   renderCreatorStrip(filterChartData(STATE.filteredData,'creator'));
   renderDailyTrendChart(STATE.filteredData); renderAdsProdChart();
  }
+ else if(STATE.currentTab==='adsopt'){ renderDailyTrendChart(STATE.filteredData); renderAdsProdChart(); }
  else if(STATE.currentTab==='goal') renderGoal(STATE.goalMonth);
  else if(STATE.currentTab==='channels') renderChannelTab();
  else if(STATE.currentTab==='consign') renderConsignTab();
@@ -5270,7 +5299,7 @@ function renderDailyTrendChart(_unused){
   if(platF&&r.platform!==platF) return;
   if(bookF&&r.product!==bookF) return;
   var ds=r.ad_date;
-  if(!byDate[ds]) byDate[ds]={rev:0,spend:0,cpmSum:0,cpmW:0,pur:0,imp:0,reach:0,msg:0,clicks:0};
+  if(!byDate[ds]) byDate[ds]={rev:0,spend:0,cpmSum:0,cpmW:0,pur:0,imp:0,reach:0,msg:0,clicks:0,books:{}};
   var b=byDate[ds];
   b.rev  += r.revenue_thb||0;
   b.spend+= r.spend_thb||0;
@@ -5281,6 +5310,8 @@ function renderDailyTrendChart(_unused){
   b.clicks+= r.clicks||0;
   var imp=r.impressions||0;
   if(imp>0&&r.cpm_thb){b.cpmSum+=r.cpm_thb*imp;b.cpmW+=imp;}
+  /* Book breakdown */
+  var bk=r.product||'Unknown'; b.books[bk]=(b.books[bk]||0)+(r.revenue_thb||0);
  });
 
  /* ── Generate FULL calendar range (day 1 → last day with data or today) ── */
@@ -5512,7 +5543,19 @@ function renderDailyTrendChart(_unused){
       },
       afterBody:function(items){
        var ds=dates[items[0].dataIndex]; var b=byDate[ds]; if(!b)return[];
-       return ['  Purchases: '+b.pur];
+       var lines=['  Purchases: '+b.pur];
+       /* Book breakdown — sort by revenue desc, show top 5 */
+       if(b.books){
+        var bkList=Object.keys(b.books).map(function(k){return{name:k,rev:b.books[k]};});
+        bkList.sort(function(a,c){return c.rev-a.rev;});
+        if(bkList.length) lines.push('  ─────────────────');
+        bkList.slice(0,5).forEach(function(x){
+         if(x.rev<=0) return;
+         var rv=x.rev>=1000?(x.rev/1000).toFixed(1)+'K':x.rev.toFixed(0);
+         lines.push('  '+x.name+': ฿'+rv);
+        });
+       }
+       return lines;
       }
      },
      backgroundColor:isDark?'rgba(25,25,45,0.97)':'rgba(15,17,23,0.92)',
@@ -5810,6 +5853,110 @@ function _apBookIdx(i){
  applyFilters();
 }
 
+/* ── Ad Creatives Gallery (Content Board) ── */
+var _cbAdGalVisible = true;
+function cbAdGalToggle(){
+ _cbAdGalVisible = !_cbAdGalVisible;
+ var body = document.getElementById('cb-adgal-body');
+ var btn  = document.getElementById('cb-adgal-toggle');
+ if(body) body.style.display = _cbAdGalVisible ? '' : 'none';
+ if(btn)  btn.textContent   = _cbAdGalVisible ? 'ซ่อน' : 'แสดง';
+}
+
+function _cbAdParseCreator(adName){
+ var parts = adName.match(/\[([^\]]+)\]/g) || [];
+ if(parts.length >= 2){
+  var raw = parts[1].replace(/[\[\]]/g,'').trim();
+  if(raw.indexOf('ริว')>=0 || raw==='ริว') return 'ริว';
+  if(raw.indexOf('มิ้น')>=0|| raw==='มิ้น') return 'มิ้น';
+  if(raw.indexOf('หมิว')>=0|| raw==='หมิว') return 'หมิว';
+  return raw; /* mena.forest, pearpmk etc */
+ }
+ return '';
+}
+
+function _cbAdParseBook(adName){
+ var m = adName.match(/\(([^)]+)\)\s*$/);
+ return m ? m[1].trim() : '';
+}
+
+function renderCbAdGallery(){
+ if(!window.AO_DATA || !AO_DATA.ads) return;
+ var TIER_C  = {ex:'#1a3a1a',go:'#1a5c2a',ok:'#7F6000',po:'#9C0006',np:'#808080'};
+ var TIER_BG = {ex:'#C8F0CC',go:'#D6F0DC',ok:'#FFF3CD',po:'#FFCCCC',np:'#F5F5F5'};
+ var TIER_L  = {ex:'≥2.5x',go:'≥2.0x',ok:'≥1.7x',po:'<1.7x',np:'-'};
+
+ /* Filters */
+ var activeCreator = STATE.creatorFilter || (document.getElementById('filter-creator')||{}).value||'';
+ var bookF  = (document.getElementById('cb-adgal-book')||{}).value||'';
+ var roasF  = (document.getElementById('cb-adgal-roas')||{}).value||'';
+ var onOnly = (document.getElementById('cb-adgal-ononly')||{}).checked||false;
+
+ /* Populate book dropdown once */
+ var bookSel = document.getElementById('cb-adgal-book');
+ if(bookSel && bookSel.options.length <= 1){
+  var books = [...new Set(AO_DATA.ads.map(function(a){ return _cbAdParseBook(a.ad_name||''); }).filter(Boolean))].sort();
+  books.forEach(function(b){ var o=document.createElement('option'); o.value=b; o.textContent=b; bookSel.appendChild(o); });
+ }
+
+ var ads = AO_DATA.ads.filter(function(a){
+  if(!a.thumbnail_url) return false;
+  var cr = _cbAdParseCreator(a.ad_name||'');
+  if(activeCreator && cr !== activeCreator) return false;
+  if(bookF && _cbAdParseBook(a.ad_name||'') !== bookF) return false;
+  if(onOnly && String(a.auto_on).toLowerCase() !== 'true') return false;
+  return true;
+ });
+
+ /* Attach tier + creator */
+ ads = ads.map(function(a){
+  var r = parseFloat(a.roas)||0;
+  var t = !parseFloat(a.purchases)?'np':r>=2.5?'ex':r>=2.0?'go':r>=1.7?'ok':'po';
+  if(roasF && t !== roasF) return null;
+  return Object.assign({},a,{_tier:t,_creator:_cbAdParseCreator(a.ad_name||''),_book:_cbAdParseBook(a.ad_name||'')});
+ }).filter(Boolean);
+
+ ads.sort(function(a,b){ return (parseFloat(b.roas)||0)-(parseFloat(a.roas)||0); });
+
+ var grid  = document.getElementById('cb-adgal-grid');
+ var empty = document.getElementById('cb-adgal-empty');
+ var cnt   = document.getElementById('cb-adgal-count');
+ if(!grid) return;
+ if(cnt) cnt.textContent = ads.length + ' ชิ้น';
+
+ if(!ads.length){
+  grid.innerHTML=''; if(empty) empty.style.display=''; return;
+ }
+ if(empty) empty.style.display='none';
+
+ grid.innerHTML = ads.slice(0,60).map(function(a){
+  var t = a._tier;
+  var roas = parseFloat(a.roas)||0;
+  var spend = parseFloat(a.spend)||0;
+  var isOn = String(a.auto_on).toLowerCase()==='true';
+  var clean = (a.ad_name||'').replace(/^\[[^\]]+\]\[[^\]]+\]\s*/,'').replace(/\([^)]+\)\s*$/,'').trim();
+  var crColor = a._creator==='ริว'?'#16A34A':a._creator==='มิ้น'?'#CA8A04':a._creator==='หมิว'?'#1877F2':'#6B7280';
+  var playBtn = a.video_id
+   ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><div style="width:32px;height:32px;background:rgba(0,0,0,.55);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 14 14" fill="white"><polygon points="3,1 13,7 3,13"/></svg></div></div>'
+   : '';
+  return '<div onclick="aoShowPreview(\'ad\',\''+encodeURIComponent(a.ad_id||a.ad_name||'')+'\')" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow=\'0 3px 10px rgba(0,0,0,.12)\'" onmouseout="this.style.boxShadow=\'\'">'
+   +'<div style="position:relative;height:120px;background:#f0f0f0;overflow:hidden">'
+   +'<img src="'+a.thumbnail_url+'" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.parentElement.style.background=\'#e8e8e8\'">'
+   +playBtn
+   +'<span style="position:absolute;top:4px;left:4px;font-size:8px;font-weight:700;background:'+TIER_BG[t]+';color:'+TIER_C[t]+';padding:1px 5px;border-radius:4px">'+TIER_L[t]+'</span>'
+   +(isOn?'<span style="position:absolute;top:4px;right:4px;font-size:8px;font-weight:700;background:#E6F4EA;color:#1E6E2E;padding:1px 5px;border-radius:4px">ON</span>':'<span style="position:absolute;top:4px;right:4px;font-size:8px;background:#F0F0F0;color:#999;padding:1px 5px;border-radius:4px">OFF</span>')
+   +'</div>'
+   +'<div style="padding:5px 7px">'
+   +'<div style="font-size:9.5px;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px" title="'+clean+'">'+clean+'</div>'
+   +'<div style="display:flex;justify-content:space-between;align-items:center">'
+   +'<span style="font-size:9px;font-weight:700;color:'+(t==='ex'||t==='go'?TIER_C[t]:'var(--text3)')+'">ROAS '+(roas>0?roas.toFixed(2)+'x':'-')+'</span>'
+   +(a._creator?'<span style="font-size:8px;font-weight:700;color:'+crColor+'">'+a._creator+'</span>':'')
+   +'</div>'
+   +(a._book?'<div style="font-size:8.5px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">'+a._book+'</div>':'')
+   +'</div></div>';
+ }).join('');
+}
+
 function renderContent(data){
  var filtered=data.slice();
  /* ซ่อน Central creator */
@@ -6072,6 +6219,7 @@ function renderContent(data){
  var pg=document.getElementById('content-pagination');
  if(pg) pg.innerHTML=total>_CONTENT_LIMIT?'<span style="font-size:11px;color:var(--text3)">แสดง '+_CONTENT_LIMIT+' จาก '+total+' รายการ (เรียงตาม Revenue)</span>':'';
  renderCreatorTop5(arr);
+ renderCbAdGallery();
 }
 
 function renderCreatorTop5(arr){
