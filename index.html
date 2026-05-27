@@ -657,10 +657,10 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
  <button class="tab-btn" data-tab="goal" onclick="switchTab('goal')" style="display:none">Goal by Product</button>
  <button class="tab-btn" data-tab="channels" onclick="switchTab('channels')">Channel Sales</button>
  <button class="tab-btn" data-tab="creator" onclick="switchTab('creator')" style="display:none">Creator</button>
+ <button class="tab-btn" data-tab="adsopt" onclick="switchTab('adsopt')">Ads Optimize</button>
  <button class="tab-btn" data-tab="content" onclick="switchTab('content')">Content Board</button>
  <button class="tab-btn" data-tab="consign" onclick="switchTab('consign')">Consignment</button>
  <button class="tab-btn" data-tab="affiliate" onclick="switchTab('affiliate')">Affiliate</button>
- <button class="tab-btn" data-tab="adsopt" onclick="switchTab('adsopt')">Ads Optimize</button>
 </nav>
 
 <!-- =================== TAB: OVERVIEW =================== -->
@@ -759,6 +759,34 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 
 <!-- =================== TAB: CONTENT BOARD (Creator × Content) =================== -->
 <div class="tab-pane" id="tab-content">
+
+ <!-- ╔══════════════════════════════════════════════════════╗ -->
+ <!-- ║  ADS KEY MESSAGES (linked from Ads Optimize)        ║ -->
+ <!-- ╚══════════════════════════════════════════════════════╝ -->
+ <div id="cb-ads-panel" style="margin-bottom:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--surface2);cursor:pointer" onclick="cbToggleAdsPanel()">
+   <span style="font-size:12px;font-weight:800;color:var(--text1)">Key Messages — Meta Ads</span>
+   <div style="display:flex;align-items:center;gap:8px">
+    <select id="cb-ads-book-sel" onchange="cbRenderAds()" onclick="event.stopPropagation()" style="font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text1);font-family:inherit">
+     <option value="">ทุกเล่ม</option>
+    </select>
+    <select id="cb-ads-tier-sel" onchange="cbRenderAds()" onclick="event.stopPropagation()" style="font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text1);font-family:inherit">
+     <option value="">ทุก Tier</option>
+     <option value="ex">Scale หนักๆ (ROAS≥2.5)</option>
+     <option value="go">Scale ได้เลย (2.0–2.5)</option>
+     <option value="ok">Monitor (1.7–2.0)</option>
+     <option value="po">Lean ด่วน (&lt;1.7)</option>
+     <option value="np">No Purchase</option>
+    </select>
+    <span id="cb-ads-toggle-icon" style="font-size:11px;color:var(--text3)">▲</span>
+   </div>
+  </div>
+  <div id="cb-ads-body" style="padding:10px 14px">
+   <div id="cb-ads-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;max-height:320px;overflow-y:auto"></div>
+   <div id="cb-ads-empty" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:12px">ไม่พบ creative ตามเงื่อนไขที่เลือก</div>
+  </div>
+ </div>
+
 
  <!-- ╔══════════════════════════════════════════════════════╗ -->
  <!-- ║  DAILY TREND CHART SECTION                          ║ -->
@@ -1565,10 +1593,10 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 
 <!-- Tier legend -->
 <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:10px;color:var(--text3)">
- <span><b style="color:#375623">●</b> Excellent: ROAS≥3 & CPP≤฿130</span>
- <span><b style="color:#375623">●</b> Good: ROAS≥2.5 & CPP≤฿155</span>
- <span><b style="color:#7F6000">●</b> OK: ROAS≥2.0</span>
- <span><b style="color:#9C0006">●</b> Poor: ROAS&lt;2</span>
+ <span><b style="color:#1a3a1a">●</b> Scale หนักๆ: ROAS≥2.5</span>
+ <span><b style="color:#1a5c2a">●</b> Scale ได้เลย: ROAS 2.0–2.5</span>
+ <span><b style="color:#7F6000">●</b> Monitor: ROAS 1.7–2.0</span>
+ <span><b style="color:#9C0006">●</b> Lean ด่วน: ROAS&lt;1.7</span>
  <span><b style="color:#808080">●</b> No Purchase</span>
 </div>
 </div>
@@ -14106,6 +14134,84 @@ var BOOK_NAMES = {
 };
 
 
+function cbInit() {
+  if(!window.AO_DATA || !AO_DATA.ads) return;
+  // Populate book dropdown
+  var books = [...new Set(AO_DATA.ads.map(function(a){return a.book;}).filter(Boolean))].sort();
+  var sel = document.getElementById('cb-ads-book-sel');
+  if(sel) books.forEach(function(b){ var o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
+  cbRenderAds();
+}
+function cbToggleAdsPanel() {
+  var body = document.getElementById('cb-ads-body');
+  var icon = document.getElementById('cb-ads-toggle-icon');
+  if(!body) return;
+  var hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  if(icon) icon.textContent = hidden ? '▲' : '▼';
+}
+function cbRenderAds() {
+  if(!window.AO_DATA || !AO_DATA.ads) return;
+  var TIER_COLOR = {ex:'#1a3a1a',go:'#1a5c2a',ok:'#7F6000',po:'#9C0006',np:'#808080'};
+  var TIER_BG    = {ex:'#C8F0CC',go:'#D6F0DC',ok:'#FFF3CD',po:'#FFCCCC',np:'#F5F5F5'};
+  var TIER_LABEL = {ex:'Scale หนักๆ',go:'Scale ได้เลย',ok:'Monitor',po:'Lean ด่วน',np:'No Purchase'};
+  var book = (document.getElementById('cb-ads-book-sel')||{}).value||'';
+  var tier = (document.getElementById('cb-ads-tier-sel')||{}).value||'';
+
+  // Aggregate ads into adsets for tier info
+  var amap = {};
+  AO_DATA.ads.forEach(function(a) {
+    var key = a.adset_name||a.ad_name;
+    if(!amap[key]) amap[key] = {adset_name:a.adset_name, book:a.book, audience_group:a.audience_group,
+      fmt:a.fmt, spend:0, revenue:0, purchases:0, ads:[]};
+    var e = amap[key];
+    e.spend += a.spend||0; e.revenue += a.revenue||0; e.purchases += a.purchases||0;
+    e.ads.push(a.ad_name||'');
+  });
+  var rows = Object.values(amap).map(function(e) {
+    e.roas = e.spend>0 ? e.revenue/e.spend : 0;
+    if(!e.purchases)     e.tier='np';
+    else if(e.roas>=2.5) e.tier='ex';
+    else if(e.roas>=2.0) e.tier='go';
+    else if(e.roas>=1.7) e.tier='ok';
+    else                 e.tier='po';
+    // Extract key message: strip brackets from first ad name
+    var raw = e.ads[0]||'';
+    var msg = raw.replace(/^\[[^\]]+\]\[[^\]]+\]\s*/,'').replace(/\([^)]+\)\s*$/,'').trim();
+    e.key_msg = msg || raw;
+    return e;
+  });
+
+  if(book) rows = rows.filter(function(r){return r.book===book;});
+  if(tier) rows = rows.filter(function(r){return r.tier===tier;});
+  rows.sort(function(a,b){return (b.revenue||0)-(a.revenue||0);});
+
+  var grid = document.getElementById('cb-ads-grid');
+  var empty = document.getElementById('cb-ads-empty');
+  if(!grid) return;
+
+  if(rows.length===0){ grid.innerHTML=''; if(empty) empty.style.display=''; return; }
+  if(empty) empty.style.display='none';
+
+  grid.innerHTML = rows.slice(0,48).map(function(r) {
+    var tc = TIER_COLOR[r.tier]||'#808080';
+    var tb = TIER_BG[r.tier]||'#F5F5F5';
+    var tl = TIER_LABEL[r.tier]||r.tier;
+    var roas = r.roas.toFixed(2);
+    var rev  = Math.round(r.revenue).toLocaleString('th-TH');
+    var adCount = r.ads.length;
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid '+tc+';border-radius:7px;padding:9px 10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:5px">'
+      +'<span style="font-size:10px;background:'+tb+';color:'+tc+';border-radius:5px;padding:1px 7px;font-weight:700;white-space:nowrap">'+tl+'</span>'
+      +'<span style="font-size:10px;color:var(--text3);white-space:nowrap">'+adCount+' ad'+(adCount>1?'s':'')+'</span></div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.35;margin-bottom:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+r.key_msg+'</div>'
+      +'<div style="display:flex;gap:10px;font-size:10px;color:var(--text2)">'
+      +'<span style="color:'+tc+';font-weight:700">ROAS '+roas+'x</span>'
+      +'<span>฿'+rev+'</span>'
+      +'<span style="color:var(--text3)">'+((r.book||'').length>16?(r.book||'').substring(0,16)+'…':r.book||'—')+'</span></div></div>';
+  }).join('');
+}
+
 function aoInit() {
   var el = document.getElementById('ao-subtitle');
   if(el) el.textContent = 'MTD: ' + AO_DATA.period + '  ·  ดึงข้อมูล: ' + AO_DATA.fetched_at;
@@ -14277,18 +14383,20 @@ function aoRender() {
   }).join('');
 
   // Action Summary
-  var pauseList   = displayRows.filter(function(a){ return (a.roas||0)<1.5 && (a.spend||0)>2000; });
-  var scaleList   = displayRows.filter(function(a){ return (a.roas||0)>=3 && (a.cpp!=null?(a.cpp<=130):true); });
-  var monitorList = displayRows.filter(function(a){ return (a.roas||0)>=1.5 && (a.roas||0)<2.5 && (a.spend||0)>500; });
+  var scaleHardList = displayRows.filter(function(a){ return (a.roas||0)>=2.5; });
+  var scaleList     = displayRows.filter(function(a){ var r=a.roas||0; return r>=2.0 && r<2.5; });
+  var monitorList   = displayRows.filter(function(a){ var r=a.roas||0; return r>=1.7 && r<2.0 && (a.spend||0)>500; });
+  var leanList      = displayRows.filter(function(a){ return (a.roas||0)<1.7 && (a.purchases||0)>0; });
   var abar = document.getElementById('ao-action-bar');
   if(abar) abar.innerHTML = [
-    {icon:'',label:'Pause ด่วน',count:pauseList.length,hint:'ROAS<1.5 & Spend>2,000',color:'#9C0006',bg:'#FFCCCC',tier:'po',actionTier:'po'},
-    {icon:'',label:'Scale ได้เลย',count:scaleList.length,hint:'ROAS≥3 & CPP≤130',color:'#1a5c2a',bg:'#D6F0DC',tier:'ex',actionTier:'ex'},
-    {icon:'',label:'Monitor',count:monitorList.length,hint:'ROAS 1.5–2.5 & Spend>500',color:'#7F4C00',bg:'#FFF3CD',tier:'',actionTier:''},
+    {label:'Scale หนักๆ',count:scaleHardList.length,hint:'ROAS ≥ 2.5',color:'#1a3a1a',bg:'#C8F0CC',tier:'ex',actionTier:'ex'},
+    {label:'Scale ได้เลย',count:scaleList.length,hint:'ROAS 2.0–2.5',color:'#1a5c2a',bg:'#D6F0DC',tier:'go',actionTier:'go'},
+    {label:'Monitor',count:monitorList.length,hint:'ROAS 1.7–2.0 & Spend>500',color:'#7F4C00',bg:'#FFF3CD',tier:'ok',actionTier:'ok'},
+    {label:'Lean ด่วน',count:leanList.length,hint:'ROAS < 1.7 (มี purchase)',color:'#9C0006',bg:'#FFCCCC',tier:'po',actionTier:'po'},
   ].map(function(c){
-    return '<div onclick="aoToggleTier(null,\''+c.actionTier+'\')" style="display:flex;align-items:center;gap:8px;padding:7px 14px;background:'+c.bg+';border-radius:8px;cursor:pointer;border:1px solid '+c.color+'22">'
-      +'<div><div style="font-size:11px;font-weight:700;color:'+c.color+'">'+c.label+' ('+c.count+')</div>'
-      +'<div style="font-size:9.5px;color:'+c.color+'99">'+c.hint+'</div></div></div>';
+    return '<div onclick="aoToggleTier(null,\''+c.actionTier+'\')" style="flex:1;padding:9px 14px;background:'+c.bg+';border-radius:8px;cursor:pointer;border:1px solid '+c.color+'33">'
+      +'<div style="font-size:12px;font-weight:700;color:'+c.color+'">'+c.label+' <span style="font-size:15px">('+c.count+')</span></div>'
+      +'<div style="font-size:9.5px;color:'+c.color+'99;margin-top:2px">'+c.hint+'</div></div>';
   }).join('');
 
   // Count
@@ -14332,7 +14440,7 @@ function aoRender() {
   }
 
   // Rows
-  var tierLabel = {ex:'Excellent',go:'Good',ok:'OK',po:'Poor',np:'No Purchase'};
+  var tierLabel = {ex:'Scale หนักๆ',go:'Scale ได้เลย',ok:'Monitor',po:'Lean ด่วน',np:'No Purchase'};
   var tierBadge = function(tier){
     var c={ex:'#375623',go:'#375623',ok:'#7F6000',po:'#9C0006',np:'#808080'}[tier]||'#808080';
     var bg={ex:'#E2EFDA',go:'#E2EFDA',ok:'#FFEB9C',po:'#FFC7CE',np:'#EFEFEF'}[tier]||'#EFEFEF';
@@ -14539,6 +14647,7 @@ function aoUpdateCharts(rows) {
   window.switchTab = function(name) {
     if(origSwitch) origSwitch(name);
     if(name==='adsopt' && !window._aoInited) { window._aoInited=true; aoInit(); }
+    if(name==='content' && !window._cbAdsInited) { window._cbAdsInited=true; cbInit(); }
   };
 })();
 
