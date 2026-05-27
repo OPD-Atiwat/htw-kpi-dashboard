@@ -14214,7 +14214,6 @@ function cbGalRender() {
   var tier = (document.getElementById('cb-gal-tier')||{}).value||'';
   var fmt  = (document.getElementById('cb-gal-fmt')||{}).value||'';
 
-  // Use only ads that have thumbnail
   var ads = AO_DATA.ads.filter(function(a){
     if(!a.thumbnail_url && !a.image_url) return false;
     if(book && a.book !== book) return false;
@@ -14222,7 +14221,6 @@ function cbGalRender() {
     return true;
   });
 
-  // Assign tier per ad (since raw ads don't have tier)
   ads = ads.map(function(a){
     var r = a.roas||0;
     var t = !a.purchases?'np':r>=2.5?'ex':r>=2.0?'go':r>=1.7?'ok':'po';
@@ -14230,8 +14228,6 @@ function cbGalRender() {
   });
 
   if(tier) ads = ads.filter(function(a){ return a._tier === tier; });
-
-  // Sort by revenue desc
   ads.sort(function(a,b){ return (b.revenue||0)-(a.revenue||0); });
 
   var grid  = document.getElementById('cb-gal-grid');
@@ -14241,23 +14237,15 @@ function cbGalRender() {
   if(!ads.length){ grid.innerHTML=''; if(empty) empty.style.display=''; return; }
   if(empty) empty.style.display='none';
 
-  var ACT_ID_CLEAN = '303814252252288';
   grid.innerHTML = ads.slice(0,60).map(function(a){
     var thumb = a.thumbnail_url || a.image_url;
     var clean = (a.ad_name||'').replace(/^\[[^\]]+\]\[[^\]]+\]\s*/,'').replace(/\([^)]+\)\s*$/,'').trim();
     var t     = a._tier;
-    var amUrl = 'https://adsmanager.facebook.com/adsmanager/manage/ads?act='+ACT_ID_CLEAN+'&selected_ad_ids='+encodeURIComponent(a.ad_id||'');
-    return '<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.12)\'" onmouseout="this.style.boxShadow=\'\'" onclick="aoShowPreview(\'ad\',\''+encodeURIComponent(a.ad_id||a.ad_name||'')+'\')"><div style="position:relative;height:160px;background:#f0f0f0;overflow:hidden">'
-      +'<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.parentElement.style.background=\'#e8e8e8\'">
-      +(a.video_url ? \'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none" class="gal-play-icon"><div style="width:38px;height:38px;background:rgba(0,0,0,.55);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"white\"><polygon points=\"3,1 13,7 3,13\"/></svg></div></div>\' : \'\')
-      +'<span style="position:absolute;top:5px;left:5px;font-size:9px;font-weight:700;background:'+TIER_BG[t]+';color:'+TIER_C[t]+';padding:2px 7px;border-radius:5px">'+TIER_L[t]+'</span>'
-      +(a.fmt?'<span style="position:absolute;top:5px;right:5px;font-size:9px;font-weight:700;background:#1877F2;color:#fff;padding:2px 6px;border-radius:5px">'+a.fmt+'</span>':'')
-      +'</div><div style="padding:7px 8px">'
-      +'<div style="font-size:10.5px;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px" title="'+clean+'">'+clean+'</div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)">'
-      +'<span style="color:'+(a._tier==='ex'||a._tier==='go'?TIER_C[a._tier]:'var(--text3)')+';font-weight:700">ROAS '+(a.roas||0).toFixed(2)+'x</span>'
-      +'<a href="'+amUrl+'" target="_blank" onclick="event.stopPropagation()" style="color:#1877F2;font-weight:700;text-decoration:none">View</a>'
-      +'</div></div></div>';
+    var amUrl = 'https://adsmanager.facebook.com/adsmanager/manage/ads?act='+ACT_ID+'&selected_ad_ids='+encodeURIComponent(a.ad_id||'');
+    var playBtn = a.video_url ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><div style="width:38px;height:38px;background:rgba(0,0,0,.55);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 14 14" fill="white"><polygon points="3,1 13,7 3,13"/></svg></div></div>' : '';
+    var fmtBadge = a.fmt ? '<span style="position:absolute;top:5px;right:5px;font-size:9px;font-weight:700;background:#1877F2;color:#fff;padding:2px 6px;border-radius:5px">'+a.fmt+'</span>' : '';
+    var tierBadge = '<span style="position:absolute;top:5px;left:5px;font-size:9px;font-weight:700;background:'+TIER_BG[t]+';color:'+TIER_C[t]+';padding:2px 7px;border-radius:5px">'+TIER_L[t]+'</span>';
+    return '<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.12)\'" onmouseout="this.style.boxShadow=\'\'" onclick="aoShowPreview(\'ad\',\''+encodeURIComponent(a.ad_id||a.ad_name||'')+'\')"><div style="position:relative;height:160px;background:#f0f0f0;overflow:hidden"><img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.parentElement.style.background=\'#e8e8e8\'">'+playBtn+tierBadge+fmtBadge+'</div><div style="padding:7px 8px"><div style="font-size:10.5px;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px" title="'+clean+'">'+clean+'</div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)"><span style="color:'+(t==='ex'||t==='go'?TIER_C[t]:'var(--text3)')+';font-weight:700">ROAS '+(a.roas||0).toFixed(2)+'x</span><a href="'+amUrl+'" target="_blank" onclick="event.stopPropagation()" style="color:#1877F2;font-weight:700;text-decoration:none">View</a></div></div></div>';
   }).join('');
 }
 
