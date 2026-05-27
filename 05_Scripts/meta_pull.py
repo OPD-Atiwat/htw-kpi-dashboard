@@ -96,7 +96,7 @@ PRODUCT_MAP = {
 # action_values      → ค่าคอนเวอร์ชั่นการซื้อ (revenue)
 # purchase_roas      → ROAS ของการซื้อ
 API_FIELDS = ",".join([
-    "ad_id", "ad_name", "date_start",
+    "ad_id", "ad_name", "campaign_name", "date_start",
     "spend", "impressions", "reach",
     "inline_link_clicks", "ctr", "cpm",
     "actions", "action_values", "purchase_roas",
@@ -339,8 +339,9 @@ def transform_rows(raw_rows):
     """แปลง API response → RAW_DATA format"""
     rows = []
     for day in raw_rows:
-        date_str    = day.get("date_start", "")
-        ad_name     = clean_name(day.get("ad_name", ""))
+        date_str      = day.get("date_start", "")
+        ad_name       = clean_name(day.get("ad_name", ""))
+        campaign_name = day.get("campaign_name", "")
         spend       = float(day.get("spend", 0) or 0)
         impressions = int(float(day.get("impressions", 0) or 0))
         reach       = int(float(day.get("reach", 0) or 0))
@@ -415,9 +416,10 @@ def transform_rows(raw_rows):
             "v2s":          0,
             "v6s":          0,
             "ad_variants":  1,
-            "hit_roas":     hit_roas_label(roas, int(purchases), fmt),
-            "is_new":       False,
-            "launch_date":  launch,
+            "hit_roas":      hit_roas_label(roas, int(purchases), fmt),
+            "is_new":        False,
+            "launch_date":   launch,
+            "campaign_name": campaign_name,
         })
     return rows
 
