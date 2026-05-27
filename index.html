@@ -5251,12 +5251,12 @@ function renderDailyTrendChart(_unused){
  var prefix=PERIOD_MONTH_PREFIX[selPeriod]||'';
  var monthCode=PERIOD_MONTH_CODE[selPeriod]||'';
 
- /* ── Aggregate from RAW_DATA directly (source of truth for daily Ads data) ── */
+ /* ── Aggregate from NORM_DATA (filtered, excludes test campaigns) ── */
  var creatorF=(document.getElementById('filter-creator')||{}).value||'';
  var platF=STATE.globalPlatform||'';
  var bookF=STATE.globalBook||'';
  var byDate={};
- var srcData=typeof RAW_DATA!=='undefined'?RAW_DATA:[];
+ var srcData=typeof NORM_DATA!=='undefined'&&NORM_DATA.length?NORM_DATA:(typeof RAW_DATA!=='undefined'?RAW_DATA:[]);
  srcData.forEach(function(r){
   if(!r.ad_date) return;
   /* Period / custom-range filter */
