@@ -968,6 +968,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
    </div>
   </div>
  </div>
+ <div id="creator-top5-wrap" style="margin-bottom:14px"></div>
  <div style="overflow-x:auto">
  <table id="content-table">
  <thead><tr>
@@ -5897,6 +5898,65 @@ function _apBookIdx(i){
  applyFilters();
 }
 
+function renderCreatorTop5(arr){
+ var CREATORS=[
+  {name:'ริว', color:'#16A34A', bg:'rgba(22,163,74,.1)'},
+  {name:'มิ้น', color:'#CA8A04', bg:'rgba(202,138,4,.1)'},
+  {name:'หมิว', color:'#1877F2', bg:'rgba(24,119,242,.1)'}
+ ];
+ var wrap=document.getElementById('creator-top5-wrap');
+ if(!wrap) return;
+ if(!arr||!arr.length){ wrap.innerHTML=''; return; }
+ // รวม arr โดย content_name+creator (ไม่แยก platform) สำหรับ Top5
+ var cmap={};
+ arr.forEach(function(c){
+  var key=(c.content_name||c.product||'')+'||'+(c.creator||'');
+  if(!cmap[key]) cmap[key]={content_name:c.content_name||c.product||'',creator:c.creator||'',rev:0,spend:0,pur:0,idx:-1};
+  cmap[key].rev+=c.rev||0;
+  cmap[key].spend+=c.spend||0;
+  cmap[key].pur+=c.pur||0;
+ });
+ // map realIdx from _CONTENT_CACHE
+ Object.keys(cmap).forEach(function(k){
+  for(var i=0;i<arr.length;i++){
+   var c=arr[i];
+   if((c.content_name||c.product||'')+'||'+(c.creator||'')===k){
+    cmap[k].idx=i; break;
+   }
+  }
+ });
+ var allItems=Object.values ? Object.values(cmap) : Object.keys(cmap).map(function(k){return cmap[k];});
+ var cols=CREATORS.map(function(cr){
+  var items=allItems.filter(function(it){return it.creator===cr.name;});
+  items.sort(function(a,b){return b.rev-a.rev;});
+  return {cr:cr, items:items.slice(0,5)};
+ });
+ var html='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px">';
+ cols.forEach(function(col){
+  var cr=col.cr;
+  html+='<div style="background:'+cr.bg+';border:1px solid '+cr.color+'33;border-radius:8px;padding:10px 12px">';
+  html+='<div style="font-size:11px;font-weight:700;color:'+cr.color+';margin-bottom:7px;letter-spacing:.3px">TOP 5 · '+cr.name+'</div>';
+  if(!col.items.length){
+   html+='<div style="font-size:11px;color:var(--text3);padding:4px 0">ไม่มีข้อมูล</div>';
+  } else {
+   col.items.forEach(function(it,i){
+    var rankStr=i===0?'🥇':i===1?'🥈':i===2?'🥉':''+(i+1)+'.';
+    var dispName=(it.content_name||'').replace(/^\[\d{2}\.\d{2}\.\d{2}\]\[[^\]]*\]\s*/,'');
+    var roas=it.spend>0?(it.rev/it.spend).toFixed(2):'-';
+    var clickable=it.idx>=0?'onclick="openDetailFromContent('+it.idx+')" style="cursor:pointer"':'';
+    html+='<div '+clickable+' style="display:flex;align-items:flex-start;gap:6px;padding:4px 0;border-bottom:1px solid '+cr.color+'22">';
+    html+='<span style="font-size:11px;min-width:18px;flex-shrink:0">'+rankStr+'</span>';
+    html+='<div style="flex:1;min-width:0">';
+    html+='<div style="font-size:11px;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+it.content_name+'">'+dispName+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3)">฿'+(it.rev>=1000?Math.round(it.rev/1000)+'K':Math.round(it.rev))+' · ROAS '+roas+'</div>';
+    html+='</div></div>';
+   });
+  }
+  html+='</div>';
+ });
+ html+='</div>';
+ wrap.innerHTML=html;
+}
 function renderContent(data){
  var filtered=data.slice();
  /* ซ่อน Central creator */
@@ -6105,12 +6165,11 @@ function renderContent(data){
  // Store for click
  _CONTENT_CACHE = arr;
 
- var total=arr.length,pages=Math.max(1,Math.ceil(total/STATE.pageSize));
- if(STATE.contentPage>pages)STATE.contentPage=1;
- var start=(STATE.contentPage-1)*STATE.pageSize;
+ renderCreatorTop5(arr);
+ var _CLIMIT=15;
  var html='';
- arr.slice(start,start+STATE.pageSize).forEach(function(c,localIdx){
- var realIdx=start+localIdx;
+ arr.slice(0,_CLIMIT).forEach(function(c,localIdx){
+ var realIdx=localIdx;
  var roas=c.spend>0?c.rev/c.spend:0;
  var passRate=c.totalCount>0?Math.round(c.passCount/c.totalCount*100):null;
  var _accumulating=c._accumulating||false; /* true = in META_AD_PERF per-day with < MIN_DAYS */
@@ -6148,7 +6207,7 @@ function renderContent(data){
  });
  var tb=document.getElementById('content-body');
  if(tb)tb.innerHTML=html||'<tr><td colspan="11" class="empty-cell">ไม่มีข้อมูล</td></tr>';
- renderPager('content-pagination',total,pages,STATE.contentPage,'goContentPage');
+ /* pagination removed — showing top 15 */
 }
 
 function _setCBBtn(id, active, color){
