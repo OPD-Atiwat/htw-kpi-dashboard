@@ -8637,25 +8637,21 @@ function openChDrilldown(chKey){
  };
  var chNames=CH_KEYS[chKey]||[];
 
- /* Aggregate current month products */
+ /* Aggregate products by total actual (channel breakdown in GOALS_DATA ไม่มี per-channel rev จริง) */
  var prodMap={};
  gdata.forEach(function(p){
-  if(!p.product) return;
-  var ch=p.channels||{};
-  var rev=chNames.reduce(function(s,n){return s+(ch[n]||0);},0);
-  if(rev>0) prodMap[p.product]={name:p.product,rev:rev,prev:0};
+  if(!p.product||p.product==='อื่นๆ') return;
+  var rev=p.actual||0;
+  var goal=p.goal||0;
+  if(rev>0||goal>0) prodMap[p.product]={name:p.product,rev:rev,goal:goal,prev:0};
  });
- /* Aggregate prev month products */
+ /* Prev month */
  _prevGdata.forEach(function(p){
-  if(!p.product) return;
-  var ch=p.channels||{};
-  var rev=chNames.reduce(function(s,n){return s+(ch[n]||0);},0);
-  if(rev>0){
-   if(prodMap[p.product]) prodMap[p.product].prev=rev;
-   /* don't add prev-only products to list */
-  }
+  if(!p.product||p.product==='อื่นๆ') return;
+  var rev=p.actual||0;
+  if(rev>0 && prodMap[p.product]) prodMap[p.product].prev=rev;
  });
- /* Scale prev product revenue to same MTD window (live months only) */
+ /* Scale prev to MTD window (live months only) */
  if(!_isFinalMonth && _prevMtdDay>0 && _prevMo){
   var _pPfxMapProd={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05'};
   var _pPfxProd=_pPfxMapProd[_prevMo];
@@ -8772,13 +8768,16 @@ function openChDrilldown(chKey){
 
  /* ── TOP PRODUCTS ── */
  if(prodRows.length>0){
-  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products by Channel Revenue</div>';
+  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products</div>';
   h+='<div style="display:flex;flex-direction:column;gap:5px">';
   var showRows=prodRows.slice(0,10);
   var maxRev=showRows[0].rev||1;
+  var totalAllRev=prodRows.reduce(function(s,p){return s+p.rev;},0)||1;
   showRows.forEach(function(p,i){
-   var pPct=totalChRev>0?(p.rev/totalChRev*100).toFixed(1):'0';
-   var barPct=(p.rev/maxRev*100).toFixed(0);
+   var pPct=(p.rev/totalAllRev*100).toFixed(1);
+   var pAch=p.goal>0?(p.rev/p.goal*100):null;
+   var pAchCol=getAchCol(pAch);
+   var barPct=pAch!==null?Math.min(pAch,100).toFixed(0):(p.rev/maxRev*100).toFixed(0);
    var shortName=p.name.length>38?p.name.slice(0,36)+'…':p.name;
    var coverSrc=typeof _affBookCover==='function'?_affBookCover(p.name):null;
    var coverHtml=coverSrc
@@ -8794,12 +8793,13 @@ function openChDrilldown(chKey){
     +'</div>'
     +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px">'
     +'<span style="font-size:14px;font-weight:900;color:var(--text1)">'+fmtCard(p.rev)+'</span>'
-    +'<span style="font-size:10px;font-weight:600;color:var(--text3)">'+pPct+'%</span>'
+    +(pAch!==null?'<span style="font-size:10px;font-weight:700;color:'+pAchCol+'">'+pAch.toFixed(0)+'%</span>':'')
+    +'<span style="font-size:10px;color:var(--text3)">'+pPct+'% of total</span>'
     +(p.prev>0?'<span title="vs '+(_prevMtdLabel||_prevLabel||'เดือนก่อน')+'">'+momBadge(p.rev,p.prev,{size:'10px'})+'</span>'
       :(p.prev===0&&_prevLabel?'<span style="font-size:9px;color:var(--text3)">ใหม่</span>':''))
     +'</div>'
     +'<div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">'
-    +'<div style="height:100%;width:'+barPct+'%;background:'+cfg.color+';border-radius:2px;opacity:.7"></div></div>'
+    +'<div style="height:100%;width:'+barPct+'%;background:'+(pAch!==null?pAchCol:cfg.color)+';border-radius:2px;opacity:.7"></div></div>'
     +'</div>'
     +'</div>'
     +'</div>';
