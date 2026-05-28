@@ -8484,6 +8484,73 @@ function renderOvChannelCards(o){
    2. Top products by channel revenue (from GOALS_DATA)
    ================================================================ */
 var _CH_DRAWER_DATA={};  /* keyed by channel title — populated by renderOvChannelCards */
+var _chDrawerActivePill={};  /* chKey → active pill label */
+
+/* OPD_DAILY column mapping per channel+pill */
+var _CH_OPD_COLS={
+ 'Meta':{all:['Facebook','Instagram','LINE','Shopify','YouTube'],FB:['Facebook'],Shopify:['Shopify','YouTube'],IG:['Instagram'],LINE:['LINE']},
+ 'TikTok':{all:['TikTok','TikTok Live','TikTok Affi'],Shop:['TikTok'],Live:['TikTok Live'],Affi:['TikTok Affi']},
+ 'Shopee':{all:['Shopee','Shopee Live'],Shop:['Shopee'],Live:['Shopee Live']},
+ 'อื่นๆ':{all:['Lazada','Web'],Lazada:['Lazada'],Web:['Web']}
+};
+
+function renderChDailyChart(chKey, pill){
+ var cvs=document.getElementById('ch-daily-chart');
+ if(!cvs||!window.Chart||!window.OPD_DAILY) return;
+ var cfg2=window._chDrawerCfg; if(!cfg2) return;
+ var colMap=_CH_OPD_COLS[chKey]||{};
+ var cols=pill==='ทั้งหมด'?(colMap.all||[]):(colMap[pill]||colMap.all||[]);
+ var mo=cfg2.month||'May 26';
+ var pfxMap={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05','Jun 26':'2026-06','Jul 26':'2026-07','Aug 26':'2026-08'};
+ var moKeys=Object.keys(pfxMap);
+ var curPfx=pfxMap[mo]||'';
+ var prevMo=moKeys[moKeys.indexOf(mo)-1]||'';
+ var prevPfx=pfxMap[prevMo]||'';
+ var allRows=(window.OPD_DAILY||{}).data||[];
+ function aggRow(r){return cols.reduce(function(s,c){return s+(r[c]||0);},0);}
+ var curByDay={},prevByDay={};
+ allRows.forEach(function(r){
+  if(!r.d) return;
+  var day=parseInt(r.d.slice(8));
+  if(r.d.startsWith(curPfx)) curByDay[day]=(curByDay[day]||0)+aggRow(r);
+  else if(r.d.startsWith(prevPfx)) prevByDay[day]=(prevByDay[day]||0)+aggRow(r);
+ });
+ var labels=Object.keys(curByDay).map(Number).sort(function(a,b){return a-b;});
+ if(!labels.length) return;
+ var curData=labels.map(function(d){return curByDay[d]||0;});
+ var prevData=labels.map(function(d){return prevByDay[d]||null;});
+ var dotColor=(pill==='ทั้งหมด')?(cfg2.color||'#3B82F6'):(((cfg2.subs||[]).find(function(s){return s.label===pill;})||{}).dot||cfg2.color||'#3B82F6');
+ var moThShort={'Jan 26':'ม.ค.','Feb 26':'ก.พ.','Mar 26':'มี.ค.','Apr 26':'เม.ย.','May 26':'พ.ค.','Jun 26':'มิ.ย.'};
+ if(window._chDailyChart){try{window._chDailyChart.destroy();}catch(e){}}
+ window._chDailyChart=new Chart(cvs,{
+  type:'line',
+  data:{labels:labels,datasets:[
+   {label:(moThShort[mo]||mo)+' (ปีนี้)',data:curData,borderColor:dotColor,backgroundColor:dotColor+'22',fill:true,tension:.3,borderWidth:2,pointRadius:2,pointBackgroundColor:dotColor},
+   {label:(moThShort[prevMo]||prevMo)+' (เดือนก่อน)',data:prevData,borderColor:'rgba(148,163,184,.8)',backgroundColor:'transparent',fill:false,tension:.3,borderWidth:1.5,borderDash:[4,3],pointRadius:1.5,pointBackgroundColor:'rgba(148,163,184,.8)'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+   plugins:{legend:{display:true,position:'top',labels:{font:{size:9},boxWidth:8,padding:8}},tooltip:{mode:'index',intersect:false},datalabels:{display:false}},
+   scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{ticks:{font:{size:8},callback:function(v){return v>=1000?(v/1000).toFixed(0)+'K':v;}},grid:{color:'rgba(0,0,0,.04)'}}}
+  }
+ });
+}
+
+function chDrawerSetPill(chKey,pill){
+ _chDrawerActivePill[chKey]=pill;
+ var cfg2=window._chDrawerCfg; if(!cfg2) return;
+ var validSubs=(cfg2.subs||[]).filter(function(s){return s.actual>0||s.goal>0;});
+ var allPills=['ทั้งหมด'].concat(validSubs.map(function(s){return s.label;}));
+ allPills.forEach(function(pl){
+  var btn=document.getElementById('ch-pill-'+pl);
+  if(!btn) return;
+  var isA=pl===pill;
+  var dc=pl==='ทั้งหมด'?cfg2.color:(((cfg2.subs||[]).find(function(s){return s.label===pl;})||{}).dot||cfg2.color);
+  btn.style.border='1px solid '+(isA?dc:'var(--border)');
+  btn.style.background=isA?(dc+'1a'):'var(--surface2)';
+  btn.style.color=isA?dc:'var(--text2)';
+ });
+ renderChDailyChart(chKey,pill);
+}
 
 function openChDrilldown(chKey){
  var cfg=_CH_DRAWER_DATA[chKey];
@@ -8640,6 +8707,27 @@ function openChDrilldown(chKey){
    +'<span style="font-size:12px;font-weight:900;color:'+_momCol+'">'+(_mom>=0?'▲':'▼')+(Math.abs(_mom)).toFixed(1)+'%</span>'
    +'</div>';
  }
+ h+='</div>';
+
+ /* ── DAILY CHART SECTION ── */
+ window._chDrawerCfg={chKey:chKey,color:cfg.color,subs:cfg.subs||[],month:month};
+ if(!_chDrawerActivePill[chKey]) _chDrawerActivePill[chKey]='ทั้งหมด';
+ var _activePill=_chDrawerActivePill[chKey];
+ var _validSubPills=(cfg.subs||[]).filter(function(s){return s.actual>0||s.goal>0;});
+ var _allPills=['ทั้งหมด'].concat(_validSubPills.map(function(s){return s.label;}));
+ h+='<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:6px">Daily Revenue</div>';
+ h+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px" id="ch-daily-pills">';
+ _allPills.forEach(function(pl){
+  var isA=pl===_activePill;
+  var dc=pl==='ทั้งหมด'?cfg.color:((_validSubPills.find(function(s){return s.label===pl;})||{}).dot||cfg.color);
+  var _plSafe=pl.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  var _ckSafe=chKey.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  h+='<button id="ch-pill-'+escH(pl)+'" onclick="chDrawerSetPill(\''+_ckSafe+'\',\''+_plSafe+'\')" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid '+(isA?dc:'var(--border)')+';background:'+(isA?dc+'1a':'var(--surface2)')+';color:'+(isA?dc:'var(--text2)')+';transition:all .15s">'
+   +(pl!=='ทั้งหมด'?'<span style="width:6px;height:6px;border-radius:50%;background:'+dc+';display:inline-block;flex-shrink:0"></span>':'')
+   +escH(pl)+'</button>';
+ });
+ h+='</div>';
+ h+='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 10px 6px;margin-bottom:14px"><canvas id="ch-daily-chart" height="150"></canvas></div>';
  h+='</div>';
 
  /* ── VISUALIZATION: Dual Donut (current vs prev) ── */
@@ -8814,6 +8902,11 @@ function openChDrilldown(chKey){
   drawer.style.transform='translateX(0)';
   drawer.style.opacity='1';
  }
+ /* รอ drawer animation เสร็จ (280ms) ก่อน render chart */
+ setTimeout(function(){
+  var _ap=_chDrawerActivePill[chKey]||'ทั้งหมด';
+  renderChDailyChart(chKey,_ap);
+ },350);
 }
 
 function closeChDrawer(){
