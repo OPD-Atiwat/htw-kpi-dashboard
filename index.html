@@ -4336,8 +4336,9 @@ function renderOverview(data){
     - มี Finance data (_finCh): pmSaleOnline = TikTok Brand (no Affi) + others → บวก ttAffiRev ได้เลย
     - ไม่มี Finance data: pmSaleOnline ใช้ pmActualTotal (GOALS_DATA) ที่อาจรวม Affi แล้ว
       → ต้องใช้ pmOnlineActual (OPD no Affi) + ttAffiRev แทน เพื่อไม่ double count */
+ /* ⚠️ _finCh.TikTok รวม TikTokAffi อยู่แล้ว → ห้ามบวก ttAffiRev ซ้ำเมื่อมี _finCh */
  var _fcInputActual=(isFinal||_isYTD)?_saleOnlineActual
-  :(_finCh?(pmSaleOnline+ttAffiRev):(pmOnlineActual+ttAffiRev));
+  :(_finCh?pmSaleOnline:(pmOnlineActual+ttAffiRev));
  var _fcAffiGoal=chGoal('TikTok Affi'); /* อาจ = 0 ถ้าไม่มี Affi goal แยก */
  /* cutoff = วันสุดท้ายที่มีข้อมูลจริงใน OPD_DAILY — ป้องกัน passW รวมวันที่ไม่มียอด */
  var _fcYm3=FORECAST_ENGINE._ym(month);var _fcCutoff3=null;
