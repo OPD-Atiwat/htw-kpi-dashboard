@@ -1775,8 +1775,7 @@ var FINANCE_CHANNEL_ACTUALS = {
   FbMsg:699633, IG:39238, LINE:990, Shopify:61778,
   Lazada:19338, Consignment:1365462
  }
- /* 'May 26': ยังไม่ add — รอปิดเดือน พ.ค. 26 แล้วใส่ Finance จริง
-    ตอนนี้ไม่มี entry → dashboard ใช้ OPD_DAILY เป็น source แทนอัตโนมัติ */
+ /* 'May 26': ไม่ hard-code — ใช้ OPD_DAILY อัตโนมัติจนกว่าเดือนจะปิด */
 };
 /* 
  MONTHLY FINANCE GOALS (Brand HOW-TO level — from Finance sheet)
@@ -8672,33 +8671,16 @@ function openChDrilldown(chKey){
  var _pTotDaysProd=_pPfxProd?new Date(parseInt(_pPfxProd.split('-')[0]),parseInt(_pPfxProd.split('-')[1]),0).getDate():30;
  var _prodSclProd=(!_isFinalMonth&&_prevMtdDay>0)?(_prevMtdDay/_pTotDaysProd):1;
 
- if(_adsm44Field&&_adsm44Mo){
-  /* Use ADSM44 per-channel revenue */
-  Object.keys(_adsm44Mo).forEach(function(aName){
-   var rev=(_adsm44Mo[aName][_adsm44Field])||0;
-   if(rev<=0) return;
-   /* find matching GOALS_DATA product for cover image */
-   var _gProd=gdata.find(function(p){return _matchProdName(aName,p.product||'');});
-   var _canonName=(_gProd&&_gProd.product)||aName;
-   /* prev */
-   var prevRev=0;
-   if(_adsm44PrevMo&&_adsm44PrevMo[aName]){
-    prevRev=Math.round(((_adsm44PrevMo[aName][_adsm44Field])||0)*_prodSclProd);
-   }
-   prodMap[_canonName]={name:_canonName,rev:rev,goal:0,prev:prevRev};
-  });
- } else {
-  /* Fallback: total actual (no per-channel ADSM44 data) */
-  gdata.forEach(function(p){
-   if(!p.product||p.product==='อื่นๆ') return;
-   var rev=p.actual||0;
-   if(rev>0) prodMap[p.product]={name:p.product,rev:rev,goal:p.goal||0,prev:0};
-  });
-  _prevGdata.forEach(function(p){
-   if(!p.product||p.product==='อื่นๆ') return;
-   if(prodMap[p.product]) prodMap[p.product].prev=Math.round((p.actual||0)*_prodSclProd);
-  });
- }
+ /* Total actual per product (ไม่มีข้อมูล per-channel per-product ที่ถูกต้อง) */
+ gdata.forEach(function(p){
+  if(!p.product||p.product==='อื่นๆ') return;
+  var rev=p.actual||0;
+  if(rev>0) prodMap[p.product]={name:p.product,rev:rev,goal:p.goal||0,prev:0};
+ });
+ _prevGdata.forEach(function(p){
+  if(!p.product||p.product==='อื่นๆ') return;
+  if(prodMap[p.product]) prodMap[p.product].prev=Math.round((p.actual||0)*_prodSclProd);
+ });
  var prodRows=Object.values(prodMap).sort(function(a,b){return b.rev-a.rev;});
 
  /* Build drawer content */
@@ -8806,47 +8788,43 @@ function openChDrilldown(chKey){
   h+='</div>';
  }
 
- /* ── TOP PRODUCTS ── */
+ /* ── TOP PRODUCTS — 2-column grid ── */
  if(prodRows.length>0){
-  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products'
-   +(_adsm44Field&&_adsm44Mo?' <span style="font-weight:500;text-transform:none;letter-spacing:0">· by '+chKey+' Revenue</span>':' <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">(total)</span>')
-   +'</div>';
-  h+='<div style="display:flex;flex-direction:column;gap:5px">';
+  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">· ยอดรวมทุก channel</span></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
   var showRows=prodRows.slice(0,10);
   var maxRev=showRows[0].rev||1;
   var totalAllRev=prodRows.reduce(function(s,p){return s+p.rev;},0)||1;
   showRows.forEach(function(p,i){
-   var pPct=(p.rev/totalAllRev*100).toFixed(1);
+   var pPct=(p.rev/totalAllRev*100).toFixed(0);
    var pAch=p.goal>0?(p.rev/p.goal*100):null;
    var pAchCol=getAchCol(pAch);
    var barPct=pAch!==null?Math.min(pAch,100).toFixed(0):(p.rev/maxRev*100).toFixed(0);
-   var shortName=p.name.length>38?p.name.slice(0,36)+'…':p.name;
+   var shortName=p.name.length>22?p.name.slice(0,20)+'…':p.name;
    var coverSrc=typeof _affBookCover==='function'?_affBookCover(p.name):null;
    var coverHtml=coverSrc
-    ?'<img src="'+escH(coverSrc)+'" alt="" style="width:40px;height:56px;object-fit:cover;border-radius:4px;flex-shrink:0;border:1px solid var(--border)">'
-    :'<div style="width:40px;height:56px;border-radius:4px;background:var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center"><span style="font-size:16px">\u{1F4D6}</span></div>';
-   h+='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px">'
-    +'<div style="display:flex;align-items:flex-start;gap:9px">'
+    ?'<img src="'+escH(coverSrc)+'" alt="" style="width:32px;height:44px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid var(--border)">'
+    :'<div style="width:32px;height:44px;border-radius:3px;background:var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center"><span style="font-size:12px">📖</span></div>';
+   h+='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 8px">'
+    +'<div style="display:flex;align-items:flex-start;gap:7px">'
     +coverHtml
     +'<div style="flex:1;min-width:0">'
-    +'<div style="display:flex;align-items:flex-start;gap:4px;margin-bottom:3px">'
-    +'<span style="font-size:9px;font-weight:700;color:var(--text3);min-width:14px;flex-shrink:0;padding-top:1px">'+(i+1)+'.</span>'
-    +'<span style="font-size:11px;font-weight:700;color:var(--text);line-height:1.35;flex:1">'+escH(shortName)+'</span>'
+    +'<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px">'
+    +'<span style="font-size:9px;font-weight:700;color:var(--text3);flex-shrink:0">'+(i+1)+'.</span>'
+    +'<span style="font-size:10px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(shortName)+'</span>'
     +'</div>'
-    +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px">'
-    +'<span style="font-size:14px;font-weight:900;color:var(--text1)">'+fmtCard(p.rev)+'</span>'
-    +(pAch!==null?'<span style="font-size:10px;font-weight:700;color:'+pAchCol+'">'+pAch.toFixed(0)+'%</span>':'')
-    +'<span style="font-size:10px;color:var(--text3)">'+pPct+'% of total</span>'
-    +(p.prev>0?'<span title="vs '+(_prevMtdLabel||_prevLabel||'เดือนก่อน')+'">'+momBadge(p.rev,p.prev,{size:'10px'})+'</span>'
-      :(p.prev===0&&_prevLabel?'<span style="font-size:9px;color:var(--text3)">ใหม่</span>':''))
+    +'<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:4px">'
+    +'<span style="font-size:12px;font-weight:900;color:var(--text1)">'+fmtCard(p.rev)+'</span>'
+    +(pAch!==null?'<span style="font-size:9px;font-weight:700;color:'+pAchCol+'">'+pAch.toFixed(0)+'%</span>':'')
+    +(p.prev>0?momBadge(p.rev,p.prev,{size:'9px',inline:true}):(p.prev===0&&_prevLabel?'<span style="font-size:9px;color:var(--text3)">ใหม่</span>':''))
     +'</div>'
-    +'<div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">'
+    +'<div style="height:2px;background:var(--border);border-radius:2px;overflow:hidden">'
     +'<div style="height:100%;width:'+barPct+'%;background:'+(pAch!==null?pAchCol:cfg.color)+';border-radius:2px;opacity:.7"></div></div>'
     +'</div>'
     +'</div>'
     +'</div>';
   });
-  if(prodRows.length>10) h+='<div style="font-size:10px;color:var(--text3);text-align:center;padding:6px 0">…และอีก '+(prodRows.length-10)+' รายการ</div>';
+  if(prodRows.length>10) h+='<div style="grid-column:1/-1;font-size:10px;color:var(--text3);text-align:center;padding:4px 0">…และอีก '+(prodRows.length-10)+' รายการ</div>';
   h+='</div>';
  } else {
   h+='<div style="font-size:11px;color:var(--text3);text-align:center;padding:16px 0">ไม่พบข้อมูลสินค้าในช่องทางนี้</div>';
