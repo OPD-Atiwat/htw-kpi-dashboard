@@ -8649,27 +8649,55 @@ function openChDrilldown(chKey){
  };
  var chNames=CH_KEYS[chKey]||[];
 
- /* Aggregate products by total actual (channel breakdown in GOALS_DATA ไม่มี per-channel rev จริง) */
+ /* ADSM44 per-channel per-product revenue field mapping */
+ var _CH_ADSM44_FIELD={'Meta':'_fb_sale','TikTok':'_tt_sale','Shopee':'_sp_sale'};
+ var _adsm44Field=_CH_ADSM44_FIELD[chKey]||null;
+ var _adsm44Mo=window.ADSM44_PCTADS&&ADSM44_PCTADS[month]?ADSM44_PCTADS[month]:null;
+ var _adsm44PrevMo=window.ADSM44_PCTADS&&_prevMo&&ADSM44_PCTADS[_prevMo]?ADSM44_PCTADS[_prevMo]:null;
+
+ /* Name-match helper: ADSM44 names are uppercase/truncated vs GOALS_DATA mixed case */
+ function _matchProdName(adsm44Name, gProd){
+  if(!adsm44Name||!gProd) return false;
+  var a=adsm44Name.toLowerCase().replace(/\s+/g,' ').trim();
+  var b=gProd.toLowerCase().replace(/\s+/g,' ').trim();
+  if(a===b) return true;
+  /* match on first 10 chars of Thai text */
+  var _thA=a.slice(0,10), _thB=b.slice(0,10);
+  return _thA===_thB;
+ }
+
  var prodMap={};
- gdata.forEach(function(p){
-  if(!p.product||p.product==='อื่นๆ') return;
-  var rev=p.actual||0;
-  var goal=p.goal||0;
-  if(rev>0||goal>0) prodMap[p.product]={name:p.product,rev:rev,goal:goal,prev:0};
- });
- /* Prev month */
- _prevGdata.forEach(function(p){
-  if(!p.product||p.product==='อื่นๆ') return;
-  var rev=p.actual||0;
-  if(rev>0 && prodMap[p.product]) prodMap[p.product].prev=rev;
- });
- /* Scale prev to MTD window (live months only) */
- if(!_isFinalMonth && _prevMtdDay>0 && _prevMo){
-  var _pPfxMapProd={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05'};
-  var _pPfxProd=_pPfxMapProd[_prevMo];
-  var _pTotDaysProd=_pPfxProd?new Date(parseInt(_pPfxProd.split('-')[0]),parseInt(_pPfxProd.split('-')[1]),0).getDate():30;
-  var _prodSclProd=_prevMtdDay/_pTotDaysProd;
-  Object.keys(prodMap).forEach(function(k){ prodMap[k].prev=Math.round(prodMap[k].prev*_prodSclProd); });
+ var _pPfxMapProd={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05'};
+ var _pPfxProd=_prevMo?_pPfxMapProd[_prevMo]:'';
+ var _pTotDaysProd=_pPfxProd?new Date(parseInt(_pPfxProd.split('-')[0]),parseInt(_pPfxProd.split('-')[1]),0).getDate():30;
+ var _prodSclProd=(!_isFinalMonth&&_prevMtdDay>0)?(_prevMtdDay/_pTotDaysProd):1;
+
+ if(_adsm44Field&&_adsm44Mo){
+  /* Use ADSM44 per-channel revenue */
+  Object.keys(_adsm44Mo).forEach(function(aName){
+   var rev=(_adsm44Mo[aName][_adsm44Field])||0;
+   if(rev<=0) return;
+   /* find matching GOALS_DATA product for cover image */
+   var _gProd=gdata.find(function(p){return _matchProdName(aName,p.product||'');});
+   var _canonName=(_gProd&&_gProd.product)||aName;
+   /* prev */
+   var prevRev=0;
+   if(_adsm44PrevMo&&_adsm44PrevMo[aName]){
+    prevRev=Math.round(((_adsm44PrevMo[aName][_adsm44Field])||0)*_prodSclProd);
+   }
+   prodMap[_canonName]={name:_canonName,rev:rev,goal:0,prev:prevRev};
+  });
+ } else {
+  /* Fallback: total actual (no per-channel ADSM44 data) */
+  gdata.forEach(function(p){
+   if(!p.product||p.product==='อื่นๆ') return;
+   var rev=p.actual||0;
+   if(rev>0) prodMap[p.product]={name:p.product,rev:rev,goal:p.goal||0,prev:0};
+  });
+  _prevGdata.forEach(function(p){
+   if(!p.product||p.product==='อื่นๆ') return;
+   if(prodMap[p.product]) prodMap[p.product].prev=Math.round((p.actual||0)*_prodSclProd);
+  });
  }
  var prodRows=Object.values(prodMap).sort(function(a,b){return b.rev-a.rev;});
 
@@ -8780,7 +8808,9 @@ function openChDrilldown(chKey){
 
  /* ── TOP PRODUCTS ── */
  if(prodRows.length>0){
-  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products</div>';
+  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products'
+   +(_adsm44Field&&_adsm44Mo?' <span style="font-weight:500;text-transform:none;letter-spacing:0">· by '+chKey+' Revenue</span>':' <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">(total)</span>')
+   +'</div>';
   h+='<div style="display:flex;flex-direction:column;gap:5px">';
   var showRows=prodRows.slice(0,10);
   var maxRev=showRows[0].rev||1;
