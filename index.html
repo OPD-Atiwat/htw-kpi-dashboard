@@ -1724,11 +1724,11 @@ var PROFIT_DATA = {
   consignRevGoal:1800000,   consignRevActual:1365462  /* จาก MK26 Finance */
  },
  'May 26': {
-  // ✅ Hardcode May 26 — 2026-05-26
-  profitGoal:873450, profitActual:575233, marginPct:null,  /* Total Brand: online 53,723 + consign 521,510 */
-  onlineProfitGoal:249400,  onlineProfitActual:53723,   /* ✅ Actual Online Margin */
-  consignProfitGoal:624050, consignProfitActual:521510,  /* ✅ 575,233 − 53,723 */
-  onlineProfitFc:60021, consignProfitFc:637360, profitFc:697381,  /* FC: online 60,021 + consign 637,360 */
+  // ✅ Hardcode May 26 — 2026-05-28 (MMS confirmed)
+  profitGoal:873450, profitActual:696558, marginPct:null,  /* Total Brand: online 95,260 + consign 601,298 */
+  onlineProfitGoal:249400,  onlineProfitActual:95260,   /* ✅ Actual Online Margin (MMS) */
+  consignProfitGoal:624050, consignProfitActual:601298,  /* ✅ 696,558 − 95,260 */
+  onlineProfitFc:106360, consignProfitFc:686219, profitFc:792579,  /* FC: online 106,360 + consign 686,219 */
   onlineRevGoal:5800000, onlineRevActual:null,
   consignRevGoal:1783000, consignRevActual:1427716
  }
@@ -1775,7 +1775,18 @@ var FINANCE_CHANNEL_ACTUALS = {
   FbMsg:699633, IG:39238, LINE:990, Shopify:61778,
   Lazada:19338, Consignment:1365462
  }
- /* 'May 26': ไม่ hard-code — ใช้ OPD_DAILY อัตโนมัติจนกว่าเดือนจะปิด */
+ /* ✅ Hardcode May 26 — 2026-05-28 (MMS confirmed) Sale Online = 3,953,494
+    Sub-channel splits scaled proportionally from OPD_DAILY (OPD total 3,930,938 → scale ×1.00574) */
+ 'May 26': {
+  TikTok:2016454,     // TikTokAds 615,986 + Affi 1,358,949 + Live 41,519
+  TikTokAds:615986, TikTokAffi:1358949, TikTokLive:41519,
+  Shopee:717088,      // ShopeeShop 560,276 + Live 156,812
+  ShopeeShop:560276, ShopeeLive:156812,
+  Facebook:1213132,   // FbMsg 1,140,584 + IG 43,813 + LINE 6,896 + Shopify 21,839
+  FbMsg:1140584, IG:43813, LINE:6896, Shopify:21839,
+  Lazada:3126, Web:3694,
+  Consignment:1427716
+ }
 };
 /* 
  MONTHLY FINANCE GOALS (Brand HOW-TO level — from Finance sheet)
