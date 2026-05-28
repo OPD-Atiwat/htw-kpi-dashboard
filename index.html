@@ -8899,20 +8899,19 @@ function openChDrilldown(chKey){
  var overlay=document.getElementById('ch-drawer-overlay');
  if(drawer&&overlay){
   overlay.style.display='block';
-  drawer.style.transform='translateX(0)';
-  drawer.style.opacity='1';
+  drawer.style.display='flex';
  }
- /* รอ drawer animation เสร็จ (280ms) ก่อน render chart */
+ /* render chart หลัง DOM ready */
  setTimeout(function(){
   var _ap=_chDrawerActivePill[chKey]||'ทั้งหมด';
   renderChDailyChart(chKey,_ap);
- },350);
+ },80);
 }
 
 function closeChDrawer(){
  var drawer=document.getElementById('ch-drawer');
  var overlay=document.getElementById('ch-drawer-overlay');
- if(drawer){drawer.style.transform='translateX(100%)';drawer.style.opacity='0';}
+ if(drawer){drawer.style.display='none';}
  if(overlay){overlay.style.display='none';}
 }
 
@@ -15465,14 +15464,14 @@ function aoUpdateCharts(rows) {
 
 </script>
 
-<!-- CHANNEL DRILL-DOWN DRAWER -->
-<div id="ch-drawer-overlay" onclick="closeChDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;backdrop-filter:blur(2px)"></div>
-<div id="ch-drawer" style="position:fixed;top:0;right:0;width:min(420px,95vw);height:100vh;background:var(--surface,#fff);border-left:1px solid var(--border,#e2e8f0);box-shadow:-8px 0 32px rgba(0,0,0,.18);z-index:1001;transform:translateX(100%);opacity:0;transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s;display:flex;flex-direction:column">
- <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border,#e2e8f0);flex-shrink:0">
+<!-- CHANNEL DRILL-DOWN MODAL -->
+<div id="ch-drawer-overlay" onclick="closeChDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;backdrop-filter:blur(3px)"></div>
+<div id="ch-drawer" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(940px,95vw);max-height:88vh;background:var(--surface,#fff);border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.28);z-index:1001;flex-direction:column;overflow:hidden">
+ <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border,#e2e8f0);flex-shrink:0">
   <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3,#94a3b8)">Channel Breakdown</span>
-  <button onclick="closeChDrawer()" style="background:none;border:none;cursor:pointer;color:var(--text2,#64748b);font-size:20px;line-height:1;padding:2px 6px;border-radius:6px" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background='none'">&times;</button>
+  <button onclick="closeChDrawer()" style="background:none;border:none;cursor:pointer;color:var(--text2,#64748b);font-size:22px;line-height:1;padding:2px 8px;border-radius:6px" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background='none'">&times;</button>
  </div>
- <div id="ch-drawer-body" style="flex:1;overflow-y:auto;padding:18px 18px 32px"></div>
+ <div id="ch-drawer-body" style="flex:1;overflow-y:auto;padding:20px 22px 32px"></div>
 </div>
 
 <!-- ═══════════ AO PREVIEW DRAWER ═══════════ -->
