@@ -753,9 +753,14 @@ def parse_product_monitor(rows, ads_lookup=None):
         pct_ads = {"TikTok": pct_tt, "Shopee": pct_sp, "Facebook": pct_fb}
 
         if month not in goals:
-            goals[month] = []
+            goals[month] = {}
 
-        goals[month].append({
+        # dedup: ถ้า product ซ้ำ ให้ keep entry ที่ actual สูงกว่า
+        existing = goals[month].get(product)
+        if existing and int(actual) <= existing.get("actual", 0):
+            continue
+
+        goals[month][product] = {
             "product": product,
             "status":  status,
             "goal":    int(goal),
@@ -763,9 +768,10 @@ def parse_product_monitor(rows, ads_lookup=None):
             "achieve": achieve,
             "channels": channels,
             "pct_ads": pct_ads,
-        })
+        }
 
-    return goals
+    # แปลง dict → list (backward compat)
+    return {month: list(prods.values()) for month, prods in goals.items()}
 
 
 def update_dashboard_goals(goals_data, html_path):
@@ -814,6 +820,19 @@ def update_dashboard_goals(goals_data, html_path):
     if end == -1:
         print("   ⚠️  หา closing } ของ GOALS_DATA ไม่เจอ — ข้าม")
         return
+
+    # ป้องกัน overwrite เดือนเก่าด้วย actual=0
+    try:
+        existing = json.loads(content[start:end])
+        for month, prods in list(goals_data.items()):
+            exist_map = {p["product"]: p for p in existing.get(month, []) if p.get("actual", 0) > 0}
+            if exist_map:
+                goals_data[month] = [
+                    exist_map[p["product"]] if p.get("actual", 0) == 0 and p["product"] in exist_map else p
+                    for p in prods
+                ]
+    except Exception:
+        pass
 
     new_js = json.dumps(goals_data, ensure_ascii=False, separators=(",", ":"))
     new_content = content[:start] + new_js + content[end:]
