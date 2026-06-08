@@ -9172,14 +9172,20 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  var _PILL_W='76px';
  var _achPanel=(function(){
   var _pa=p.pct_ads||{};
-  /* %Ads รวม = MKT spend / Revenue MMS (จาก ADSM44 raw tab) */
-  var _adsT=(_pa._spend>0&&_pa._rev>0)?_pa._spend/_pa._rev*100:0;
-  var _tsp=_pa._spend||0;
+  /* %Ads รวม — ใช้ per-channel monthly spend/sale (cols 19-24) ห้าม cumulative MKT column
+     fallback → _pct_*_pub ถ้าไม่มี per-channel data (เดือนยังไม่ปิด) */
+  var _mSp=(_pa._tt_ads_spend||0)+(_pa._tt_aff_spend||0)+(_pa._fb_spend||0)+(_pa._sp_spend||0);
+  var _mRv=(_pa._tt_ads_sale||0)+(_pa._tt_aff_sale||0)+(_pa._fb_sale||0)+(_pa._sp_sale||0);
+  /* ถ้ามี per-channel monthly data → คำนวณ %Ads จากนั้น
+     ถ้าไม่มี → fallback ใช้ _spend/_rev (ADSM44 summary) */
+  var _adsT=(_mSp>0&&_mRv>0)?(_mSp/_mRv*100)
+            :(_pa._spend>0&&_pa._rev>0)?(_pa._spend/_pa._rev*100):0;
+  var _tsp=_mSp>0?_mSp:0; /* แสดงเฉพาะ monthly spend */
   if(_adsT<=0) return '';
   var _adC=_adsT>60?'#DC2626':_adsT>40?'#EA580C':_adsT>25?'#D97706':'#16A34A';
   var _abg=_adsT>60?'rgba(220,38,38,.06)':_adsT>40?'rgba(234,88,12,.06)':_adsT>25?'rgba(217,119,6,.05)':'rgba(16,185,129,.05)';
   var _abdr=_adsT>60?'rgba(220,38,38,.2)':_adsT>40?'rgba(234,88,12,.2)':_adsT>25?'rgba(217,119,6,.2)':'rgba(16,185,129,.15)';
-  var _spStr=_tsp>=1000?'฿'+(_tsp/1000).toFixed(1)+'M':'฿'+Math.round(_tsp)+'K';
+  var _spStr=_tsp<=0?'–':_tsp>=1e6?'฿'+(_tsp/1e6).toFixed(1)+'M':_tsp>=1000?'฿'+(_tsp/1000).toFixed(1)+'K':'฿'+Math.round(_tsp);
   return '<div style="flex-shrink:0;width:'+_PILL_W+';padding-left:4px;display:flex;align-items:stretch">'
    +'<div style="width:100%;background:'+_abg+';border:1px solid '+_abdr+';border-radius:8px;padding:5px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center">'
    +'<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.3px;margin-bottom:1px;white-space:nowrap">%Ads รวม</div>'
