@@ -546,7 +546,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .ao-tr-np td{background:#fafafa!important;color:#aaa}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D21</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D22</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -9438,30 +9438,29 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  +buildGroupCard(nonFocus,'Non-Focus','var(--text2)','var(--surface2)','var(--border)','ov-nonfocus-card',2)
  +(otherBooks.length?'<div style="grid-column:1/-1">'+buildGroupCard(otherBooks,'Other Titles','#7C3AED','rgba(124,58,237,.05)','rgba(124,58,237,.25)','ov-other-card',1,'',true)+'</div>':'');
 
- /* Brand Overview FC = Σ(Focus FC + NonFocus FC) — คำนวณ inline เหมือน summaryBar */
+ /* Brand Overview FC = Σ(Focus FC + NonFocus FC) — same logic as summaryBar */
  var _ovFcFinal2=null;
- if(!_isYTD&&!isFinal&&STATE.fcMultiplier&&STATE.fcMultiplier>0){
-  var _sbPer2=(STATE&&STATE.globalPeriod)||'jun';
+ if(STATE.fcMultiplier&&STATE.fcMultiplier>0&&!STATE.fcIsFinal){
+  var _sbGp=(STATE&&STATE.globalPeriod)||'jun';
   var _sbF2,_sbT2;
-  if(_sbPer2==='jun'){_sbF2='2026-06-01';_sbT2=_junToDate();}
-  else if(_sbPer2==='may'){_sbF2='2026-05-01';_sbT2=_mayToDate();}
-  else if(_sbPer2==='apr'){_sbF2='2026-04-01';_sbT2='2026-04-30';}
-  else if(_sbPer2==='mar'){_sbF2='2026-03-01';_sbT2='2026-03-31';}
-  else if(_sbPer2==='feb'){_sbF2='2026-02-01';_sbT2='2026-02-28';}
-  else if(_sbPer2==='custom'&&STATE.customFrom&&STATE.customTo){_sbF2=STATE.customFrom;_sbT2=STATE.customTo;}
-  var _allProds=(focus||[]).concat(nonFocus||[]);
-  var _sumFc=0;
-  _allProds.forEach(function(pd){
-   if(!pd||!pd.goal||pd.goal<=0) return;
-   if(pd.status==='OOS') return;
-   var _pa=pd.actual||0;
-   if(_sbF2&&_sbT2&&typeof getOpdProdActual==='function'){var _o=getOpdProdActual(pd.product,_sbF2,_sbT2);if(_o&&_o.actual>0)_pa=_o.actual;}
-   var _pFc=(pd.forecastRev!=null&&pd.forecastRev>0)?pd.forecastRev:Math.round(_pa*STATE.fcMultiplier);
-   _sumFc+=_pFc;
+  if(_sbGp==='jun'){_sbF2='2026-06-01';_sbT2=_junToDate();}
+  else if(_sbGp==='may'){_sbF2='2026-05-01';_sbT2=_mayToDate();}
+  else if(_sbGp==='apr'){_sbF2='2026-04-01';_sbT2='2026-04-30';}
+  else if(_sbGp==='mar'){_sbF2='2026-03-01';_sbT2='2026-03-31';}
+  else if(_sbGp==='feb'){_sbF2='2026-02-01';_sbT2='2026-02-28';}
+  else if(_sbGp==='custom'&&STATE.customFrom&&STATE.customTo){_sbF2=STATE.customFrom;_sbT2=STATE.customTo;}
+  var _allProds2=(focus||[]).concat(nonFocus||[]);
+  var _sumFc2=0;
+  _allProds2.forEach(function(pd){
+   if(!pd||pd.status==='OOS') return;
+   var _pa2=(pd.actual||0);
+   if(_sbF2&&_sbT2&&typeof getOpdProdActual==='function'){var _o2=getOpdProdActual(pd.product,_sbF2,_sbT2);if(_o2&&_o2.actual>0)_pa2=_o2.actual;}
+   var _pFc2=(pd.forecastRev!=null&&pd.forecastRev>0)?pd.forecastRev:Math.round(_pa2*STATE.fcMultiplier);
+   _sumFc2+=_pFc2;
   });
-  if(_sumFc>0) _ovFcFinal2=_sumFc;
+  if(_sumFc2>0) _ovFcFinal2=_sumFc2;
  }
- renderForecastCard(STATE._month_fc,STATE._bAct_fc,STATE._bGoal_fc,_ovFcFinal2);
+ renderForecastCard(month,_fcInputActual,(_saleOnlineGoal+_fcAffiGoal),_ovFcFinal2);
 
  /* Non-Focus card แสดงทุกเล่มโดยไม่ lock height */
 }
