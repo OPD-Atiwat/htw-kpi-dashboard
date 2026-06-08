@@ -4381,6 +4381,7 @@ function renderOverview(data){
    ไม่ต้องใช้ _affiShare แยก */
 var _lbProdForMult=(_lbCfg2&&!isFinal)?_lbCfg2.product:null;
 var _gdataNonLbSum=(gdata||[]).reduce(function(s,p){
+ if(p.status==='OOS') return s; /* OOS ไม่มี FC → ไม่นับใน denominator */
  return s+((_lbProdForMult&&p.product===_lbProdForMult)?0:(p.actual||0));
 },0);
 var _fcForNonLb=(_fcResult&&_lbFc>0)?(_fcResult.forecastTotal-_lbFc):(_fcResult?_fcResult.forecastTotal:0);
