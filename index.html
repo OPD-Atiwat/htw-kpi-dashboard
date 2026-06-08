@@ -546,7 +546,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .ao-tr-np td{background:#fafafa!important;color:#aaa}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D17</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D18</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -4401,8 +4401,14 @@ STATE.lbProduct=_lbProdForMult;
    _ovFc=0;
    (gdata||[]).forEach(function(pd){
     if(pd.status==='OOS') return;
+    /* ใช้ OPD actual (เหมือน summaryBar) เพื่อให้ Brand Overview FC = Σ(Focus+NonFocus) */
+    var _pa=pd.actual||0;
+    if(range&&range.from&&range.to&&typeof getOpdProdActual==='function'){
+     var _od=getOpdProdActual(pd.product,range.from,range.to);
+     if(_od&&_od.actual>0) _pa=_od.actual;
+    }
     if(_lbProdForMult&&pd.product===_lbProdForMult){ _ovFc+=(_lbFc||0); return; }
-    _ovFc+=Math.round((pd.actual||0)*STATE.fcMultiplier);
+    _ovFc+=Math.round(_pa*STATE.fcMultiplier);
    });
    _ovFc=_ovFc>0?_ovFc:null;
   }
