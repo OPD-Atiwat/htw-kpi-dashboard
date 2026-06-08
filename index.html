@@ -9105,7 +9105,8 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  (function(){
   var _period = (STATE && STATE.globalPeriod) ? STATE.globalPeriod : 'may';
   var _from, _to;
-  if(_period==='may'){    _from='2026-05-01'; _to=_mayToDate(); }
+  if(_period==='jun'){    _from='2026-06-01'; _to=(function(){var t=new Date();return t.getFullYear()===2026&&t.getMonth()===5?t.toISOString().slice(0,10):'2026-06-30';})(); }
+  else if(_period==='may'){    _from='2026-05-01'; _to=_mayToDate(); }
   else if(_period==='apr'){ _from='2026-04-01'; _to='2026-04-30'; }
   else if(_period==='mar'){ _from='2026-03-01'; _to='2026-03-31'; }
   else if(_period==='feb'){ _from='2026-02-01'; _to='2026-02-28'; }
