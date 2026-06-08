@@ -546,7 +546,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .ao-tr-np td{background:#fafafa!important;color:#aaa}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D20d</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D21</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -9299,8 +9299,6 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
     return s+pFc;
    },0)
   :null;
- /* accumulate Brand Overview FC จาก summaryBar */
- if(tFc!=null&&(STATE._grpFcTotal!==undefined)) STATE._grpFcTotal+=tFc;
  return '<div style="display:flex;align-items:center;gap:0;padding:7px 12px;min-height:46px;background:var(--surface2);border-bottom:1px solid var(--border)">'
  +'<div style="flex:1;display:flex;align-items:flex-end;gap:0">'
  +'<div style="margin-right:14px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)">Goal</div>'
@@ -9440,10 +9438,30 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  +buildGroupCard(nonFocus,'Non-Focus','var(--text2)','var(--surface2)','var(--border)','ov-nonfocus-card',2)
  +(otherBooks.length?'<div style="grid-column:1/-1">'+buildGroupCard(otherBooks,'Other Titles','#7C3AED','rgba(124,58,237,.05)','rgba(124,58,237,.25)','ov-other-card',1,'',true)+'</div>':'');
 
- /* Brand Overview FC = Σ(summaryBar FC) จาก Focus + NonFocus (accumulated ใน STATE._grpFcTotal) */
- var _ovFcFinal=(!STATE._isYTD_fc&&!STATE._isFinal_fc&&STATE._grpFcTotal>0)?STATE._grpFcTotal:null;
- console.log('[D20-DEBUG] _grpFcTotal=',STATE._grpFcTotal,'_isFinal=',STATE._isFinal_fc,'_isYTD=',STATE._isYTD_fc,'_ovFcFinal=',_ovFcFinal);
- renderForecastCard(STATE._month_fc,STATE._bAct_fc,STATE._bGoal_fc,_ovFcFinal);
+ /* Brand Overview FC = Σ(Focus FC + NonFocus FC) — คำนวณ inline เหมือน summaryBar */
+ var _ovFcFinal2=null;
+ if(!_isYTD&&!isFinal&&STATE.fcMultiplier&&STATE.fcMultiplier>0){
+  var _sbPer2=(STATE&&STATE.globalPeriod)||'jun';
+  var _sbF2,_sbT2;
+  if(_sbPer2==='jun'){_sbF2='2026-06-01';_sbT2=_junToDate();}
+  else if(_sbPer2==='may'){_sbF2='2026-05-01';_sbT2=_mayToDate();}
+  else if(_sbPer2==='apr'){_sbF2='2026-04-01';_sbT2='2026-04-30';}
+  else if(_sbPer2==='mar'){_sbF2='2026-03-01';_sbT2='2026-03-31';}
+  else if(_sbPer2==='feb'){_sbF2='2026-02-01';_sbT2='2026-02-28';}
+  else if(_sbPer2==='custom'&&STATE.customFrom&&STATE.customTo){_sbF2=STATE.customFrom;_sbT2=STATE.customTo;}
+  var _allProds=(focus||[]).concat(nonFocus||[]);
+  var _sumFc=0;
+  _allProds.forEach(function(pd){
+   if(!pd||!pd.goal||pd.goal<=0) return;
+   if(pd.status==='OOS') return;
+   var _pa=pd.actual||0;
+   if(_sbF2&&_sbT2&&typeof getOpdProdActual==='function'){var _o=getOpdProdActual(pd.product,_sbF2,_sbT2);if(_o&&_o.actual>0)_pa=_o.actual;}
+   var _pFc=(pd.forecastRev!=null&&pd.forecastRev>0)?pd.forecastRev:Math.round(_pa*STATE.fcMultiplier);
+   _sumFc+=_pFc;
+  });
+  if(_sumFc>0) _ovFcFinal2=_sumFc;
+ }
+ renderForecastCard(STATE._month_fc,STATE._bAct_fc,STATE._bGoal_fc,_ovFcFinal2);
 
  /* Non-Focus card แสดงทุกเล่มโดยไม่ lock height */
 }
