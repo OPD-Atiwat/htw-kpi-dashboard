@@ -9064,12 +9064,14 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  }
  /* ── Channel Revenue Distribution Bar ── */
  function chBar(p){
+  /* แสดงเฉพาะเมื่อมี OPD actual channel data — ป้องกัน GOALS_DATA allocation เก่าหลอก */
+  if(!p._hasOpdChannels) return '';
   var ch=p.channels||{};
   var total=Math.max(p.actual||1,1);
   var segs=[
-   {v:ch['TikTok']||0,             c:'#1a1a1a',lbl:'TikTok'},
-   {v:(ch['Facebook']||0)+(ch['Instagram']||0), c:'#1877F2',lbl:'Meta'},
-   {v:ch['Shopee']||0,             c:'#EE4D2D',lbl:'Shopee'}
+   {v:(ch['TikTok']||0)+(ch['TikTok Shop']||0)+(ch['TikTok Live']||0)+(ch['TikTok Affi']||0),c:'#1a1a1a',lbl:'TikTok'},
+   {v:(ch['Facebook']||0)+(ch['Instagram']||0)+(ch['LINE']||0)+(ch['Shopify']||0),           c:'#1877F2',lbl:'Meta'},
+   {v:(ch['Shopee']||0)+(ch['Shopee Live']||0),                                               c:'#EE4D2D',lbl:'Shopee'}
   ];
   var sumSeg=segs.reduce(function(s,x){return s+x.v;},0);
   if(sumSeg<=0) return '';
@@ -9111,7 +9113,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   else if(_period==='custom'&&STATE.customFrom&&STATE.customTo){ _from=STATE.customFrom; _to=STATE.customTo; }
   if(_from && _to && typeof getOpdProdActual==='function'){
    var _opd = getOpdProdActual(p.product, _from, _to);
-   if(_opd){ p = Object.assign({}, p, _opd); }
+   if(_opd){ p = Object.assign({}, p, _opd); p._hasOpdChannels=!!(_opd.channels&&Object.keys(_opd.channels).length>0); }
   }
  })();
  /* ── ADSM44 pct_ads override: แทนที่ GOALS_DATA hardcoded ด้วยค่าจริงจาก ADSM44 ── */
