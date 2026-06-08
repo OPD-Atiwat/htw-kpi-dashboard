@@ -31,6 +31,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 SHEET_ID      = "1qYdwXuCHDHeHN6a8vU_RVFBYT5MuYq-8K5AMK3cP4DM"
 MK13_GID      = "964123706"
 ADSM44_GID    = "1860322120"
+# Published CSV ของ ADSM44 tab ที่ถูกต้อง (summary view ที่มี MKT และ Revenue MMS ครบ)
+ADSM44_PUB_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQI5FqrcI2E7MeJmgVs783XiDQtTrYnlKhmVCKbWWGu4_lI-dre8Obd0lAF6zKI37aatwCzwwI7C-Pt/pub?output=csv"
 DASHBOARD_PATH = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/index.html"
 # ============================================================
 
@@ -296,8 +298,185 @@ def read_mk13():
 
 # ─── ADSM44 ─────────────────────────────────────────────────
 
+def _parse_pct_str(s):
+    """'30.27%' → 30.27 | '0.3027' → 30.27 | error/empty → None"""
+    if not s:
+        return None
+    s = str(s).strip()
+    if s in ('#DIV/0!', '#REF!', '#N/A', '#VALUE!', ''):
+        return None
+    if s.endswith('%'):
+        try:
+            return round(float(s[:-1]), 2)
+        except Exception:
+            return None
+    try:
+        v = float(s)
+        return round(v * 100, 2) if 0 < abs(v) < 1 else round(v, 2)
+    except Exception:
+        return None
+
+
+def _parse_adsm44_pub_csv(text):
+    """
+    Parse published ADSM44 summary CSV (multi-block format):
+      Row 0: empty
+      Row 1: header ('Book name', 'MKT', 'Revenue MMS', ...)
+      Rows 2–N: data rows for month block 1
+      'Summary Mar 25' row: flush block → month = 'Mar 25'
+      Next header row ('Book name'): start block 2
+      ...
+      Last block: no trailing Summary → use current month
+    Column layout (0-based from known published CSV):
+      0=Book name, 1=MKT, 2=Revenue MMS, 14=%ads Total,
+      16=TikTok%, 17=Shopee%, 18=FB%,
+      19=Ads FB, 20=Revenue FB, 21=Ads TT, 22=Revenue TT,
+      23=Ads Shopee, 24=Revenue Shopee
+    """
+    reader = csv.reader(io.StringIO(text))
+    rows = list(reader)
+    if not rows:
+        return {}
+
+    # Find actual header row (col 0 == 'Book name')
+    header_idx = next(
+        (i for i, r in enumerate(rows) if r and r[0].strip() == 'Book name'), 1
+    )
+    header = [h.strip() for h in rows[header_idx]]
+    print(f"   Header row idx={header_idx}: {' | '.join(h for h in header[:10] if h)}")
+
+    # Build column map from actual header (safe against reordering)
+    c_product   = find_col(header, ["Book name", "Book Name", "Product"])
+    c_mkt       = find_col(header, ["MKT", "Ads Cost", "Total Ads"])
+    c_rev_mms   = find_col(header, ["Revenue MMS", "Total revenue", "Sale Total", "Revenue Total"])
+    c_pct_total = find_col(header, ["%ads Total", "%Ads Total", "% Ads Total"])
+    c_pct_tt    = find_col(header, ["TikTok", "TikTok %", "% TikTok"])
+    c_pct_sp    = find_col(header, ["Shopee", "Shopee %", "% Shopee"])
+    c_pct_fb    = find_col(header, ["FB", "FB %", "% FB"])
+    c_ads_fb    = find_col(header, ["Ads FB", "FB Ads", "Facebook Ads"])
+    c_rev_fb    = find_col(header, ["Revenue FB", "FB Revenue", "Facebook Revenue"])
+    c_ads_tt    = find_col(header, ["Ads TT", "TT Ads", "TikTok Ads"])
+    c_rev_tt    = find_col(header, ["Revenue TT", "TT Revenue", "TikTok Revenue"])
+    c_ads_sp    = find_col(header, ["Ads Shopee", "Shopee Ads"])
+    c_rev_sp    = find_col(header, ["Revenue Shopee", "Shopee Revenue"])
+    print(f"   Cols → product:{c_product} MKT:{c_mkt} RevMMS:{c_rev_mms} "
+          f"pct_tt:{c_pct_tt} pct_sp:{c_pct_sp} pct_fb:{c_pct_fb} "
+          f"ads_fb:{c_ads_fb} rev_fb:{c_rev_fb} ads_tt:{c_ads_tt} rev_tt:{c_rev_tt} "
+          f"ads_sp:{c_ads_sp} rev_sp:{c_rev_sp}")
+
+    if c_product < 0:
+        print("⚠️  ไม่เจอ column 'Book name' — abort pub parsing")
+        return {}
+
+    def gv(row, idx):
+        if idx < 0 or idx >= len(row): return 0.0
+        return get_val(row, idx)
+
+    def gp(row, idx):
+        if idx < 0 or idx >= len(row): return None
+        return _parse_pct_str(row[idx])
+
+    result = {}
+    cur_block = []
+
+    def flush_block(month_str):
+        if not month_str or not cur_block:
+            return
+        if month_str not in result:
+            result[month_str] = {}
+        for dr in cur_block:
+            col0 = dr[0].strip() if dr else ''
+            product = re.sub(r'^\[[^\]]+\]\s*', '', col0).strip()
+            if not product:
+                continue
+
+            mkt    = gv(dr, c_mkt)
+            rev    = gv(dr, c_rev_mms)
+            ads_fb = gv(dr, c_ads_fb)
+            rev_fb = gv(dr, c_rev_fb)
+            ads_tt = gv(dr, c_ads_tt)
+            rev_tt = gv(dr, c_rev_tt)
+            ads_sp = gv(dr, c_ads_sp)
+            rev_sp = gv(dr, c_rev_sp)
+
+            # Pre-computed % จาก published summary (ค่า product-level ที่ถูกต้อง)
+            pub_pct_tt = gp(dr, c_pct_tt)
+            pub_pct_sp = gp(dr, c_pct_sp)
+            pub_pct_fb = gp(dr, c_pct_fb)
+
+            # คำนวณ % per channel จาก spend/revenue เมื่อมีข้อมูล (แม่นกว่า pre-computed)
+            def ch_pct(spend, revenue, pub_fallback):
+                if spend > 0 and revenue > 0:
+                    return round(spend / revenue * 100, 2)
+                return pub_fallback
+
+            tt_pct = ch_pct(ads_tt, rev_tt, pub_pct_tt)
+            sp_pct = ch_pct(ads_sp, rev_sp, pub_pct_sp)
+            fb_pct = ch_pct(ads_fb, rev_fb, pub_pct_fb)
+
+            tot_spend = mkt if mkt > 0 else (ads_tt + ads_fb + ads_sp)
+            tot_rev   = rev if rev > 0 else (rev_tt + rev_fb + rev_sp)
+
+            result[month_str][product] = {
+                "TikTok":        tt_pct,
+                "TikTokAff":     None,
+                "Facebook":      fb_pct,
+                "Shopee":        sp_pct,
+                "_tt_spend":     ads_tt,
+                "_tt_ads_spend": ads_tt,
+                "_tt_aff_spend": 0.0,
+                "_fb_spend":     ads_fb,
+                "_sp_spend":     ads_sp,
+                "_spend":        tot_spend,
+                "_tt_sale":      rev_tt,
+                "_tt_ads_sale":  rev_tt,
+                "_tt_aff_sale":  0.0,
+                "_fb_sale":      rev_fb,
+                "_sp_sale":      rev_sp,
+                "_rev":          tot_rev,
+                "_pct_tt_pub":   pub_pct_tt,
+                "_pct_sp_pub":   pub_pct_sp,
+                "_pct_fb_pub":   pub_pct_fb,
+            }
+
+    cur_month = MONTH_LABEL.get(datetime.now().strftime("%Y-%m"))
+
+    for row in rows[header_idx + 1:]:
+        if not row:
+            continue
+        col0 = row[0].strip()
+        if col0 == 'Book name':
+            continue
+        if col0.startswith('Summary'):
+            month_str = col0.replace('Summary', '').strip()
+            flush_block(month_str)
+            cur_block = []
+            continue
+        if not col0:
+            continue
+        cur_block.append(row)
+
+    flush_block(cur_month)  # last block (current month, no trailing Summary yet)
+
+    for mo, prods in result.items():
+        with_spend = sum(1 for d in prods.values() if (d.get("_spend") or 0) > 0)
+        print(f"   {mo}: {len(prods)} products, {with_spend} with spend>0")
+    print(f"   ✅ {len(result)} เดือน | {list(result.keys())}")
+    return result
+
+
 def read_adsm44():
-    print("📥 ดึง ADSM44 จาก Google Sheets...")
+    print("📥 ดึง ADSM44 จาก Published CSV URL...")
+    req = urllib.request.Request(ADSM44_PUB_URL, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            text = r.read().decode("utf-8-sig")
+        print("   ✅ ดึงจาก Published URL สำเร็จ")
+        return _parse_adsm44_pub_csv(text)
+    except Exception as e:
+        print(f"   ⚠️  Published URL ล้มเหลว ({e}) — fallback raw GID {ADSM44_GID}")
+
+    # ── Fallback: raw GID tab ──────────────────────────────────────
     text = fetch_csv(ADSM44_GID)
     reader = csv.reader(io.StringIO(text))
     rows = list(reader)
@@ -405,22 +584,25 @@ def read_adsm44():
             return round(spend / sale * 100, 2) if sale > 0 else None
 
         result[month_label][product] = {
-            "TikTok":         pct(tt_ads_spend, tt_ads_rev),  # TT Shop เท่านั้น
-            "TikTokAff":      pct(tt_aff_spend, tt_aff_rev),  # TT Affi เท่านั้น
+            "TikTok":         pct(tt_ads_spend, tt_ads_rev),
+            "TikTokAff":      pct(tt_aff_spend, tt_aff_rev),
             "Facebook":       pct(fb_spend,     fb_rev),
             "Shopee":         pct(sp_spend,     sp_rev),
-            "_tt_spend":      tt_spend,           # TikTok Shop + Affi รวม
-            "_tt_ads_spend":  tt_ads_spend,        # TikTok Shop เท่านั้น
-            "_tt_aff_spend":  tt_aff_spend,        # TikTok Affi commission
+            "_tt_spend":      tt_spend,
+            "_tt_ads_spend":  tt_ads_spend,
+            "_tt_aff_spend":  tt_aff_spend,
             "_fb_spend":      fb_spend,
             "_sp_spend":      sp_spend,
-            "_spend":         tot_spend,           # คำนวณจาก TT+FB+SP เสมอ
-            "_tt_sale":       tt_rev,              # TT รวม (backward compat)
-            "_tt_ads_sale":   tt_ads_rev,          # TikTok Shop revenue
-            "_tt_aff_sale":   tt_aff_rev,          # TikTok Affi revenue
+            "_spend":         tot_spend,
+            "_tt_sale":       tt_rev,
+            "_tt_ads_sale":   tt_ads_rev,
+            "_tt_aff_sale":   tt_aff_rev,
             "_fb_sale":       fb_rev,
             "_sp_sale":       sp_rev,
-            "_rev":           tot_rev,             # คำนวณจาก TT+FB+SP เสมอ
+            "_rev":           tot_rev,
+            "_pct_tt_pub":    None,
+            "_pct_sp_pub":    None,
+            "_pct_fb_pub":    None,
         }
 
     # Summary log

@@ -9224,24 +9224,24 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    /* %Ads order: Meta | TikTok combined (Shop+Affi) | Shopee */
    function _fmtSale(v){if(!v||v<=0)return '';if(v>=1e6)return '฿'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '฿'+(v/1e3).toFixed(0)+'K';return '฿'+Math.round(v);}
    var _pillsArr=[];
-   /* Meta — spend/sale จาก ADSM44 raw */
+   /* Meta — คำนวณจาก spend/sale เป็นหลัก, fallback ใช้ _pct_fb_pub (published summary) */
    (function(){
-    var pct=pa._fb_spend>0&&pa._fb_sale>0?pa._fb_spend/pa._fb_sale*100:0;
+    var pct=pa._fb_spend>0&&pa._fb_sale>0?pa._fb_spend/pa._fb_sale*100:(pa._pct_fb_pub||0);
     if(pct<=0)return;
     _pillsArr.push({dot:'#1877F2',k:'Meta',sp:pa._fb_spend||0,pct:pct,rv:pa._fb_sale||0});})();
-   /* TikTok combined (Shop+Affi) */
+   /* TikTok combined (Shop+Affi) — fallback ใช้ _pct_tt_pub */
    (function(){
     var sp=(pa._tt_ads_spend||0)+(pa._tt_aff_spend||0);
     var rv=(pa._tt_ads_sale||0)+(pa._tt_aff_sale||0);
-    if(sp<=0||rv<=0)return;
-    var pct=sp/rv*100;
+    var pct=sp>0&&rv>0?sp/rv*100:(pa._pct_tt_pub||0);
+    if(pct<=0)return;
     var _shPct=pa._tt_ads_sale>0?pa._tt_ads_spend/pa._tt_ads_sale*100:null;
     var _afPct=pa._tt_aff_sale>0?pa._tt_aff_spend/pa._tt_aff_sale*100:null;
     var subTip=(_shPct!=null&&_afPct!=null)?'Shop '+_shPct.toFixed(0)+'% / Affi '+_afPct.toFixed(0)+'%':'';
     _pillsArr.push({dot:'#FF0050',k:'TikTok',sp:sp,pct:pct,rv:rv,subTip:subTip});})();
-   /* Shopee */
+   /* Shopee — fallback ใช้ _pct_sp_pub */
    (function(){
-    var pct=pa._sp_spend>0&&pa._sp_sale>0?pa._sp_spend/pa._sp_sale*100:0;
+    var pct=pa._sp_spend>0&&pa._sp_sale>0?pa._sp_spend/pa._sp_sale*100:(pa._pct_sp_pub||0);
     if(pct<=0)return;
     _pillsArr.push({dot:'#EE4D2D',k:'Shopee',sp:pa._sp_spend||0,pct:pct,rv:pa._sp_sale||0});})();
    var _pills=_pillsArr.map(function(d){
