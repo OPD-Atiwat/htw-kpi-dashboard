@@ -9223,21 +9223,21 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    /* %Ads order: Meta | TikTok combined (Shop+Affi) | Shopee */
    function _fmtSale(v){if(!v||v<=0)return '';if(v>=1e6)return '฿'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '฿'+(v/1e3).toFixed(0)+'K';return '฿'+Math.round(v);}
    var _pillsArr=[];
-   /* Meta — %Ads=ADSM44, revenue=ADSM44 _fb_sale (กัน OPD channel merge ทำให้ผิด) */
-   (function(){var sp=pa._fb_spend||0;if(sp<=0)return;var pct=pa.Facebook;if(pct==null)return;
-    var rv=pa._fb_sale||(ch.Facebook||0)+(ch.Instagram||0);
+   /* Meta — คำนวณ %Ads สดจาก ADSM44: _fb_spend / _fb_sale */
+   (function(){var sp=pa._fb_spend||0;var rv=pa._fb_sale||0;if(sp<=0||rv<=0)return;
+    var pct=sp/rv*100;
     _pillsArr.push({dot:'#1877F2',k:'Meta',sp:sp,pct:pct,rv:rv});})();
-   /* TikTok combined Shop+Affi — %Ads=ADSM44, revenue=ADSM44 _tt_sale */
+   /* TikTok combined Shop+Affi — คำนวณ %Ads สดจาก ADSM44: (tt_ads+tt_aff)_spend / (tt_ads+tt_aff)_sale */
    (function(){var sp=(pa._tt_ads_spend||0)+(pa._tt_aff_spend||0);if(sp<=0)return;
-    var _a44rv=(pa._tt_ads_sale||0)+(pa._tt_aff_sale||0);
-    var rv=_a44rv||(ch.TikTok||0)+(ch['TikTok Affi']||0)+(ch['TikTok Live']||0);
-    var pct=rv>0?sp/rv*100:null;if(pct==null)return;
-    var shopPct=pa.TikTok;var affiPct=pa.TikTokAff;
-    var subTip=(shopPct!=null&&affiPct!=null)?'Shop '+shopPct.toFixed(0)+'% / Affi '+affiPct.toFixed(0)+'%':'';
+    var rv=(pa._tt_ads_sale||0)+(pa._tt_aff_sale||0);if(rv<=0)return;
+    var pct=sp/rv*100;
+    var _shPct=pa._tt_ads_sale>0?pa._tt_ads_spend/pa._tt_ads_sale*100:null;
+    var _afPct=pa._tt_aff_sale>0?pa._tt_aff_spend/pa._tt_aff_sale*100:null;
+    var subTip=(_shPct!=null&&_afPct!=null)?'Shop '+_shPct.toFixed(0)+'% / Affi '+_afPct.toFixed(0)+'%':'';
     _pillsArr.push({dot:'#FF0050',k:'TikTok',sp:sp,pct:pct,rv:rv,subTip:subTip});})();
-   /* Shopee — %Ads=ADSM44, revenue=ADSM44 _sp_sale */
-   (function(){var sp=pa._sp_spend||0;if(sp<=0)return;var pct=pa.Shopee;if(pct==null)return;
-    var rv=pa._sp_sale||(ch.Shopee||0)+(ch['Shopee Live']||0);
+   /* Shopee — คำนวณ %Ads สดจาก ADSM44: _sp_spend / _sp_sale */
+   (function(){var sp=pa._sp_spend||0;var rv=pa._sp_sale||0;if(sp<=0||rv<=0)return;
+    var pct=sp/rv*100;
     _pillsArr.push({dot:'#EE4D2D',k:'Shopee',sp:sp,pct:pct,rv:rv});})();
    var _pills=_pillsArr.map(function(d){
     var c=_adsC(d.pct);var saleStr=_fmtSale(d.rv);
