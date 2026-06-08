@@ -4390,13 +4390,22 @@ STATE.lbFc=_lbFc;
 STATE.lbProduct=_lbProdForMult;
  STATE.fcIsFinal=isFinal;
  STATE.fcMonth=month;
- /* SMART FORECAST CARD — ใช้ _fcInputActual+goal เดียวกับ _fcResult
-    → Brand Overview FC = sum ของ per-product FC (Focus+NonFocus) ✅
-    YTD: ใช้ Finance total เหมือนเดิม */
+ /* SMART FORECAST CARD — Brand Overview FC = Σ(Focus FC + NonFocus FC) จาก product cards จริง
+    OOS ข้าม, Focus book ใช้ _lbFc, NonFocus ใช้ actual × fcMultiplier */
  (function(){
   var _bAct=_isYTD?(_finSaleOnlineActual+_bfActual):_fcInputActual;
   var _bGoal=_isYTD?_saleOnlineGoal:(_saleOnlineGoal+_fcAffiGoal);
-  renderForecastCard(month,_bAct,_bGoal,(!_isYTD&&!isFinal)?onlineFc:null);
+  var _ovFc=null;
+  if(!_isYTD&&!isFinal&&STATE.fcMultiplier>0){
+   _ovFc=0;
+   (gdata||[]).forEach(function(pd){
+    if(pd.status==='OOS') return;
+    if(_lbProdForMult&&pd.product===_lbProdForMult){ _ovFc+=(_lbFc||0); return; }
+    _ovFc+=Math.round((pd.actual||0)*STATE.fcMultiplier);
+   });
+   _ovFc=_ovFc>0?_ovFc:null;
+  }
+  renderForecastCard(month,_bAct,_bGoal,_ovFc);
  })();
 
  var _consignGoal=(_ovMfg&&_ovMfg.consignGoal)||0;
