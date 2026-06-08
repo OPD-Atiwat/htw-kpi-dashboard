@@ -546,7 +546,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .ao-tr-np td{background:#fafafa!important;color:#aaa}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D18</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D19</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -4408,7 +4408,9 @@ STATE.lbProduct=_lbProdForMult;
      if(_od&&_od.actual>0) _pa=_od.actual;
     }
     if(_lbProdForMult&&pd.product===_lbProdForMult){ _ovFc+=(_lbFc||0); return; }
-    _ovFc+=Math.round(_pa*STATE.fcMultiplier);
+    /* ใช้ forecastRev (dynStatus override) ก่อน เหมือน summaryBar */
+    var _pFc=(pd.forecastRev!=null&&pd.forecastRev>0)?pd.forecastRev:Math.round(_pa*STATE.fcMultiplier);
+    _ovFc+=_pFc;
    });
    _ovFc=_ovFc>0?_ovFc:null;
   }
