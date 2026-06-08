@@ -9162,17 +9162,22 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  var _rowBg=_fcSafe?'linear-gradient(to right,rgba(22,163,74,0.22),rgba(22,163,74,0.08))':fcCardBg(fcVal,p.goal,ach,STATE.fcIsFinal);
  var _rowStyle='padding:9px 12px;min-height:72px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:10px;background:'+_rowBg+';box-sizing:border-box';
  /* ── MoM sub-card (right panel, self-contained mini card) ── */
- /* ── Achievement+Diff sub-card (left of MoM) ── */
+ /* ── %Ads Total sub-card (left of MoM) ── */
  var _PILL_W='76px';
  var _achPanel=(function(){
-  if(ach===null) return ''; /* goal=0 → ไม่แสดง spacer ให้ content ขยายเต็ม row */
-  var _abg=ach>=100?'rgba(16,185,129,.07)':ach>=90?'rgba(59,130,246,.07)':'rgba(239,68,68,.06)';
-  var _abdr=ach>=100?'rgba(16,185,129,.2)':ach>=90?'rgba(59,130,246,.22)':'rgba(239,68,68,.2)';
+  var _pa=p.pct_ads||{};
+  var _tsp=_pa._spend||0; var _trv=_pa._rev||0;
+  if(_tsp<=0||_trv<=0) return '';
+  var _adsT=_tsp/_trv*100;
+  var _adC=_adsT>60?'#DC2626':_adsT>40?'#EA580C':_adsT>25?'#D97706':'#16A34A';
+  var _abg=_adsT>60?'rgba(220,38,38,.06)':_adsT>40?'rgba(234,88,12,.06)':_adsT>25?'rgba(217,119,6,.05)':'rgba(16,185,129,.05)';
+  var _abdr=_adsT>60?'rgba(220,38,38,.2)':_adsT>40?'rgba(234,88,12,.2)':_adsT>25?'rgba(217,119,6,.2)':'rgba(16,185,129,.15)';
+  var _spStr=_tsp>=1000?'฿'+(_tsp/1000).toFixed(1)+'M':'฿'+Math.round(_tsp)+'K';
   return '<div style="flex-shrink:0;width:'+_PILL_W+';padding-left:4px;display:flex;align-items:stretch">'
    +'<div style="width:100%;background:'+_abg+';border:1px solid '+_abdr+';border-radius:8px;padding:5px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center">'
-   +'<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.3px;margin-bottom:1px;white-space:nowrap">ของเป้า</div>'
-   +'<div style="font-size:16px;font-weight:900;color:'+achCol+';line-height:1.1">'+ach.toFixed(0)+'%</div>'
-   +'<div style="font-size:9px;font-weight:700;color:'+diffCol+';margin-top:2px;line-height:1">'+diffStr+'</div>'
+   +'<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.3px;margin-bottom:1px;white-space:nowrap">%Ads รวม</div>'
+   +'<div style="font-size:16px;font-weight:900;color:'+_adC+';line-height:1.1">'+_adsT.toFixed(1)+'%</div>'
+   +'<div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:2px;line-height:1">'+_spStr+'</div>'
    +'</div>'
    +'</div>';
  })();
@@ -9218,22 +9223,21 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    /* %Ads order: Meta | TikTok combined (Shop+Affi) | Shopee */
    function _fmtSale(v){if(!v||v<=0)return '';if(v>=1e6)return '฿'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '฿'+(v/1e3).toFixed(0)+'K';return '฿'+Math.round(v);}
    var _pillsArr=[];
-   /* Meta */
+   /* Meta — %Ads=ADSM44, revenue=ADSM44 _fb_sale (กัน OPD channel merge ทำให้ผิด) */
    (function(){var sp=pa._fb_spend||0;if(sp<=0)return;var pct=pa.Facebook;if(pct==null)return;
-    var rv=(ch.Facebook||0)+(ch.Instagram||0);
+    var rv=pa._fb_sale||(ch.Facebook||0)+(ch.Instagram||0);
     _pillsArr.push({dot:'#1877F2',k:'Meta',sp:sp,pct:pct,rv:rv});})();
-   /* TikTok combined Shop+Affi */
+   /* TikTok combined Shop+Affi — %Ads=ADSM44, revenue=ADSM44 _tt_sale */
    (function(){var sp=(pa._tt_ads_spend||0)+(pa._tt_aff_spend||0);if(sp<=0)return;
-    var rv=(ch.TikTok||0)+(ch['TikTok Affi']||0);
-    /* ใช้ ADSM44 revenue เป็น denominator */
     var _a44rv=(pa._tt_ads_sale||0)+(pa._tt_aff_sale||0);
-    var pct=_a44rv>0?sp/_a44rv*100:(rv>0?sp/rv*100:null);if(pct==null)return;
+    var rv=_a44rv||(ch.TikTok||0)+(ch['TikTok Affi']||0)+(ch['TikTok Live']||0);
+    var pct=rv>0?sp/rv*100:null;if(pct==null)return;
     var shopPct=pa.TikTok;var affiPct=pa.TikTokAff;
     var subTip=(shopPct!=null&&affiPct!=null)?'Shop '+shopPct.toFixed(0)+'% / Affi '+affiPct.toFixed(0)+'%':'';
     _pillsArr.push({dot:'#FF0050',k:'TikTok',sp:sp,pct:pct,rv:rv,subTip:subTip});})();
-   /* Shopee */
+   /* Shopee — %Ads=ADSM44, revenue=ADSM44 _sp_sale */
    (function(){var sp=pa._sp_spend||0;if(sp<=0)return;var pct=pa.Shopee;if(pct==null)return;
-    var rv=(ch.Shopee||0)+(ch['Shopee Live']||0);
+    var rv=pa._sp_sale||(ch.Shopee||0)+(ch['Shopee Live']||0);
     _pillsArr.push({dot:'#EE4D2D',k:'Shopee',sp:sp,pct:pct,rv:rv});})();
    var _pills=_pillsArr.map(function(d){
     var c=_adsC(d.pct);var saleStr=_fmtSale(d.rv);
