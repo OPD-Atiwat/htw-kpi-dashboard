@@ -3782,6 +3782,7 @@ function renderOverview(data){
  if(_eFcMult&&_eFcMult>0){
  gdata=gdata.map(function(p){
  if(!p.goal||p.goal<=0) return p;
+ if(p.status==='OOS') return p; /* OOS ห้าม override — คง status และ forecastRev=null */
  var _nbFc=_nbFcCalc(p.product||p.name,p.actual||0);
  var _preFc=(p._launchCurve&&p.forecastRev!=null)?p.forecastRev:null;
  var fcRev=_preFc!=null?_preFc:(_nbFc!=null?_nbFc:Math.round((p.actual||0)*_eFcMult));
