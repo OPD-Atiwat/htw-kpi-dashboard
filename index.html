@@ -546,7 +546,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .ao-tr-np td{background:#fafafa!important;color:#aaa}
 </style>
 </head>
-<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D19</div>
+<body><div id="_cache_test" style="position:fixed;bottom:8px;right:12px;background:#DC2626;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:9999;font-weight:700">v20260608as-D20</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -4391,31 +4391,14 @@ STATE.lbFc=_lbFc;
 STATE.lbProduct=_lbProdForMult;
  STATE.fcIsFinal=isFinal;
  STATE.fcMonth=month;
- /* SMART FORECAST CARD — Brand Overview FC = Σ(Focus FC + NonFocus FC) จาก product cards จริง
-    OOS ข้าม, Focus book ใช้ _lbFc, NonFocus ใช้ actual × fcMultiplier */
- (function(){
-  var _bAct=_isYTD?(_finSaleOnlineActual+_bfActual):_fcInputActual;
-  var _bGoal=_isYTD?_saleOnlineGoal:(_saleOnlineGoal+_fcAffiGoal);
-  var _ovFc=null;
-  if(!_isYTD&&!isFinal&&STATE.fcMultiplier>0){
-   _ovFc=0;
-   (gdata||[]).forEach(function(pd){
-    if(pd.status==='OOS') return;
-    /* ใช้ OPD actual (เหมือน summaryBar) เพื่อให้ Brand Overview FC = Σ(Focus+NonFocus) */
-    var _pa=pd.actual||0;
-    if(range&&range.from&&range.to&&typeof getOpdProdActual==='function'){
-     var _od=getOpdProdActual(pd.product,range.from,range.to);
-     if(_od&&_od.actual>0) _pa=_od.actual;
-    }
-    if(_lbProdForMult&&pd.product===_lbProdForMult){ _ovFc+=(_lbFc||0); return; }
-    /* ใช้ forecastRev (dynStatus override) ก่อน เหมือน summaryBar */
-    var _pFc=(pd.forecastRev!=null&&pd.forecastRev>0)?pd.forecastRev:Math.round(_pa*STATE.fcMultiplier);
-    _ovFc+=_pFc;
-   });
-   _ovFc=_ovFc>0?_ovFc:null;
-  }
-  renderForecastCard(month,_bAct,_bGoal,_ovFc);
- })();
+ /* SMART FORECAST CARD — ย้ายไปเรียกหลัง buildGroupCard เพื่อให้ได้ค่าจาก summaryBar จริงๆ
+    summaryBar แต่ละ group จะ accumulate STATE._grpFcTotal */
+ STATE._grpFcTotal=0;
+ STATE._bAct_fc=_isYTD?(_finSaleOnlineActual+_bfActual):_fcInputActual;
+ STATE._bGoal_fc=_isYTD?_saleOnlineGoal:(_saleOnlineGoal+_fcAffiGoal);
+ STATE._isFinal_fc=isFinal;
+ STATE._isYTD_fc=_isYTD;
+ STATE._month_fc=month;
 
  var _consignGoal=(_ovMfg&&_ovMfg.consignGoal)||0;
  var _consignActual=(_ovMfg&&_ovMfg.consignActual)||0;
@@ -9316,6 +9299,8 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
     return s+pFc;
    },0)
   :null;
+ /* accumulate Brand Overview FC จาก summaryBar */
+ if(tFc!=null&&(STATE._grpFcTotal!==undefined)) STATE._grpFcTotal+=tFc;
  return '<div style="display:flex;align-items:center;gap:0;padding:7px 12px;min-height:46px;background:var(--surface2);border-bottom:1px solid var(--border)">'
  +'<div style="flex:1;display:flex;align-items:flex-end;gap:0">'
  +'<div style="margin-right:14px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)">Goal</div>'
@@ -9454,6 +9439,10 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  +buildGroupCard(focus,'Focus Products','var(--accent)','rgba(24,119,242,.05)','rgba(24,119,242,.3)','ov-focus-card',1)
  +buildGroupCard(nonFocus,'Non-Focus','var(--text2)','var(--surface2)','var(--border)','ov-nonfocus-card',2)
  +(otherBooks.length?'<div style="grid-column:1/-1">'+buildGroupCard(otherBooks,'Other Titles','#7C3AED','rgba(124,58,237,.05)','rgba(124,58,237,.25)','ov-other-card',1,'',true)+'</div>':'');
+
+ /* Brand Overview FC = Σ(summaryBar FC) จาก Focus + NonFocus (accumulated ใน STATE._grpFcTotal) */
+ var _ovFcFinal=(!STATE._isYTD_fc&&!STATE._isFinal_fc&&STATE._grpFcTotal>0)?STATE._grpFcTotal:null;
+ renderForecastCard(STATE._month_fc,STATE._bAct_fc,STATE._bGoal_fc,_ovFcFinal);
 
  /* Non-Focus card แสดงทุกเล่มโดยไม่ lock height */
 }
