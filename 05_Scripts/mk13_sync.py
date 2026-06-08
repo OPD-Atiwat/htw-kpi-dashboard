@@ -59,6 +59,22 @@ def fetch_csv(gid):
         raise Exception(f"HTTP {e.code}: Sheet ยังไม่ public — ต้องทำ File → Share → Publish to web")
 
 
+def fetch_csv_gviz(gid, date_from):
+    """ดึง CSV เฉพาะ rows ที่ date >= date_from ผ่าน gviz/tq — ไม่ถูก truncate"""
+    # column F = วันที่ (index 5, 0-based → gviz ใช้ A=col0, F=col5)
+    tq = f"SELECT * WHERE F >= date '{date_from}'"
+    import urllib.parse
+    url = (f"https://docs.google.com/spreadsheets/d/{SHEET_ID}"
+           f"/gviz/tq?tqx=out:csv&gid={gid}&tq={urllib.parse.quote(tq)}")
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.read().decode("utf-8-sig")
+    except Exception as e:
+        print(f"   ⚠️  gviz fetch failed: {e}")
+        return None
+
+
 # ─── Helpers ────────────────────────────────────────────────
 
 def find_col(header, candidates):
@@ -154,6 +170,8 @@ def read_mk13():
     if not rows:
         raise Exception("MK13: ได้ CSV ว่างเปล่า")
 
+    print(f"   ได้ {len(rows)} rows (รวม header) จาก CSV export")
+
     header = [h.strip() for h in rows[0]]
     date_col    = find_col(header, ["วันที่", "Date", "date"])
     ch_col      = find_col(header, ["Sale Channel"])
@@ -173,6 +191,8 @@ def read_mk13():
     prod_data  = {}   # OPD_PROD_DATA: {product: {date: {channel: amt}}}
     ch_set     = set()
 
+    # ── Phase 1: process main CSV rows ──────────────────────────
+    covered_dates = set()  # dates ที่มีข้อมูลจาก main CSV แล้ว
     for row in rows[1:]:
         if not row or len(row) <= max(date_col, ch_col, amt_col):
             continue
@@ -200,6 +220,7 @@ def read_mk13():
 
         # ── OPD_DAILY aggregation ──
         ch_set.add(channel)
+        covered_dates.add(d)
         if d not in by_date:
             by_date[d] = {"d": d}
         by_date[d][channel] = by_date[d].get(channel, 0) + amt
@@ -214,6 +235,58 @@ def read_mk13():
                 if d not in prod_data[prod]:
                     prod_data[prod][d] = {}
                 prod_data[prod][d][channel] = prod_data[prod][d].get(channel, 0) + amt
+
+    # ── Phase 2: เสริม gviz rows สำหรับเดือนปัจจุบัน (แก้ CSV truncation) ──
+    today = datetime.today()
+    month_start = today.replace(day=1).strftime("%Y-%m-%d")
+    print(f"   🔄 ดึง gviz rows เสริมตั้งแต่ {month_start} เพื่อแก้ truncation...")
+    gviz_text = fetch_csv_gviz(MK13_GID, month_start)
+    if gviz_text:
+        gviz_reader = csv.reader(io.StringIO(gviz_text))
+        gviz_all = list(gviz_reader)
+        added = 0
+        skipped_dates = set()
+        for row in gviz_all[1:]:  # ข้าม header
+            if not row or len(row) <= max(date_col, ch_col, amt_col):
+                continue
+            if free_col >= 0 and free_col < len(row):
+                if str(row[free_col]).strip().upper() in ("TRUE", "YES", "1", "✓"):
+                    continue
+            d = parse_date(row[date_col])
+            if not d:
+                continue
+            # ข้ามวันที่มีข้อมูลจาก main CSV แล้ว (เพื่อกัน double-count)
+            if d in covered_dates:
+                skipped_dates.add(d)
+                continue
+            ch_raw  = row[ch_col].strip() if ch_col < len(row) else ""
+            mt_raw  = row[method_col].strip() if 0 <= method_col < len(row) else ""
+            channel = map_channel(ch_raw, mt_raw)
+            if not channel:
+                continue
+            try:
+                amt = float(str(row[amt_col]).replace(",", "").replace("฿", "").strip())
+            except (ValueError, TypeError):
+                continue
+            if amt <= 0:
+                continue
+            ch_set.add(channel)
+            if d not in by_date:
+                by_date[d] = {"d": d}
+            by_date[d][channel] = by_date[d].get(channel, 0) + amt
+            added += 1
+            if product_col >= 0 and product_col < len(row):
+                prod = row[product_col].strip()
+                if prod and not prod.startswith("*") and not prod.startswith("ส่วนลด"):
+                    if prod not in prod_data:
+                        prod_data[prod] = {}
+                    if d not in prod_data[prod]:
+                        prod_data[prod][d] = {}
+                    prod_data[prod][d][channel] = prod_data[prod][d].get(channel, 0) + amt
+        new_dates = sorted(set(by_date.keys()) - covered_dates)
+        print(f"   ✅ gviz เพิ่ม {added} rows | วันใหม่: {new_dates} | skip (already covered): {sorted(skipped_dates)}")
+    else:
+        print(f"   ⚠️  gviz ล้มเหลว — ใช้ main CSV เท่านั้น ({len(covered_dates)} วัน)")
 
     channels  = sorted(ch_set)
     data_rows = sorted(by_date.values(), key=lambda r: r["d"])
