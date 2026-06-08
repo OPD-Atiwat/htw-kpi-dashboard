@@ -1,0 +1,21 @@
+/Library/Developer/CommandLineTools/usr/bin/python3: can't open file 'meta_pull.py': [Errno 1] Operation not permitted
+/Library/Developer/CommandLineTools/usr/bin/python3: can't open file 'meta_pull.py': [Errno 1] Operation not permitted
+============================================================
+  Meta Ads Report Puller — OpenDurian
+  ช่วง: 2026-04-01 → 2026-04-16
+============================================================
+Traceback (most recent call last):
+  File "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/meta_pull.py", line 413, in <module>
+    main()
+    ~~~~^^
+  File "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/meta_pull.py", line 177, in main
+    campaigns = get_campaigns()
+  File "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/meta_pull.py", line 46, in get_campaigns
+    data = api_get(f"{BASE_URL}/{AD_ACCOUNT_ID}/campaigns", {
+        "fields": "id,name",
+        "access_token": ACCESS_TOKEN,
+        "limit": 500,
+    })
+  File "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/meta_pull.py", line 41, in api_get
+    raise Exception(f"API Error: {msg}")
+Exception: API Error: Error validating access token: Session has expired on Thursday, 16-Apr-26 01:00:00 PDT. The current time is Thursday, 16-Apr-26 01:04:54 PDT.

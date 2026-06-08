@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How-to Team Brief — พ.ค. 2569 (28 พ.ค.)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2e4a;
+    --blue: #3b6fd4;
+    --teal: #0ea882;
+    --red: #e53b3b;
+    --orange: #f07d26;
+    --purple: #8b5cf6;
+    --yellow: #f4b942;
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --border: #e8eaed;
+    --text: #1a2e4a;
+    --muted: #8a94a6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ── TOP ── */
+  .top-bar {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px; gap: 16px;
+  }
+  .top-bar h1 { font-size: 26px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .top-bar h1 span { color: var(--blue); }
+  .top-bar .meta { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.8; flex-shrink: 0; }
+  .divider { height: 3px; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 2px; margin-bottom: 24px; }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .stat-pill {
+    flex: 1; min-width: 140px; background: var(--card);
+    border-radius: 12px; padding: 14px 18px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .stat-pill .label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px; }
+  .stat-pill .val { font-size: 24px; font-weight: 800; line-height: 1; }
+  .stat-pill .sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .stat-pill.r .val { color: var(--red); }
+  .stat-pill.o .val { color: var(--orange); }
+  .stat-pill.g .val { color: var(--teal); }
+  .stat-pill.r { border-top: 3px solid var(--red); }
+  .stat-pill.o { border-top: 3px solid var(--orange); }
+  .stat-pill.g { border-top: 3px solid var(--teal); }
+
+  /* ── ALERT ── */
+  .alert {
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .alert .icon { font-size: 18px; flex-shrink: 0; }
+  .a-red    { background: #fff0f0; color: var(--red);    border: 1px solid #ffd0d0; }
+  .a-purple { background: #f3eeff; color: var(--purple); border: 1px solid #d8c4ff; }
+  .a-orange { background: #fff7ed; color: var(--orange); border: 1px solid #ffe4b8; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 28px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card); border-radius: 12px;
+    border: 1px solid var(--border); padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+
+  /* ── ORG ── */
+  .org-root {
+    display: flex; flex-direction: column; align-items: center; gap: 0; margin-bottom: 4px;
+  }
+  .root-box {
+    background: var(--navy); color: #fff; border-radius: 10px;
+    padding: 10px 28px; font-weight: 700; font-size: 14px; text-align: center;
+  }
+  .root-box small { display: block; font-size: 11px; opacity: .65; font-weight: 400; }
+  .v-line { width: 2px; height: 20px; background: var(--border); }
+  .h-bar { height: 2px; width: 60%; background: var(--border); }
+  .org-cols { display: flex; gap: 14px; width: 100%; margin-top: 0; }
+  .org-col { flex: 1; }
+  .col-label {
+    font-size: 12px; font-weight: 700; padding: 7px 12px;
+    border-radius: 8px 8px 0 0; text-align: center; color: #fff;
+  }
+  .col-label.blue  { background: var(--blue); }
+  .col-label.teal  { background: var(--teal); }
+  .col-body {
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .person {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fafbfc; border-radius: 8px; padding: 8px 12px;
+    border: 1px solid var(--border);
+  }
+  .person.out { border: 1.5px dashed var(--red); background: #fff8f8; }
+  .person .pn { font-weight: 700; font-size: 13px; }
+  .person .pt { font-size: 11px; color: var(--muted); }
+  .tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .tag.out { background: #ffe8e8; color: var(--red); }
+  .tag.sr  { background: #e8f0ff; color: var(--blue); }
+  .tag.gray{ background: #f0f0f2; color: #666; }
+  .out-note {
+    background: #fff0f0; border: 1px dashed var(--red);
+    border-radius: 8px; padding: 10px 14px; margin-top: 10px;
+    font-size: 12px; color: var(--red); font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── WORKFLOW CHART ── */
+  .flow {
+    display: flex; align-items: stretch; gap: 6px;
+    overflow-x: auto; padding: 4px 0 8px;
+  }
+  .fnode { flex: 1; min-width: 120px; display: flex; flex-direction: column; }
+  .fbox {
+    border-radius: 10px; padding: 14px 12px; flex: 1;
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px;
+  }
+  .fbox.b1 { background: #eef3ff; border: 1.5px solid #c0d0f7; }
+  .fbox.b2 { background: #eef3ff; border: 1.5px solid #c0d0f7; }
+  .fbox.b3 { background: #f0f4ff; border: 1.5px solid #b8c8f0; }
+  .fbox.b4 { background: #fff0f0; border: 1.5px dashed var(--red); }
+  .fbox.b5 { background: #e8faf4; border: 1.5px solid #a8e4cc; }
+  .f-step { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
+  .f-who {
+    font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; color: #fff;
+  }
+  .fbox.b1 .f-who, .fbox.b2 .f-who { background: var(--blue); }
+  .fbox.b3 .f-who { background: var(--navy); }
+  .fbox.b4 .f-who { background: var(--red); }
+  .fbox.b5 .f-who { background: var(--teal); }
+  .f-title { font-size: 13px; font-weight: 800; color: var(--navy); line-height: 1.3; }
+  .f-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .f-warn { font-size: 10px; background: #ffe8e8; color: var(--red); border-radius: 6px; padding: 3px 7px; font-weight: 700; margin-top: 2px; }
+  .farrow { display: flex; align-items: center; justify-content: center; color: #c0c8d8; font-size: 18px; flex-shrink: 0; align-self: center; }
+  .flow-note {
+    margin-top: 10px; background: #f5f6fa; border-radius: 8px; padding: 9px 14px;
+    font-size: 12px; color: var(--muted); border: 1px dashed var(--border);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .flow-note .warn { color: var(--red); font-weight: 700; }
+
+  /* ── BOOK TABLE ── */
+  .book-grid { display: flex; flex-direction: column; gap: 6px; }
+  .book-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: #fafbfc; border-radius: 8px; border: 1px solid var(--border);
+  }
+  .book-name { flex: 1; font-weight: 600; font-size: 13px; }
+  .book-bar-wrap { width: 140px; }
+  .book-bar-bg { height: 6px; background: #e8eaed; border-radius: 3px; overflow: hidden; }
+  .book-bar    { height: 6px; border-radius: 3px; }
+  .book-pct { font-size: 13px; font-weight: 800; width: 50px; text-align: right; }
+  .book-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; width: 80px; text-align: center; }
+  .red-bar { background: var(--red); }
+  .orange-bar { background: var(--orange); }
+  .green-bar { background: var(--teal); }
+
+  /* ── CONCERN ── */
+  .concern {
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+    border-left: 3px solid;
+  }
+  .c-purple { background: #f9f5ff; border-color: var(--purple); }
+  .c-red    { background: #fff5f5; border-color: var(--red); }
+  .c-orange { background: #fffbf0; border-color: var(--orange); }
+  .c-gray   { background: #f8f8f8; border-color: #ccc; }
+  .c-title  { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .c-body   { font-size: 12px; color: #555; line-height: 1.55; }
+
+  /* ── ACTIONS ── */
+  .action {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; border-radius: 10px; margin-bottom: 8px;
+    border: 1px solid var(--border); background: #fafbfc;
+  }
+  .action.pu { background: #f9f5ff; border-color: #d8c4ff; }
+  .action.r  { background: #fff5f5; border-color: #ffd0d0; }
+  .action.o  { background: #fffbf0; border-color: #ffe4b8; }
+  .action.g  { background: #f0fdf8; border-color: #a8e4cc; }
+  .a-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .a-text { flex: 1; }
+  .a-title { font-weight: 700; font-size: 13px; color: var(--navy); }
+  .a-meta  { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .a-who { background: #e8f0ff; color: var(--blue); padding: 1px 8px; border-radius: 4px; font-weight: 600; }
+  .a-due { background: #f0f0f2; color: #666; padding: 1px 8px; border-radius: 4px; }
+  .a-due.urgent { background: #ffe8e8; color: var(--red); }
+
+  .footer { text-align: center; color: var(--muted); font-size: 11px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    .flow { flex-direction: column; }
+    .farrow { transform: rotate(90deg); }
+    .status-bar { flex-wrap: wrap; }
+    .org-cols { flex-direction: column; }
+    .top-bar { flex-direction: column; }
+    .top-bar .meta { text-align: left; }
+    .book-bar-wrap { width: 80px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP -->
+  <div class="top-bar">
+    <div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">OpenDurian · How-to Marketing</div>
+      <h1>Team Brief<br><span>พ.ค. 2569</span></h1>
+    </div>
+    <div class="meta">
+      28 พฤษภาคม 2569<br>
+      ปอนด์ · Marketing Supervisor<br>
+      <span style="font-size:10px;opacity:.6;">เตรียมประชุมผู้บริหาร</span>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- STATUS PILLS -->
+  <div class="status-bar">
+    <div class="stat-pill o"><div class="label">Brand Total</div><div class="val">70.0%</div><div class="sub">฿5.29M / ฿7.57M</div></div>
+    <div class="stat-pill r"><div class="label">Online</div><div class="val">66.8%</div><div class="sub">฿3.87M / ฿5.78M</div></div>
+    <div class="stat-pill o"><div class="label">Consignment</div><div class="val">80.1%</div><div class="sub">฿1.43M / ฿1.78M</div></div>
+    <div class="stat-pill o"><div class="label">Gross Profit</div><div class="val">79.8%</div><div class="sub">฿696K / ฿873K</div></div>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="alert a-purple">
+    <span class="icon">👋</span>
+    <div><strong>แนน (Senior Creator) ลาออกวันที่ 20 มิ.ย. 2569</strong> — Creator Side จะไม่มี Senior Lead ทันที</div>
+  </div>
+  <div class="alert a-red">
+    <span class="icon">⚠️</span>
+    <div>Online off-track 66.8% — FC ปิดเดือนที่ <strong>฿4.44M (76.8%)</strong> ยังต่ำกว่าเป้า ฿1.34M · เหลือ 4 วัน ต้องทำ <strong>฿479K/วัน</strong> (3.3× rate ปัจจุบัน)</div>
+  </div>
+
+  <!-- ═══ OVERVIEW CARD ═══ -->
+  <div class="card" style="margin-bottom:28px;border-left:4px solid var(--blue);padding:18px 22px;">
+    <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">ภาพรวมสถานการณ์ · 28 พ.ค. 2569</div>
+    <p style="font-size:13px;line-height:1.75;color:#333;margin-bottom:10px;">
+      เดือนพฤษภาคม <strong>ปิดไม่ถึงเป้าแน่นอน</strong> — Online 66.8% มี 4 วันเหลือแต่ต้องทำ ฿479K/วัน ซึ่ง 3× rate ปัจจุบัน
+      Forecast ดีที่สุดคือ <strong>฿4.44M (76.8%)</strong> โฟกัสเดือนนี้คือ <em>ปิด FC ให้ได้ ไม่ใช่ตาม Target</em>
+    </p>
+    <p style="font-size:13px;line-height:1.75;color:#333;margin-bottom:10px;">
+      <strong>ปัญหาหลัก</strong> มาจาก 2 เล่มที่ดึงพอร์ตลง — <strong>กับดักความรู้สึกผิด (68.6%)</strong> เล่มใหญ่สุดในพอร์ต goal ฿1.52M แต่ได้ไปแค่ ฿1.04M และ <strong>ออฟฟิศสัตว์ (40.1%)</strong> ที่ Ad Spend สูงแต่ conversion ไม่เกิด
+      ส่วน <strong>GP ฟื้นแล้ว 79.8%</strong> FC เหลือขาดเป้าเพียง ฿80K — ทิศทางดีขึ้น
+    </p>
+    <p style="font-size:13px;line-height:1.75;color:#333;margin-bottom:0;">
+      <strong>Live channel</strong> เริ่มมี pattern ชัด — May 14 ROAS 52× คือ benchmark ที่ต้อง reverse-engineer ก่อนวาง June Live plan
+      พร้อมกับเตรียมรับมือ <strong>แนนออก 20 มิ.ย.</strong> ซึ่งจะกระทบ content output เดือน ก.ค. โดยตรง
+    </p>
+  </div>
+
+  <!-- ═══ SECTION 1: TEAM ═══ -->
+  <div class="section">
+    <div class="section-label">01 · โครงสร้างทีม</div>
+    <div class="card">
+      <div class="org-root">
+        <div class="root-box">ปอนด์ — Supervisor <small>วางกลยุทธ์ · กำหนดทิศทาง · ประสานทีม</small></div>
+        <div class="v-line"></div>
+        <div class="h-bar"></div>
+      </div>
+      <div class="org-cols">
+
+        <!-- MARKETER SIDE -->
+        <div class="org-col">
+          <div class="col-label blue">🎯 Marketer (2 คน)</div>
+          <div class="col-body">
+            <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#eef3ff;border-radius:6px;margin-bottom:2px;">
+              <span style="font-size:10px;font-weight:700;color:var(--blue);">🏢 เข้าออฟฟิศ</span>
+              <span style="font-size:11px;font-weight:700;color:var(--navy);">จ · อ · พ · พฤ</span>
+              <span style="font-size:10px;color:var(--muted);">(WFH ศุกร์)</span>
+            </div>
+
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">แก้ม</div><div class="pt">Senior Marketer</div></div>
+                <span class="tag sr">Senior</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#eef3ff;color:var(--blue);padding:2px 9px;border-radius:20px;">วางแผน Ad Strategy</span>
+                <span style="font-size:11px;background:#eef3ff;color:var(--blue);padding:2px 9px;border-radius:20px;">บริหาร Ad Spend</span>
+                <span style="font-size:11px;background:#eef3ff;color:var(--blue);padding:2px 9px;border-radius:20px;">วิเคราะห์ Performance</span>
+              </div>
+            </div>
+
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">แคท</div><div class="pt">Staff Marketer</div></div>
+                <span class="tag gray">Staff</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#f0f0f2;color:#555;padding:2px 9px;border-radius:20px;">Optimize โฆษณารายวัน</span>
+                <span style="font-size:11px;background:#f0f0f2;color:#555;padding:2px 9px;border-radius:20px;">Shopee / TikTok Routine</span>
+                <span style="font-size:11px;background:#f0f0f2;color:#555;padding:2px 9px;border-radius:20px;">Report ยอด</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CREATOR SIDE -->
+        <div class="org-col">
+          <div class="col-label teal">🎬 Creator (5 คน → 4 คน)</div>
+          <div class="col-body">
+            <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#e8faf4;border-radius:6px;margin-bottom:2px;">
+              <span style="font-size:10px;font-weight:700;color:var(--teal);">🏢 เข้าออฟฟิศ</span>
+              <span style="font-size:11px;font-weight:700;color:var(--navy);">จ · พ · พฤ</span>
+              <span style="font-size:10px;color:var(--muted);">(WFH อังคาร + ศุกร์)</span>
+            </div>
+
+            <!-- Senior - leaving -->
+            <div class="person out" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">แนน <span style="font-size:10px;color:var(--red);font-weight:700;">ออก 20 มิ.ย.</span></div><div class="pt">Senior Creator</div></div>
+                <span class="tag out">ว่าง!</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#ffe8e8;color:var(--red);padding:2px 9px;border-radius:20px;">วางแผน Content</span>
+                <span style="font-size:11px;background:#ffe8e8;color:var(--red);padding:2px 9px;border-radius:20px;">ดูแล Creative Direction</span>
+                <span style="font-size:11px;background:#ffe8e8;color:var(--red);padding:2px 9px;border-radius:20px;">Coaching Creator</span>
+              </div>
+            </div>
+
+            <!-- หมิว -->
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">หมิว</div><div class="pt">Content Creator Staff</div></div>
+                <span class="tag" style="background:#f0f0f2;color:#555;">Staff</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#e8faf4;color:var(--teal);padding:2px 9px;border-radius:20px;">📋 ทำ Brief</span>
+                <span style="font-size:11px;background:#e8faf4;color:var(--teal);padding:2px 9px;border-radius:20px;">🖼 ภาพ (บางส่วน)</span>
+              </div>
+            </div>
+
+            <!-- ริว -->
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">ริว</div><div class="pt">Junior Video Content</div></div>
+                <span class="tag" style="background:#f0f0f2;color:#555;">Junior</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#e8f0ff;color:var(--blue);padding:2px 9px;border-radius:20px;">🎬 ทำวิดีโอ</span>
+                <span style="font-size:11px;background:#e8f0ff;color:var(--blue);padding:2px 9px;border-radius:20px;">📡 ออกไลฟ์</span>
+              </div>
+            </div>
+
+            <!-- มิ้น -->
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">มิ้น</div><div class="pt">Video Content Staff</div></div>
+                <span class="tag" style="background:#f0f0f2;color:#555;">Staff</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#e8f0ff;color:var(--blue);padding:2px 9px;border-radius:20px;">🎬 ทำวิดีโอ</span>
+                <span style="font-size:11px;background:#e8f0ff;color:var(--blue);padding:2px 9px;border-radius:20px;">📡 ออกไลฟ์</span>
+              </div>
+            </div>
+
+            <!-- สต๊อป -->
+            <div class="person" style="flex-direction:column;align-items:flex-start;gap:7px;">
+              <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+                <div><div class="pn">สต๊อป</div><div class="pt">Graphic Designer Staff</div></div>
+                <span class="tag" style="background:#f0f0f2;color:#555;">Staff</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                <span style="font-size:11px;background:#e8faf4;color:var(--teal);padding:2px 9px;border-radius:20px;">🖼 ทำภาพ</span>
+                <span style="font-size:11px;background:#e8faf4;color:var(--teal);padding:2px 9px;border-radius:20px;">📡 ออกไลฟ์</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="out-note">
+        ⚠ หลัง 20 มิ.ย. — ตำแหน่ง Senior Creator จะว่าง ทีม Creator 4 คนจะไม่มีหัวหน้าดูแล ต้องวางแผน Succession หรือรับคนใหม่ก่อนวันนั้น
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: WORKFLOW ═══ -->
+  <div class="section">
+    <div class="section-label">02 · Workflow ในทีม</div>
+    <div class="card">
+      <div class="flow">
+
+        <div class="fnode">
+          <div class="fbox b3">
+            <div class="f-step">Step 1</div>
+            <span class="f-who">Marketer</span>
+            <div class="f-title">วางแผน</div>
+            <div class="f-desc">กำหนดเป้า · งบ · ช่องทาง</div>
+          </div>
+        </div>
+        <div class="farrow">›</div>
+
+        <div class="fnode">
+          <div class="fbox" style="background:#f0eeff;border:1.5px solid #c8b8f8;">
+            <div class="f-step">Step 2</div>
+            <span class="f-who" style="background:#6d4fc2;">Marketer + Creator</span>
+            <div class="f-title">Discuss</div>
+            <div class="f-desc">หา concept · กำหนดทิศทางสื่อ</div>
+          </div>
+        </div>
+        <div class="farrow">›</div>
+
+        <div class="fnode">
+          <div class="fbox b4">
+            <div class="f-step">Step 3</div>
+            <span class="f-who">Creator</span>
+            <div class="f-title">ผลิตสื่อ</div>
+            <div class="f-desc">ภาพ / วิดีโอ ตาม concept</div>
+            <div class="f-warn">⚠ ขาด Senior หลัง 20 มิ.ย.</div>
+          </div>
+        </div>
+        <div class="farrow">›</div>
+
+        <div class="fnode">
+          <div class="fbox b1">
+            <div class="f-step">Step 4</div>
+            <span class="f-who">Marketer</span>
+            <div class="f-title">ยิง Ads</div>
+            <div class="f-desc">Meta · TikTok · Shopee</div>
+          </div>
+        </div>
+        <div class="farrow">›</div>
+
+        <div class="fnode">
+          <div class="fbox b5">
+            <div class="f-step">Step 5</div>
+            <span class="f-who">Marketer</span>
+            <div class="f-title">วัดผล + Optimize</div>
+            <div class="f-desc">CTR · CPA · ROAS → วนกลับ</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Responsibility legend -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;background:#f8f9fb;border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);align-self:center;">รับผิดชอบ:</div>
+        <span style="font-size:11px;background:#eef3ff;color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:600;">🎯 Marketer — Step 1, 4, 5 (วางแผน · ยิงแอด · วัดผล)</span>
+        <span style="font-size:11px;background:#f0eeff;color:#6d4fc2;padding:3px 10px;border-radius:20px;font-weight:600;">🤝 Marketer + Creator — Step 2 (discuss concept)</span>
+        <span style="font-size:11px;background:#e8faf4;color:var(--teal);padding:3px 10px;border-radius:20px;font-weight:600;">🎬 Creator — Step 3 (ผลิตสื่อ)</span>
+      </div>
+
+      <div class="flow-note" style="margin-top:8px;">
+        ↺ ยิ่งวน Loop เร็ว ยิ่งเห็นผล
+        <span class="warn">— Step 2–3 เสี่ยงสะดุดหลัง 20 มิ.ย. ถ้าไม่มี Senior Creator นำ discuss</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: KPI ═══ -->
+  <div class="section">
+    <div class="section-label">03 · ยอดขาย MTD รายเล่ม (27 วัน)</div>
+    <div class="card">
+
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:10px;">เล่มที่น่าห่วง</div>
+      <div class="book-grid" style="margin-bottom:18px;">
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">ออฟฟิศนี้เฮงซวย (สัตว์)</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--red)">40.1%</div>
+              <div class="book-badge" style="background:#ffe8e8;color:var(--red);">Critical</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar red-bar" style="width:40.1%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--red)">฿721,773</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿1,798,000</strong></span>
+            <span style="color:var(--red);font-weight:600;">ขาด ฿1,076,227</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">โอบกอดความไม่สมบูรณ์แบบของเธอ (Embrace Your Flaws)</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--red)">21.5%</div>
+              <div class="book-badge" style="background:#ffe8e8;color:var(--red);">Critical</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar red-bar" style="width:21.5%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--red)">฿68,708</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿319,000</strong></span>
+            <span style="color:var(--red);font-weight:600;">ขาด ฿250,292</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">Ghostly Brews ยินดีบริการดวงวิญญาณหลังเที่ยงคืน</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--red)">43.8%</div>
+              <div class="book-badge" style="background:#ffe8e8;color:var(--red);">Critical</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar red-bar" style="width:43.8%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--red)">฿152,569</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿348,000</strong></span>
+            <span style="color:var(--red);font-weight:600;">ขาด ฿195,431</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">กับดักความรู้สึกผิด</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--orange)">68.6%</div>
+              <div class="book-badge" style="background:#fff0db;color:var(--orange);">Caution</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar orange-bar" style="width:68.6%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--orange)">฿1,040,699</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿1,516,700</strong></span>
+            <span style="color:var(--orange);font-weight:600;">ขาด ฿476,001</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:10px;">เล่มที่โอเค 🟢</div>
+      <div class="book-grid">
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (The Millionaire's Top Secret)</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--teal)">282.5%</div>
+              <div class="book-badge" style="background:#e0faf2;color:var(--teal);">Excellent</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar green-bar" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--teal)">฿65,538</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿23,200</strong></span>
+            <span style="color:var(--teal);font-weight:600;">เกิน +฿42,338</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--teal)">243.4%</div>
+              <div class="book-badge" style="background:#e0faf2;color:var(--teal);">Excellent</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar green-bar" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--teal)">฿70,597</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿29,000</strong></span>
+            <span style="color:var(--teal);font-weight:600;">เกิน +฿41,597</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">The Witches' Club ชมรมลับเปลี่ยนชีวิต</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--teal)">149.7%</div>
+              <div class="book-badge" style="background:#e0faf2;color:var(--teal);">On Track</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar green-bar" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--teal)">฿173,653</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿116,000</strong></span>
+            <span style="color:var(--teal);font-weight:600;">เกิน +฿57,653</span>
+          </div>
+        </div>
+
+        <div class="book-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="book-name">Ghostly Remains ปลดพันธนาการดวงวิญญาณหลังความตาย</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="book-pct" style="color:var(--teal)">113.2%</div>
+              <div class="book-badge" style="background:#e0faf2;color:var(--teal);">On Track</div>
+            </div>
+          </div>
+          <div class="book-bar-bg" style="width:100%;"><div class="book-bar green-bar" style="width:100%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+            <span>จริง <strong style="color:var(--teal)">฿65,662</strong></span>
+            <span>เป้า <strong style="color:var(--navy)">฿58,000</strong></span>
+            <span style="color:var(--teal);font-weight:600;">เกิน +฿7,662</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: CONCERNS ═══ -->
+  <div class="section">
+    <div class="section-label">04 · ประเด็นที่ต้องคุย</div>
+
+    <!-- CONCERN 1: Online gap -->
+    <div class="concern c-red">
+      <div class="c-title" style="color:var(--red);">🔴 Online ขาดเป้า ฿1.92M — เหลือ 4 วัน ต้องทำ ฿479K/วัน</div>
+      <div class="c-body" style="margin-top:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="background:#fff5f5;border:1px solid #ffd0d0;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:100px;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;">ยอดจริง (27 วัน)</div>
+            <div style="font-size:18px;font-weight:800;color:var(--red);">฿3.87M</div>
+            <div style="font-size:10px;color:var(--muted);">avg ฿143K/วัน</div>
+          </div>
+          <div style="background:#fff5f5;border:1px solid #ffd0d0;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:100px;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;">ต้องทำให้ได้</div>
+            <div style="font-size:18px;font-weight:800;color:var(--red);">฿1.92M</div>
+            <div style="font-size:10px;color:var(--muted);">ใน 4 วันที่เหลือ</div>
+          </div>
+          <div style="background:#fff0f0;border:1px solid #ffb8b8;border-radius:8px;padding:8px 14px;text-align:center;flex:1;min-width:100px;">
+            <div style="font-size:10px;color:var(--red);font-weight:700;">ต้องทำ/วัน</div>
+            <div style="font-size:18px;font-weight:800;color:var(--red);">฿479K</div>
+            <div style="font-size:10px;color:var(--red);font-weight:600;">3.3× rate ปัจจุบัน</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#666;">ปิดเป้าเดือนนี้เป็นไปไม่ได้แล้ว — Forecast ดีที่สุดคือ <strong>฿4.44M (76.8%)</strong> ควรโฟกัสปิด FC ให้ได้</div>
+      </div>
+    </div>
+
+    <!-- CONCERN 2: Problem books -->
+    <div class="concern c-red">
+      <div class="c-title" style="color:var(--red);">🔴 ออฟฟิศสัตว์ ดึงยอดลงหนักสุด — Ad Spend สูงแต่ conversion ไม่เกิด</div>
+      <div class="c-body" style="margin-top:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="background:#fff5f5;border:1px solid #ffd0d0;border-radius:8px;padding:8px 14px;flex:1;min-width:140px;">
+            <div style="font-weight:700;font-size:13px;color:var(--navy);">ออฟฟิศนี้เฮงซวย (สัตว์)</div>
+            <div style="font-size:22px;font-weight:800;color:var(--red);margin:4px 0;">40.1%</div>
+            <div style="height:5px;background:#ffe0e0;border-radius:3px;overflow:hidden;"><div style="width:40.1%;height:5px;background:var(--red);border-radius:3px;"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">ขาดเป้าไป 59.9% — หนักที่สุดในพอร์ต</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#666;">Ad Spend ต่อเนื่องแต่ conversion ไม่เกิด — ต้อง pause แล้ว rethink creative ใหม่ทั้งหมด ไม่ใช่แค่เพิ่มงบ</div>
+      </div>
+    </div>
+
+    <!-- CONCERN 3: GP -->
+    <div class="concern c-orange">
+      <div class="c-title" style="color:var(--orange);">🟡 Gross Profit 79.8% — ดีขึ้น แต่ FC ยังขาดเป้า ฿80K</div>
+      <div class="c-body" style="margin-top:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="background:#fffbf0;border:1px solid #ffe4b8;border-radius:8px;padding:8px 14px;text-align:center;flex:1;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;">GP จริง (27 วัน)</div>
+            <div style="font-size:18px;font-weight:800;color:var(--orange);">฿696K</div>
+          </div>
+          <div style="background:#fffbf0;border:1px solid #ffe4b8;border-radius:8px;padding:8px 14px;text-align:center;flex:1;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;">เป้า GP</div>
+            <div style="font-size:18px;font-weight:800;color:var(--navy);">฿873K</div>
+          </div>
+          <div style="background:#fffbf0;border:1px solid #ffe4b8;border-radius:8px;padding:8px 14px;text-align:center;flex:1;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;">FC ปิดเดือน</div>
+            <div style="font-size:18px;font-weight:800;color:var(--orange);">฿793K</div>
+            <div style="font-size:10px;color:var(--orange);font-weight:600;">ยังขาด ฿80K</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#666;">GP ดีขึ้นจาก 65.9% → 79.8% ใน 1 วัน — FC ขาดเป้าเหลือแค่ ฿80K แต่ต้อง watch Ad Spend ไม่ให้บาน เพราะเหลือเวลาน้อย</div>
+      </div>
+    </div>
+
+    <!-- CONCERN 4: แนน -->
+    <div class="concern c-purple">
+      <div class="c-title" style="color:var(--purple);">👋 แนนออก 20 มิ.ย. — กระทบ content output ตรงๆ</div>
+      <div class="c-body">ถ้าไม่มี Senior Creator คุม Discuss (Step 2) ก่อนวันนั้น ทีม Creator 4 คนจะไม่มีทิศทาง → content ที่ออกมาคุณภาพตก → ส่งผลต่อยอด <strong>เดือน ก.ค. เป็นต้นไป</strong> (lag ~1 เดือน)</div>
+    </div>
+
+    <!-- CONCERN 5: June goals -->
+    <div class="concern c-gray">
+      <div class="c-title" style="color:#555;">⚪ เป้า มิ.ย. ยังไม่มีในระบบ</div>
+      <div class="c-body">ณ วันที่ 26 พ.ค. Dashboard ยังไม่มีตัวเลขเป้า มิ.ย. — ทีมไม่รู้ว่าต้องวิ่งไปหาอะไร ต้องกำหนดก่อน 1 มิ.ย.</div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 5: LIVE PERFORMANCE ═══ -->
+  <div class="section">
+    <div class="section-label">05 · TikTok Live Performance — พ.ค. 2569</div>
+    <div class="card">
+
+      <!-- Summary KPIs -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+        <div style="background:#f0f4ff;border:1px solid #c0d0f7;border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:100px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">LIVE Sessions</div>
+          <div style="font-size:22px;font-weight:800;color:var(--blue);">6</div>
+          <div style="font-size:10px;color:var(--muted);">May 4,14,20,21,25(×2)</div>
+        </div>
+        <div style="background:#f0f4ff;border:1px solid #c0d0f7;border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:100px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">Rerun Sessions</div>
+          <div style="font-size:22px;font-weight:800;color:var(--navy);">8</div>
+          <div style="font-size:10px;color:var(--muted);">ถ่ายทอดซ้ำ Footage</div>
+        </div>
+        <div style="background:#e8faf4;border:1px solid #a8e4cc;border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:100px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">ยอด Live รวม MTD</div>
+          <div style="font-size:22px;font-weight:800;color:var(--teal);">฿99K</div>
+          <div style="font-size:10px;color:var(--muted);">ระหว่างออกสดเท่านั้น</div>
+        </div>
+        <div style="background:#e8faf4;border:1px solid #a8e4cc;border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:100px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:600;margin-bottom:2px;">Best ROAS (LIVE)</div>
+          <div style="font-size:22px;font-weight:800;color:var(--teal);">52.6×</div>
+          <div style="font-size:10px;color:var(--muted);">May 14 · CPA ฿5.22</div>
+        </div>
+      </div>
+
+      <!-- Session table -->
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">LIVE Sessions — ยอดระหว่างไลฟ์ vs ยอด Shop 3 วันก่อน/หลัง</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#f5f6fa;">
+              <th style="padding:7px 10px;text-align:left;font-weight:700;color:var(--navy);border-bottom:2px solid var(--border);">วันที่</th>
+              <th style="padding:7px 10px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--border);">ยอด Live<br><span style="font-size:10px;font-weight:400;">(ระหว่างไลฟ์)</span></th>
+              <th style="padding:7px 10px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--border);">Pre-Live 3D<br><span style="font-size:10px;font-weight:400;">(3 วันก่อน)</span></th>
+              <th style="padding:7px 10px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--border);">Post-Live 3D<br><span style="font-size:10px;font-weight:400;">(3 วันหลัง)</span></th>
+              <th style="padding:7px 10px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--border);">%Growth<br><span style="font-size:10px;font-weight:400;">(ก่อน→หลัง)</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:7px 10px;font-weight:600;">4 พ.ค. (190 min)</td>
+              <td style="padding:7px 10px;text-align:right;">฿22,663</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿315,780</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿295,717</td>
+              <td style="padding:7px 10px;text-align:right;color:#888;">-6.4%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f9fff9;">
+              <td style="padding:7px 10px;font-weight:600;">14 พ.ค. <span style="color:var(--teal);font-size:11px;">★ Best</span> (130 min)</td>
+              <td style="padding:7px 10px;text-align:right;font-weight:700;color:var(--teal);">฿13,094</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿163,942</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿133,929</td>
+              <td style="padding:7px 10px;text-align:right;color:#888;">-18.3%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:#f9fff9;">
+              <td style="padding:7px 10px;font-weight:600;">20 พ.ค. <span style="color:var(--teal);font-size:11px;">🔥 Post-Live Best</span> (188 min)</td>
+              <td style="padding:7px 10px;text-align:right;font-weight:700;">฿25,848</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿133,251</td>
+              <td style="padding:7px 10px;text-align:right;font-weight:700;color:var(--teal);">฿169,794</td>
+              <td style="padding:7px 10px;text-align:right;font-weight:700;color:var(--teal);">+27.4%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:7px 10px;font-weight:600;">21 พ.ค. (129 min)</td>
+              <td style="padding:7px 10px;text-align:right;">฿14,665</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿161,938</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿140,766</td>
+              <td style="padding:7px 10px;text-align:right;color:#888;">-13.1%</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:7px 10px;font-weight:600;">25 พ.ค. (×2 sessions)</td>
+              <td style="padding:7px 10px;text-align:right;">฿22,312</td>
+              <td style="padding:7px 10px;text-align:right;color:var(--muted);">฿140,766</td>
+              <td style="padding:7px 10px;text-align:right;color:#aaa;">—</td>
+              <td style="padding:7px 10px;text-align:right;color:#aaa;">ยังรอ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Insights -->
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px;">
+        <div style="background:#f0fdf8;border:1px solid #a8e4cc;border-radius:8px;padding:9px 14px;font-size:12px;color:#333;">
+          <strong style="color:var(--teal);">✅ May 20 คือ LIVE ที่ดีที่สุดเชิง Post-Live Effect</strong> — หลัง Live ยอด Shop 3 วันโต +27.4% เทียบกับก่อน Live สะท้อนว่า Live ช่วย "ปลุก" audience ได้จริง
+        </div>
+        <div style="background:#f0f4ff;border:1px solid #c0d0f7;border-radius:8px;padding:9px 14px;font-size:12px;color:#333;">
+          <strong style="color:var(--blue);">📌 May 14 ROAS 52.6× / CPA ฿5.22</strong> — Session สั้นสุด (130 min) แต่ efficient สูงสุด ควรศึกษา pattern คน / content / เวลา
+        </div>
+        <div style="background:#fffbf0;border:1px solid #ffe4b8;border-radius:8px;padding:9px 14px;font-size:12px;color:#333;">
+          <strong style="color:var(--orange);">⚠️ May 21 ROAS ต่ำสุด (11.0×)</strong> — ทำ Live วันรุ่งขึ้นต่อจาก May 20 ทันที, audience อาจ fatigue
+        </div>
+      </div>
+
+      <!-- June Live Plan -->
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">แผน LIVE มิถุนายน 2569</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="background:#eef3ff;border:1px solid #c0d0f7;border-radius:8px;padding:10px 14px;flex:1;min-width:120px;text-align:center;">
+            <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">📡 LIVE</div>
+            <div style="font-size:20px;font-weight:800;color:var(--blue);">5 ครั้ง</div>
+            <div style="font-size:10px;color:var(--muted);">2 / 5 / 10 / 15 / 25 มิ.ย.</div>
+          </div>
+          <div style="background:#f5f6fa;border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:120px;text-align:center;">
+            <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;">🔄 Rerun</div>
+            <div style="font-size:20px;font-weight:800;color:var(--navy);">13 ครั้ง</div>
+            <div style="font-size:10px;color:var(--muted);">Footage May ที่ดี</div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #ffe4b8;border-radius:8px;padding:10px 14px;flex:1;min-width:120px;text-align:center;">
+            <div style="font-size:11px;color:var(--orange);font-weight:700;margin-bottom:4px;">🎯 Key Events</div>
+            <div style="font-size:14px;font-weight:800;color:var(--orange);">6.6 / PayDay</div>
+            <div style="font-size:10px;color:var(--muted);">FB 6.6 · PayDay 24 มิ.ย.</div>
+          </div>
+        </div>
+        <div style="background:#f8f9fb;border-radius:8px;border:1px dashed var(--border);padding:9px 14px;font-size:12px;color:#555;">
+          🗓 <strong>25 มิ.ย.</strong> = PayDay Live — วันที่มีโอกาสสูงสุดใน June เพราะ PayDay + LIVE session ตรงกัน ควรเตรียม coupon + promotion ล่วงหน้า
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 6: ACTIONS ═══ -->
+  <div class="section">
+    <div class="section-label">06 · สิ่งที่ต้องทำ</div>
+
+    <div class="action pu">
+      <div class="a-dot" style="background:var(--purple);"></div>
+      <div class="a-text">
+        <div class="a-title">วางแผน Succession แนน — หา Senior ใหม่ หรือ promote จากทีม</div>
+        <div class="a-meta">
+          <span class="a-who">ปอนด์ + ผู้บริหาร</span>
+          <span class="a-due urgent">ก่อน 20 มิ.ย. 2569</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action r">
+      <div class="a-dot" style="background:var(--red);"></div>
+      <div class="a-text">
+        <div class="a-title">ทบทวน creative strategy ออฟฟิศสัตว์ — pause + rethink creative ใหม่ทั้งหมด</div>
+        <div class="a-meta">
+          <span class="a-who">ปอนด์ + แนน</span>
+          <span class="a-due">ภายใน 30 พ.ค.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action r">
+      <div class="a-dot" style="background:var(--red);"></div>
+      <div class="a-text">
+        <div class="a-title">กำหนดเป้า มิ.ย. และใส่เข้า Dashboard</div>
+        <div class="a-meta">
+          <span class="a-who">ผู้บริหาร + ปอนด์</span>
+          <span class="a-due urgent">ภายใน 1 มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action o">
+      <div class="a-dot" style="background:var(--orange);"></div>
+      <div class="a-text">
+        <div class="a-title">วิเคราะห์ Ad Spend efficiency แยกช่องทาง</div>
+        <div class="a-meta">
+          <span class="a-who">แก้ม + แคท</span>
+          <span class="a-due">28 พ.ค.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action" style="background:#fafbfc;">
+      <div class="a-dot" style="background:#aaa;"></div>
+      <div class="a-text">
+        <div class="a-title">วาง Content Calendar มิ.ย. ก่อนปิดเดือน</div>
+        <div class="a-meta">
+          <span class="a-who">แนน + ทีม Creator</span>
+          <span class="a-due">31 พ.ค.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action g">
+      <div class="a-dot" style="background:var(--teal);"></div>
+      <div class="a-text">
+        <div class="a-title">Scale budget เพิ่มให้ คาปิบาร่า + Witches' Club + ความลับสู่เงินล้าน</div>
+        <div class="a-meta">
+          <span class="a-who">แก้ม</span>
+          <span class="a-due">ทำได้เลย</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action g">
+      <div class="a-dot" style="background:var(--teal);"></div>
+      <div class="a-text">
+        <div class="a-title">วาง LIVE plan มิ.ย. — เตรียม coupon/promotion สำหรับ 25 มิ.ย. PayDay Live</div>
+        <div class="a-meta">
+          <span class="a-who">ปอนด์ + ริว + มิ้น</span>
+          <span class="a-due urgent">ก่อน 5 มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action o">
+      <div class="a-dot" style="background:var(--orange);"></div>
+      <div class="a-text">
+        <div class="a-title">วิเคราะห์ LIVE May 14 pattern — ทำไม ROAS 52× ได้ (time/content/audience)</div>
+        <div class="a-meta">
+          <span class="a-who">ริว + มิ้น</span>
+          <span class="a-due">ภายใน 1 มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action" style="background:#fdf0ff;border-color:#d8b4fe;">
+      <div class="a-dot" style="background:var(--purple);"></div>
+      <div class="a-text">
+        <div class="a-title">Influencer Campaign — เบิกหนังสือฟรี + Commit รีวิว + ค่าคอมพิเศษ</div>
+        <div style="margin-top:6px;font-size:12px;color:#555;line-height:1.6;">
+          ให้ Influ รับเล่มฟรี → Commit ว่าจะรีวิวให้ → ถ้าปิดยอดได้รับค่าคอมพิเศษ (สูงกว่า Affiliate ปกติ)
+          <br>เล่มเป้าหมาย: <strong>คิ้วต่ำ · คิดมาก · เหนื่อยมากไหม · ความลับสู่เงินล้านฯ · Boxset สวน · Helmet Girl</strong>
+        </div>
+        <div class="a-meta" style="margin-top:6px;">
+          <span class="a-who">ปอนด์ + แนน</span>
+          <span class="a-due urgent">ก่อน 5 มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action" style="background:#fdf0ff;border-color:#d8b4fe;">
+      <div class="a-dot" style="background:var(--purple);"></div>
+      <div class="a-text">
+        <div class="a-title">Seeding — Drive Consignment ผ่าน Online Awareness</div>
+        <div style="margin-top:6px;font-size:12px;color:#555;line-height:1.6;">
+          เล่มที่หน้าร้าน (Consignment) ยังมีสต็อก แต่ Online ใกล้หมด → ใช้ Online Awareness ผลักคนไปซื้อ Off-shelf แทน
+          <br>เล่มเป้าหมาย: <strong>คิ้วต่ำ · คิดมาก · เหนื่อยมากไหม · ความลับสู่เงินล้านฯ · Boxset สวน · Helmet Girl</strong>
+        </div>
+        <div class="a-meta" style="margin-top:6px;">
+          <span class="a-who">แก้ม + ทีม Creator</span>
+          <span class="a-due urgent">ก่อน 5 มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action" style="background:#fdf0ff;border-color:#d8b4fe;">
+      <div class="a-dot" style="background:var(--purple);"></div>
+      <div class="a-text">
+        <div class="a-title">Quiz Interactive — สร้าง Engagement Content เพื่อ Drive Awareness หนังสือ</div>
+        <div style="margin-top:6px;font-size:12px;color:#555;line-height:1.6;">
+          ทำ Quiz / Interactive Content บน TikTok / IG / Facebook — ดึง audience เข้ามา engage แล้วนำไปสู่การซื้อหนังสือ
+          <br>ตัวอย่าง: "คุณเป็นคนแบบไหน? ← ตอบ Quiz แล้วแนะนำเล่มที่ใช่"
+        </div>
+        <div class="a-meta" style="margin-top:6px;">
+          <span class="a-who">ทีม Creator</span>
+          <span class="a-due">มิ.ย.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    How-to Marketing Dashboard · ข้อมูล ณ 28 พ.ค. 2569 (27 วัน) · Confidential
+  </div>
+
+</div>
+</body>
+</html>

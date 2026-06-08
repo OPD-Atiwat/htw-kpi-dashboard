@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOW-TO Margin Model May–Dec 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:#2e3350;
+  --text:#e8eaf6;--muted:#7b82a8;--blue:#4f8ef7;--green:#2dd4a0;
+  --red:#f75555;--yellow:#f7c34f;--purple:#a78bfa;--orange:#fb923c;--teal:#22d3ee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#1a1d27,#12162a);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+.hdr h1{font-size:16px;font-weight:700;}.hdr .sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.badge{background:#1e3a5f;color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+
+/* Controls */
+.ctrl-panel{background:var(--surface);border-bottom:2px solid var(--border);padding:12px 24px;display:grid;grid-template-columns:auto 1fr 1fr 1fr auto;gap:16px;align-items:end;}
+.cg label{display:block;font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.cg .vd{font-size:14px;font-weight:700;color:var(--yellow);margin-bottom:3px;}
+input[type=range]{width:100%;accent-color:var(--blue);}
+.rng-row{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:1px;}
+.sbg{display:flex;gap:5px;}
+.sb{padding:5px 13px;border-radius:5px;border:1px solid var(--border);cursor:pointer;font-size:11px;font-weight:600;background:var(--surface2);color:var(--muted);}
+.sb.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.sb:hover:not(.on){border-color:var(--blue);color:var(--text);}
+
+/* Launch bar */
+.lbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:9px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.lbl{font-size:10px;color:var(--muted);white-space:nowrap;}
+select.ls{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 9px;border-radius:5px;font-size:11px;cursor:pointer;}
+select.ls:focus{outline:none;border-color:var(--blue);}
+.rule-chip{background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);border-radius:5px;padding:4px 10px;font-size:10px;color:var(--blue);margin-left:auto;}
+
+/* Main */
+.main{padding:16px 24px;display:grid;gap:14px;}
+
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.kc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;}
+.kc .kl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+.kc .kv{font-size:19px;font-weight:700;margin:3px 0 1px;}
+.kc .ks{font-size:10px;color:var(--muted);}
+.kc .kd{font-size:10px;font-weight:600;}
+
+/* Section header */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.sec-hdr h2{font-size:13px;font-weight:700;}
+.sec-hdr .hint{font-size:10px;color:var(--muted);}
+
+/* ── GOAL TABLE ── */
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.goal-card .gc-hdr{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.gc-hdr h2{font-size:13px;font-weight:700;}
+.gc-hdr .formula{font-size:10px;color:var(--muted);font-family:monospace;background:var(--surface2);padding:3px 8px;border-radius:4px;}
+
+.goal-table{width:100%;border-collapse:collapse;}
+.goal-table thead tr{background:#12162a;}
+.goal-table th{padding:8px 10px;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;}
+.goal-table th:first-child{text-align:left;}
+.goal-table td{padding:7px 10px;text-align:right;border-bottom:1px solid rgba(46,51,80,.4);font-size:12px;}
+.goal-table td:first-child{text-align:left;}
+.goal-table tr:last-child td{border-bottom:none;}
+.goal-table tr:hover td{background:rgba(79,142,247,.03);}
+
+/* sub-header rows inside table */
+.sub-head td{background:rgba(79,142,247,.07);font-size:9px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:5px 10px;}
+.divrow td{height:2px;background:var(--border);padding:0;}
+
+.mc{font-weight:700;white-space:nowrap;}
+.tag{display:inline-block;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:3px;vertical-align:middle;font-weight:700;}
+.tn{background:rgba(45,212,160,.15);color:var(--green);}
+.te{background:rgba(167,139,250,.15);color:var(--purple);}
+.tb{background:rgba(34,211,238,.15);color:var(--teal);}
+.ta{background:rgba(247,195,79,.1);color:var(--yellow);}
+
+.pill{display:inline-block;padding:2px 7px;border-radius:9px;font-size:10px;font-weight:700;}
+.pg{background:rgba(45,212,160,.15);color:var(--green);}
+.pr{background:rgba(247,85,85,.15);color:var(--red);}
+.py{background:rgba(247,195,79,.15);color:var(--yellow);}
+
+.pos{color:var(--green);}.neg{color:var(--red);}.warn{color:var(--yellow);}
+
+/* Gap bar */
+.gbar-wrap{width:80px;display:inline-block;vertical-align:middle;margin-left:4px;}
+.gbar-bg{background:rgba(46,51,80,.6);border-radius:3px;height:5px;width:100%;}
+.gbar-fill{height:5px;border-radius:3px;transition:width .3s;}
+
+/* Charts */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;}
+.cc h3{font-size:11px;font-weight:700;margin-bottom:10px;}
+.cw{position:relative;height:200px;}
+
+/* Insight */
+.igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.ib2{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;}
+.ib2 .it{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.ib2 .ib{font-size:11px;line-height:1.65;}
+.warn-b{border-color:rgba(247,195,79,.4);background:rgba(247,195,79,.03);}
+.danger-b{border-color:rgba(247,85,85,.4);background:rgba(247,85,85,.03);}
+.ok-b{border-color:rgba(45,212,160,.4);background:rgba(45,212,160,.03);}
+
+footer{padding:12px 24px;font-size:10px;color:var(--muted);border-top:1px solid var(--border);text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>📊 HOW-TO Margin Model — May–Dec 2026</h1>
+    <div class="sub">Goal Seek: Online & Consign ต้องเท่าไหร่ → Margin เท่าไหร่ | Consign boost = เดือนถัดไปเสมอ</div>
+  </div>
+  <span class="badge">v3 — Goal Seek</span>
+</div>
+
+<!-- Controls -->
+<div class="ctrl-panel">
+  <div class="cg">
+    <label>Scenario Preset</label>
+    <div class="sbg">
+      <button class="sb" id="sb-cons" onclick="setScen('cons')">🐻 Cons</button>
+      <button class="sb on" id="sb-base" onclick="setScen('base')">📘 Base</button>
+      <button class="sb" id="sb-bull" onclick="setScen('bull')">🚀 Bull</button>
+    </div>
+  </div>
+  <div class="cg">
+    <label>MKT% (ต้นทุน Marketing ต่อ Online Rev)</label>
+    <div class="vd" id="d-mkt">39%</div>
+    <input type="range" id="s-mkt" min="32" max="48" value="39" step="1" oninput="slide()">
+    <div class="rng-row"><span>32% (ดีมาก)</span><span>48% (สูง)</span></div>
+  </div>
+  <div class="cg">
+    <label>VAR% (ต้นทุนผันแปรต่อ Online Rev)</label>
+    <div class="vd" id="d-var">40%</div>
+    <input type="range" id="s-var" min="36" max="45" value="40" step="1" oninput="slide()">
+    <div class="rng-row"><span>36%</span><span>45%</span></div>
+  </div>
+  <div class="cg">
+    <label>Online Base Adjustment</label>
+    <div class="vd" id="d-base">+0%</div>
+    <input type="range" id="s-base" min="-20" max="30" value="0" step="5" oninput="slide()">
+    <div class="rng-row"><span>−20%</span><span>+30%</span></div>
+  </div>
+  <div class="cg">
+    <label>Reset</label>
+    <button class="sb" style="padding:8px 16px" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="lbar">
+  <span class="lbl">ออฟฟิศฯ Online Peak:</span>
+  <select class="ls" id="sel-office"><option value="5" selected>May</option></select>
+  <span class="lbl">อ่านใจ Launch:</span>
+  <select class="ls" id="sel-anjai" onchange="go()">
+    <option value="6">June</option>
+    <option value="7" selected>July</option>
+    <option value="8">August</option>
+  </select>
+  <span class="lbl">X Title Launch:</span>
+  <select class="ls" id="sel-x" onchange="go()">
+    <option value="8">August</option>
+    <option value="9" selected>September</option>
+    <option value="10">October</option>
+    <option value="0">ไม่มี</option>
+  </select>
+  <div class="rule-chip">📌 Consign M+1: Online spike เดือน Launch → Consign surge เดือนถัดไป</div>
+</div>
+
+<div class="main">
+  <div class="krow" id="krow"></div>
+
+  <!-- ── SECTION 1: GOAL SEEK TABLE ── -->
+  <div>
+    <div class="sec-hdr">
+      <h2>🎯 Goal Seek — ต้องขายเท่าไหร่ถึงได้ Margin ตาม Plan?</h2>
+      <span class="hint">สูตร: Online Req = (Plan Margin + 880 − Consign×35%) ÷ (1−MKT%−VAR%) | Consign Req = (Plan Margin − Online Net + 880) ÷ 35%</span>
+    </div>
+    <div class="goal-card">
+      <div class="gc-hdr">
+        <h2>Revenue Requirements vs Forecast — May–Dec 2026</h2>
+        <span class="formula">Net Margin = Online×(1−MKT%−VAR%) − 880 + Consign×35% + BF×35%</span>
+      </div>
+      <table class="goal-table">
+        <thead>
+          <tr>
+            <th rowspan="2">เดือน</th>
+            <!-- PLAN column group -->
+            <th colspan="3" style="text-align:center;border-left:2px solid var(--border);color:var(--blue)">🎯 Plan Target</th>
+            <!-- REQUIRED column group -->
+            <th colspan="2" style="text-align:center;border-left:2px solid rgba(247,195,79,.4);color:var(--yellow)">📐 Required (Goal Seek)</th>
+            <!-- FORECAST column group -->
+            <th colspan="3" style="text-align:center;border-left:2px solid rgba(45,212,160,.3);color:var(--green)">📊 Forecast (Current)</th>
+            <!-- GAP -->
+            <th colspan="2" style="text-align:center;border-left:2px solid rgba(247,85,85,.3);color:var(--red)">⚡ Gap to Close</th>
+            <th rowspan="2">Status</th>
+          </tr>
+          <tr>
+            <th style="border-left:2px solid var(--border)">Online Plan</th>
+            <th>Consign Plan</th>
+            <th>Margin Plan</th>
+            <th style="border-left:2px solid rgba(247,195,79,.4)">Online Req<br><span style="color:var(--muted);font-weight:400">(given fcst consign)</span></th>
+            <th>Consign Req<br><span style="color:var(--muted);font-weight:400">(given fcst online)</span></th>
+            <th style="border-left:2px solid rgba(45,212,160,.3)">Online Fcst</th>
+            <th>Consign Fcst</th>
+            <th>Margin Fcst</th>
+            <th style="border-left:2px solid rgba(247,85,85,.3)">Online Gap</th>
+            <th>Consign Gap</th>
+          </tr>
+        </thead>
+        <tbody id="goal-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: FULL P&L TABLE ── -->
+  <div>
+    <div class="sec-hdr">
+      <h2>📋 Full Monthly P&L — Forecast Detail</h2>
+      <span class="hint">หน่วย K฿ | Jan–Apr = Actual | May–Dec = Forecast</span>
+    </div>
+    <div class="goal-card">
+      <table class="goal-table">
+        <thead>
+          <tr>
+            <th>เดือน / Event</th>
+            <th>Online</th>
+            <th>Consign</th>
+            <th>BF</th>
+            <th>Total Rev</th>
+            <th style="color:var(--yellow)">MKT%</th>
+            <th style="color:var(--orange)">VAR%</th>
+            <th>MKT+VAR</th>
+            <th>Fix Cost</th>
+            <th>Consign GP</th>
+            <th>BF GP</th>
+            <th style="color:var(--green)">Net Margin</th>
+            <th>Margin%</th>
+            <th>vs Plan</th>
+          </tr>
+        </thead>
+        <tbody id="pl-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="cgrid">
+    <div class="cc">
+      <h3>🎯 Online — Plan vs Required vs Forecast (K฿)</h3>
+      <div class="cw"><canvas id="c-online"></canvas></div>
+    </div>
+    <div class="cc">
+      <h3>📦 Consign — Plan vs Required vs Forecast (K฿)</h3>
+      <div class="cw"><canvas id="c-consign"></canvas></div>
+    </div>
+    <div class="cc">
+      <h3>💰 Margin — Plan vs Forecast (K฿)</h3>
+      <div class="cw"><canvas id="c-margin"></canvas></div>
+    </div>
+    <div class="cc">
+      <h3>🗓 Cumulative Margin — Full Year (K฿)</h3>
+      <div class="cw"><canvas id="c-cum"></canvas></div>
+    </div>
+  </div>
+
+  <div class="igrid" id="insights"></div>
+</div>
+
+<footer>HOW-TO Marketing Universe | Sheet 400 v8 + Product Monitor | v3 Goal Seek — Online & Consign targets per month</footer>
+
+<script>
+// ════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════
+const FIX = 880;
+const MN  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// Sheet 400 Plan (K฿) — index 0=Jan
+const PLAN_ONLINE  = [2984, 4457, 4618, 4020, 5800, 6150, 6200, 6300, 4900, 6500, 2925, 2925];
+const PLAN_CONSIGN = [1894, 1601, 1912, 1307, 1783, 2460, 2480, 2520, 1960, 1250, 1170, 1170];
+const PLAN_MARGIN  = [575,   959, 1162,  580,  873, 1333, 1350, 1385,  993, 1118,  262,  262];
+const PLAN_BF      = [0, 0, 0, 0, 0, 0, 0, 0, 0, 800, 0, 0];
+
+// Jan–Apr Actuals
+const ACTUALS = [
+  {m:1,online:2984,consign:1894,bf:0,margin:575,tags:['กับดัก']},
+  {m:2,online:4457,consign:1601,bf:0,margin:959,tags:[]},
+  {m:3,online:4618,consign:1912,bf:0,margin:1162,tags:[]},
+  {m:4,online:4020,consign:1307,bf:0,margin:580,tags:[]},
+];
+
+// Portfolio baseline May–Dec (K฿) — existing titles, no new launches
+const PORT_ONLINE  = {5:4100,6:3850,7:3620,8:3430,9:3280,10:3500,11:2800,12:2600};
+const PORT_CONSIGN = {5:1200,6:1130,7:1060,8:1000,9:1050,10:900,11:820,12:760};
+
+// New title launch contribution (K฿)
+// Online = peaks in LAUNCH month
+// Consign = flows in M+1 (next month)
+const LNC = {
+  office: {online:520, consign:280, onEcho:80},
+  anjai:  {online:460, consign:240, onEcho:70},
+  x:      {online:410, consign:200, onEcho:60},
+};
+
+const SCEN_BOOST = {cons:.70, base:1.00, bull:1.30};
+const SCEN_PORT  = {cons:.93, base:1.00, bull:1.08};
+const SCEN_MKT   = {cons:42, base:39, bull:36};
+const SCEN_VAR   = {cons:41, base:40, bull:39};
+
+let scenario = 'base';
+let charts   = {};
+
+// ════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════
+function setScen(s) {
+  scenario = s;
+  ['cons','base','bull'].forEach(x => document.getElementById('sb-'+x).classList.toggle('on', x===s));
+  document.getElementById('s-mkt').value  = SCEN_MKT[s];
+  document.getElementById('s-var').value  = SCEN_VAR[s];
+  document.getElementById('s-base').value = 0;
+  slide();
+}
+function slide() {
+  const m  = +document.getElementById('s-mkt').value;
+  const v  = +document.getElementById('s-var').value;
+  const b  = +document.getElementById('s-base').value;
+  document.getElementById('d-mkt').textContent  = m + '%';
+  document.getElementById('d-var').textContent  = v + '%';
+  document.getElementById('d-base').textContent = (b >= 0 ? '+' : '') + b + '%';
+  go();
+}
+function resetAll() {
+  setScen('base');
+}
+function go() {
+  const MKT    = +document.getElementById('s-mkt').value  / 100;
+  const VAR    = +document.getElementById('s-var').value  / 100;
+  const BADJ   = 1 + (+document.getElementById('s-base').value) / 100;
+  const anjaiM = +document.getElementById('sel-anjai').value;
+  const xM     = +document.getElementById('sel-x').value;
+  const bm     = SCEN_PORT[scenario];
+  const lm     = SCEN_BOOST[scenario];
+  const CONTRIB = 1 - MKT - VAR; // online contribution margin rate
+
+  // ── Build forecast rows May–Dec ──
+  const rows = [];
+  for (let m = 5; m <= 12; m++) {
+    let online  = Math.round(PORT_ONLINE[m]  * bm * BADJ);
+    let consign = Math.round(PORT_CONSIGN[m] * bm * BADJ);
+    let bf      = 0;
+    let tags    = [];
+
+    // Online spikes in launch month
+    if (m === 5)     { online += Math.round(LNC.office.online * lm); tags.push({l:'ออฟฟิศฯ',c:'tn'}); }
+    if (m === anjaiM){ online += Math.round(LNC.anjai.online  * lm); tags.push({l:'อ่านใจ',  c:'tn'}); }
+    if (xM>0 && m === xM){ online += Math.round(LNC.x.online  * lm); tags.push({l:'X',       c:'tn'}); }
+
+    // Online echo M+1
+    if (m === 6)          online += Math.round(LNC.office.onEcho * lm);
+    if (m === anjaiM + 1 && m <= 12) online += Math.round(LNC.anjai.onEcho * lm);
+    if (xM > 0 && m === xM + 1 && m <= 12) online += Math.round(LNC.x.onEcho * lm);
+
+    // Consign surges in M+1 (NEXT month after launch)
+    if (m === 6)          { consign += Math.round(LNC.office.consign * lm); tags.push({l:'↑C ออฟฟิศฯ',c:'te'}); }
+    if (m === anjaiM + 1 && m <= 12){ consign += Math.round(LNC.anjai.consign  * lm); tags.push({l:'↑C อ่านใจ', c:'te'}); }
+    if (xM > 0 && m === xM + 1 && m <= 12){ consign += Math.round(LNC.x.consign * lm); tags.push({l:'↑C X',      c:'te'}); }
+
+    if (m === 10){ bf = Math.round(scenario==='cons'?720:scenario==='bull'?1050:880); tags.push({l:'BF',c:'tb'}); }
+
+    const totalRev  = online + consign + bf;
+    const mktCost   = Math.round(online * MKT);
+    const varCost   = Math.round(online * VAR);
+    const consignGP = Math.round(consign * .35);
+    const bfGP      = Math.round(bf * .35);
+    const netMargin = Math.round(online * CONTRIB) - FIX + consignGP + bfGP;
+    const marginPct = totalRev > 0 ? netMargin / totalRev * 100 : 0;
+    const planM     = PLAN_MARGIN[m-1];
+    const planOn    = PLAN_ONLINE[m-1];
+    const planCo    = PLAN_CONSIGN[m-1];
+    const planBF    = PLAN_BF[m-1];
+
+    // ── GOAL SEEK ──
+    // Required Online (given forecast consign & bf)
+    // online_req * CONTRIB - 880 + consign*0.35 + bf_plan*0.35 = planM
+    // online_req = (planM + 880 - consignGP - planBF*0.35) / CONTRIB
+    const reqOnline  = CONTRIB > 0 ? Math.round((planM + FIX - consignGP - planBF * .35) / CONTRIB) : 0;
+
+    // Required Consign (given forecast online)
+    // online*CONTRIB - 880 + consign_req*0.35 + bf*0.35 = planM
+    // consign_req = (planM - online*CONTRIB + 880 - bfGP) / 0.35
+    const reqConsign = Math.round((planM - Math.round(online * CONTRIB) + FIX - bfGP) / .35);
+
+    const onlineGap  = online  - reqOnline;   // neg = need more online
+    const consignGap = consign - reqConsign;  // neg = need more consign
+    const vsplan     = netMargin - planM;
+
+    rows.push({m, name:MN[m-1], online, consign, bf, totalRev, mktCost, varCost,
+               consignGP, bfGP, netMargin, marginPct, planM, planOn, planCo,
+               reqOnline, reqConsign, onlineGap, consignGap, vsplan, tags, CONTRIB, MKT, VAR});
+  }
+
+  renderKPI(rows);
+  renderGoalTable(rows);
+  renderPLTable(rows);
+  renderCharts(rows);
+  renderInsights(rows, anjaiM, xM);
+}
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+const f   = n  => Math.round(n).toLocaleString('th-TH');
+const pct = n  => n.toFixed(1) + '%';
+const cls = (v, good=0) => v >= good ? 'pos' : v >= good - 300 ? 'warn' : 'neg';
+
+function gbar(v, max, color) {
+  const pct = Math.min(100, Math.max(0, Math.abs(v) / max * 100));
+  return `<div class="gbar-wrap"><div class="gbar-bg"><div class="gbar-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
+}
+
+// ════════════════════════════════════════════
+// KPI ROW
+// ════════════════════════════════════════════
+function renderKPI(rows) {
+  const totF  = rows.reduce((a,r) => a + r.netMargin, 0);
+  const totP  = rows.reduce((a,r) => a + r.planM, 0);
+  const ytd   = 575 + 959 + 1162 + 580;
+  const fy    = ytd + totF;
+  const fyGap = fy - 10861;
+  const achievable = rows.filter(r => r.netMargin >= r.planM * .90).length;
+  const worst = rows.reduce((a,r) => r.netMargin < a.netMargin ? r : a);
+
+  document.getElementById('krow').innerHTML = `
+    <div class="kc">
+      <div class="kl">Full Year Jan–Dec 2026</div>
+      <div class="kv ${fy>=9000?'pos':fy>=7500?'warn':'neg'}">${f(fy)}K</div>
+      <div class="ks">Plan 10,861K</div>
+      <div class="kd ${fyGap>=0?'pos':'neg'}">${fyGap>=0?'+':''}${f(fyGap)}K vs plan</div>
+    </div>
+    <div class="kc">
+      <div class="kl">May–Dec Forecast</div>
+      <div class="kv ${totF>=totP*.85?'warn':'neg'}">${f(totF)}K</div>
+      <div class="ks">Plan ${f(totP)}K</div>
+      <div class="kd ${totF-totP>=0?'pos':'neg'}">${totF-totP>=0?'+':''}${f(totF-totP)}K</div>
+    </div>
+    <div class="kc">
+      <div class="kl">Jan–Apr YTD Actual</div>
+      <div class="kv pos">${f(ytd)}K</div>
+      <div class="ks">4 เดือน confirmed ✓</div>
+      <div class="kd" style="color:var(--teal)">avg ${f(ytd/4)}K/mo</div>
+    </div>
+    <div class="kc">
+      <div class="kl">เดือนที่ Achieve Plan</div>
+      <div class="kv ${achievable>=5?'pos':achievable>=3?'warn':'neg'}">${achievable}/8 เดือน</div>
+      <div class="ks">≥ 90% of plan margin</div>
+      <div class="kd">${achievable>=5?'✓ Good':achievable>=3?'⚠ Partial':'✗ Most miss'}</div>
+    </div>
+    <div class="kc">
+      <div class="kl">เดือน Risk สูงสุด</div>
+      <div class="kv ${worst.netMargin<0?'neg':'warn'}">${worst.name}: ${f(worst.netMargin)}K</div>
+      <div class="ks">${pct(worst.marginPct)} margin</div>
+      <div class="kd neg">vs plan ${f(worst.vsplan)}K</div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════
+// GOAL TABLE
+// ════════════════════════════════════════════
+function renderGoalTable(rows) {
+  let h = '';
+  const maxOnGap = 2000, maxCoGap = 1000;
+
+  rows.forEach(r => {
+    const onGapCls  = r.onlineGap  >= 0 ? 'pos' : r.onlineGap  >= -500 ? 'warn' : 'neg';
+    const coGapCls  = r.consignGap >= 0 ? 'pos' : r.consignGap >= -300 ? 'warn' : 'neg';
+    const status    = r.netMargin >= r.planM * .90 ? ['pg','✓ On Track'] :
+                      r.netMargin >= r.planM * .60 ? ['py','⚠ Stretch']  : ['pr','✗ Gap'];
+
+    h += `<tr>
+      <td class="mc">${r.name}
+        ${r.tags.map(t=>`<span class="tag ${t.c}">${t.l}</span>`).join('')}
+      </td>
+      <!-- Plan -->
+      <td style="border-left:2px solid var(--border)"><b>${f(r.planOn)}</b></td>
+      <td>${f(r.planCo)}</td>
+      <td><b style="color:var(--blue)">${f(r.planM)}</b></td>
+      <!-- Required -->
+      <td style="border-left:2px solid rgba(247,195,79,.4)">
+        <b class="${r.reqOnline > r.online ? 'warn' : 'pos'}">${f(r.reqOnline)}</b>
+      </td>
+      <td>
+        <b class="${r.reqConsign > r.consign ? 'warn' : 'pos'}">${f(Math.max(0, r.reqConsign))}</b>
+      </td>
+      <!-- Forecast -->
+      <td style="border-left:2px solid rgba(45,212,160,.3)">${f(r.online)}</td>
+      <td>${f(r.consign)}</td>
+      <td><b class="${r.netMargin>=r.planM*.9?'pos':r.netMargin>=r.planM*.6?'warn':'neg'}">${f(r.netMargin)}</b></td>
+      <!-- Gap -->
+      <td style="border-left:2px solid rgba(247,85,85,.3)">
+        <span class="${onGapCls}">${r.onlineGap>=0?'+':''}${f(r.onlineGap)}</span>
+        ${r.onlineGap < 0 ? gbar(r.onlineGap, maxOnGap, 'var(--red)') : ''}
+      </td>
+      <td>
+        <span class="${coGapCls}">${r.consignGap>=0?'+':''}${f(r.consignGap)}</span>
+        ${r.consignGap < 0 ? gbar(r.consignGap, maxCoGap, 'var(--orange)') : ''}
+      </td>
+      <td><span class="pill ${status[0]}">${status[1]}</span></td>
+    </tr>`;
+  });
+
+  // Total row
+  const totPlanOn  = rows.reduce((a,r)=>a+r.planOn,0);
+  const totPlanCo  = rows.reduce((a,r)=>a+r.planCo,0);
+  const totPlanM   = rows.reduce((a,r)=>a+r.planM,0);
+  const totReqOn   = rows.reduce((a,r)=>a+r.reqOnline,0);
+  const totReqCo   = rows.reduce((a,r)=>a+Math.max(0,r.reqConsign),0);
+  const totFcstOn  = rows.reduce((a,r)=>a+r.online,0);
+  const totFcstCo  = rows.reduce((a,r)=>a+r.consign,0);
+  const totFcstM   = rows.reduce((a,r)=>a+r.netMargin,0);
+  const totOnGap   = totFcstOn - totReqOn;
+  const totCoGap   = totFcstCo - totReqCo;
+
+  h += `<tr style="font-weight:700;background:rgba(79,142,247,.07);border-top:2px solid var(--border)">
+    <td>รวม May–Dec</td>
+    <td style="border-left:2px solid var(--border)">${f(totPlanOn)}</td>
+    <td>${f(totPlanCo)}</td>
+    <td style="color:var(--blue)">${f(totPlanM)}</td>
+    <td style="border-left:2px solid rgba(247,195,79,.4)">${f(totReqOn)}</td>
+    <td>${f(totReqCo)}</td>
+    <td style="border-left:2px solid rgba(45,212,160,.3)">${f(totFcstOn)}</td>
+    <td>${f(totFcstCo)}</td>
+    <td class="${totFcstM>=totPlanM*.85?'warn':'neg'}">${f(totFcstM)}</td>
+    <td style="border-left:2px solid rgba(247,85,85,.3)" class="${totOnGap>=0?'pos':'neg'}">${totOnGap>=0?'+':''}${f(totOnGap)}</td>
+    <td class="${totCoGap>=0?'pos':'neg'}">${totCoGap>=0?'+':''}${f(totCoGap)}</td>
+    <td></td>
+  </tr>`;
+
+  document.getElementById('goal-tbody').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// P&L TABLE
+// ════════════════════════════════════════════
+function renderPLTable(rows) {
+  let h = '';
+
+  // Actuals
+  ACTUALS.forEach(a => {
+    const rv  = a.online + a.consign;
+    const cGP = Math.round(a.consign * .35);
+    const vs  = a.margin - PLAN_MARGIN[a.m-1];
+    h += `<tr style="font-size:11px;color:var(--muted)">
+      <td class="mc" style="color:var(--text)">${MN[a.m-1]}
+        ${a.tags.map(t=>`<span class="tag ta">${t}</span>`).join('')}
+        <span class="tag" style="background:rgba(34,211,238,.1);color:var(--teal)">actual</span>
+      </td>
+      <td>${f(a.online)}</td><td>${f(a.consign)}</td><td>—</td><td>${f(rv)}</td>
+      <td>—</td><td>—</td><td>—</td>
+      <td class="neg">(${f(880)})</td>
+      <td class="pos">${f(cGP)}</td><td>—</td>
+      <td><b class="${a.margin>=900?'pos':a.margin>=500?'warn':'neg'}">${f(a.margin)}</b></td>
+      <td>${pct(a.margin/rv*100)}</td>
+      <td class="${vs>=0?'pos':vs>=-200?'warn':'neg'}">${vs>=0?'+':''}${f(vs)}</td>
+    </tr>`;
+  });
+
+  h += `<tr><td colspan="14" style="height:2px;background:var(--border);padding:0;"></td></tr>`;
+
+  rows.forEach(r => {
+    const vs = r.vsplan;
+    h += `<tr>
+      <td class="mc">${r.name}
+        ${r.tags.map(t=>`<span class="tag ${t.c}">${t.l}</span>`).join('')}
+        <span class="tag" style="background:rgba(79,142,247,.1);color:var(--blue);font-size:8px">fcst</span>
+      </td>
+      <td>${f(r.online)}</td>
+      <td>${f(r.consign)}</td>
+      <td>${r.bf>0?f(r.bf):'—'}</td>
+      <td>${f(r.totalRev)}</td>
+      <td style="color:var(--yellow)">${pct(r.MKT*100)}</td>
+      <td style="color:var(--orange)">${pct(r.VAR*100)}</td>
+      <td class="neg">(${f(r.mktCost+r.varCost)})</td>
+      <td class="neg">(${f(880)})</td>
+      <td class="pos">${f(r.consignGP)}</td>
+      <td class="pos">${r.bfGP>0?f(r.bfGP):'—'}</td>
+      <td><b class="${r.netMargin>=800?'pos':r.netMargin>=200?'warn':'neg'}">${f(r.netMargin)}</b></td>
+      <td>${pct(r.marginPct)}</td>
+      <td class="${vs>=0?'pos':vs>=-300?'warn':'neg'}">${vs>=0?'+':''}${f(vs)}</td>
+    </tr>`;
+  });
+
+  // Totals
+  const tOn=rows.reduce((a,r)=>a+r.online,0);
+  const tCo=rows.reduce((a,r)=>a+r.consign,0);
+  const tBF=rows.reduce((a,r)=>a+r.bf,0);
+  const tRv=rows.reduce((a,r)=>a+r.totalRev,0);
+  const tMg=rows.reduce((a,r)=>a+r.netMargin,0);
+  const tPl=rows.reduce((a,r)=>a+r.planM,0);
+  h += `<tr style="font-weight:700;background:rgba(79,142,247,.06);border-top:2px solid var(--border)">
+    <td>รวม May–Dec</td>
+    <td>${f(tOn)}</td><td>${f(tCo)}</td><td>${f(tBF)}</td><td>${f(tRv)}</td>
+    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+    <td class="${tMg>=tPl*.85?'warn':'neg'}">${f(tMg)}</td>
+    <td>${pct(tMg/tRv*100)}</td>
+    <td class="${tMg-tPl>=0?'pos':'neg'}">${tMg-tPl>=0?'+':''}${f(tMg-tPl)}</td>
+  </tr>`;
+
+  const fy=575+959+1162+580+tMg;
+  h += `<tr style="font-weight:700;background:rgba(79,142,247,.1)">
+    <td>🎯 Full Year Jan–Dec</td>
+    <td colspan="10" style="text-align:center;color:var(--muted);font-size:10px">YTD 3,276K + Forecast ${f(tMg)}K</td>
+    <td class="${fy>=9000?'pos':fy>=7500?'warn':'neg'}">${f(fy)}</td>
+    <td>${pct(fy/(tRv+4878+6058+6012+5327)*100)}</td>
+    <td class="${fy-10861>=0?'pos':'neg'}">${fy-10861>=0?'+':''}${f(fy-10861)}</td>
+  </tr>`;
+
+  document.getElementById('pl-tbody').innerHTML = h;
+}
+
+// ════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════
+function renderCharts(rows) {
+  const lbl = rows.map(r=>r.name);
+  Object.values(charts).forEach(c=>c.destroy()); charts={};
+
+  const base = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#7b82a8',font:{size:10},boxWidth:10}}},
+    scales:{
+      x:{grid:{color:'rgba(46,51,80,.4)'},ticks:{color:'#7b82a8',font:{size:10}}},
+      y:{grid:{color:'rgba(46,51,80,.4)'},ticks:{color:'#7b82a8',font:{size:10}}}
+    }
+  };
+
+  charts.online = new Chart(document.getElementById('c-online'),{
+    type:'bar', data:{labels:lbl, datasets:[
+      {label:'Plan Online',    data:rows.map(r=>r.planOn),     backgroundColor:'rgba(79,142,247,.2)', borderColor:'#4f8ef7',borderWidth:1.5,type:'line',fill:false,tension:.3,pointRadius:3},
+      {label:'Required Online',data:rows.map(r=>r.reqOnline),  backgroundColor:'rgba(247,195,79,.2)', borderColor:'#f7c34f',borderWidth:1.5,type:'line',fill:false,tension:.3,borderDash:[4,2],pointRadius:3},
+      {label:'Forecast Online',data:rows.map(r=>r.online),     backgroundColor:rows.map(r=>r.online>=r.reqOnline?'rgba(45,212,160,.6)':'rgba(247,85,85,.6)'),borderRadius:4},
+    ]}, options:{...base}
+  });
+
+  charts.consign = new Chart(document.getElementById('c-consign'),{
+    type:'bar', data:{labels:lbl, datasets:[
+      {label:'Plan Consign',    data:rows.map(r=>r.planCo),                  backgroundColor:'rgba(79,142,247,.2)',borderColor:'#4f8ef7',borderWidth:1.5,type:'line',fill:false,tension:.3,pointRadius:3},
+      {label:'Required Consign',data:rows.map(r=>Math.max(0,r.reqConsign)), backgroundColor:'rgba(247,195,79,.2)',borderColor:'#f7c34f',borderWidth:1.5,type:'line',fill:false,tension:.3,borderDash:[4,2],pointRadius:3},
+      {label:'Forecast Consign',data:rows.map(r=>r.consign),                backgroundColor:rows.map(r=>r.consign>=r.reqConsign?'rgba(45,212,160,.6)':'rgba(247,195,79,.6)'),borderRadius:4},
+    ]}, options:{...base}
+  });
+
+  charts.margin = new Chart(document.getElementById('c-margin'),{
+    type:'bar', data:{labels:lbl, datasets:[
+      {label:'Plan',    data:rows.map(r=>r.planM),     type:'line',borderColor:'#4f8ef7',borderWidth:2,fill:false,tension:.3,pointRadius:3},
+      {label:'Forecast',data:rows.map(r=>r.netMargin), backgroundColor:rows.map(r=>r.netMargin>=r.planM*.9?'rgba(45,212,160,.7)':r.netMargin>=r.planM*.6?'rgba(247,195,79,.7)':'rgba(247,85,85,.7)'),borderRadius:4},
+    ]}, options:{...base}
+  });
+
+  const ytd=575+959+1162+580; let accF=ytd,accP=ytd;
+  const cumF=rows.map(r=>{accF+=r.netMargin;return accF;});
+  const cumP=rows.map(r=>{accP+=r.planM;return accP;});
+  charts.cum = new Chart(document.getElementById('c-cum'),{
+    type:'line', data:{labels:lbl, datasets:[
+      {label:'Cumulative Forecast',data:cumF,borderColor:'#2dd4a0',backgroundColor:'rgba(45,212,160,.06)',fill:true,borderWidth:2.5,tension:.3},
+      {label:'Cumulative Plan',    data:cumP,borderColor:'#4f8ef7',borderWidth:1.5,borderDash:[5,3],fill:false,tension:.3},
+      {label:'Target 10,861K',     data:Array(lbl.length).fill(10861),borderColor:'rgba(247,85,85,.4)',borderWidth:1,borderDash:[2,4],pointRadius:0,fill:false},
+    ]}, options:{...base}
+  });
+}
+
+// ════════════════════════════════════════════
+// INSIGHTS
+// ════════════════════════════════════════════
+function renderInsights(rows, anjaiM, xM) {
+  const totF = rows.reduce((a,r)=>a+r.netMargin,0);
+  const fy   = 575+959+1162+580+totF;
+  const onlineShortfall  = rows.filter(r=>r.onlineGap<0).reduce((a,r)=>a+Math.abs(r.onlineGap),0);
+  const consignShortfall = rows.filter(r=>r.consignGap<0).reduce((a,r)=>a+Math.abs(r.consignGap),0);
+
+  const junRow = rows.find(r=>r.m===6);
+  const juneHasLaunch = anjaiM===6;
+
+  const consignTiming = [];
+  consignTiming.push(`ออฟฟิศฯ (May) → Consign boost ใน <b>Jun</b>`);
+  if (anjaiM+1<=12) consignTiming.push(`อ่านใจ (${MN[anjaiM-1]}) → Consign boost ใน <b>${MN[anjaiM]}</b>`);
+  if (xM>0 && xM+1<=12) consignTiming.push(`X (${MN[xM-1]}) → Consign boost ใน <b>${MN[xM]}</b>`);
+
+  document.getElementById('insights').innerHTML = `
+    <div class="ib2 ${onlineShortfall>5000?'danger-b':'warn-b'}">
+      <div class="it">📐 Goal Seek Summary</div>
+      <div class="ib">
+        Online Shortfall รวม: <b class="neg">${f(onlineShortfall)}K</b><br>
+        Consign Shortfall รวม: <b class="warn">${f(consignShortfall)}K</b><br><br>
+        ถ้าต้องการ hit Plan ทุกเดือน ต้องหา:<br>
+        • Online เพิ่ม avg <b class="neg">${f(onlineShortfall/8)}K/mo</b><br>
+        • Consign เพิ่ม avg <b class="warn">${f(consignShortfall/8)}K/mo</b><br><br>
+        <span style="color:var(--muted);font-size:10px">หมายเหตุ: Required คำนวณแบบ hold อีกตัวคงที่</span>
+      </div>
+    </div>
+    <div class="ib2 ok-b">
+      <div class="it">📌 Consign Timing — M+1 Rule</div>
+      <div class="ib">
+        ${consignTiming.map(s=>`• ${s}<br>`).join('')}<br>
+        ดังนั้น Consign ใน Jun จะสูงแม้ไม่มี new launch ใน Jun<br>
+        เพราะเป็น <b>echo จาก ออฟฟิศฯ (May)</b><br><br>
+        ${juneHasLaunch
+          ? `<span class="pos">✓ อ่านใจ ใน Jun = Online + Consign echo ใน Jul</span>`
+          : `<span class="warn">⚠ Jun online ยังต่ำ — ลอง switch อ่านใจ เป็น Jun</span>`}
+      </div>
+    </div>
+    <div class="ib2 ${fy>=9000?'ok-b':fy>=7500?'warn-b':'danger-b'}">
+      <div class="it">🎯 Realistic Full-Year Target</div>
+      <div class="ib">
+        Plan เดิม: <b>10,861K</b><br>
+        Forecast ปัจจุบัน: <b class="${fy>=9000?'pos':fy>=7500?'warn':'neg'}">${f(fy)}K</b><br>
+        Gap: <span class="neg">${f(fy-10861)}K</span><br><br>
+        <b>เป้า Revised ที่เหมาะสม:</b><br>
+        🐻 Cons: 7,500–8,000K<br>
+        📘 <b class="pos">Base แนะนำ: 8,500–9,000K</b><br>
+        🚀 Bull: 9,500–10,000K<br><br>
+        <i style="color:var(--muted)">ปรับ MKT%/VAR%/Base เพื่อ sensitivity test</i>
+      </div>
+    </div>
+  `;
+}
+
+// Init
+go();
+</script>
+</body>
+</html>

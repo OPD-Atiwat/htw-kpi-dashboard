@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Marketing Plan — ออฟฟิศนี้เฮงซวย (สัตว์) 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0a0a;
+  --surface:#111;
+  --surface2:#161616;
+  --border:#1f1f1f;
+  --border2:#2a2a2a;
+  --red:#E31E24;
+  --text:#eee;
+  --muted:#666;
+  --faint:#333;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:"IBM Plex Sans Thai",sans-serif;}
+
+/* ─── CHROME ───────────────────────────────────────────── */
+#bar{
+  position:fixed;top:0;left:0;right:0;height:48px;
+  background:rgba(10,10,10,.97);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:300;backdrop-filter:blur(10px);
+}
+.bar-title{font-size:12px;font-weight:600;letter-spacing:.02em;color:#bbb;}
+.bar-r{display:flex;align-items:center;gap:8px;}
+#ctr{font-size:11px;color:var(--muted);min-width:46px;text-align:center;}
+.btn{
+  background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text);padding:0 14px;height:28px;border-radius:5px;
+  font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;
+  display:inline-flex;align-items:center;gap:5px;transition:border-color .15s;
+}
+.btn:hover{border-color:#444;}
+.btn-red{background:var(--red);border-color:var(--red);}
+.btn-red:hover{background:#c0181e;border-color:#c0181e;}
+#prog{
+  position:fixed;top:48px;left:0;height:2px;
+  background:var(--red);z-index:301;transition:width .25s ease;
+}
+#botbar{
+  position:fixed;bottom:0;left:0;right:0;height:48px;
+  background:rgba(10,10,10,.97);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;z-index:300;padding:0 12px;overflow-x:auto;
+  scrollbar-width:none;
+}
+#botbar::-webkit-scrollbar{display:none;}
+.dot{
+  width:8px;height:8px;border-radius:50%;padding:0;
+  background:var(--faint);border:1px solid #3a3a3a;cursor:pointer;
+  flex-shrink:0;transition:all .2s;
+}
+.dot:hover{background:#555;}
+.dot.active{background:var(--red);border-color:var(--red);transform:scale(1.4);}
+.sdot{border-color:var(--red);}
+.sdot.active{background:var(--red);}
+
+/* ─── PANEL ────────────────────────────────────────────── */
+#panel{
+  position:fixed;right:0;top:48px;bottom:48px;
+  width:0;overflow:hidden;background:rgba(10,10,10,.98);
+  border-left:1px solid var(--border);z-index:200;
+  transition:width .25s ease;
+}
+#panel.open{width:188px;}
+#panel-inner{width:188px;height:100%;overflow-y:auto;}
+#panel-inner::-webkit-scrollbar{width:3px;}
+#panel-inner::-webkit-scrollbar-thumb{background:var(--faint);}
+.tr{
+  padding:9px 12px;cursor:pointer;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:9px;
+  transition:background .12s;
+}
+.tr:hover{background:var(--surface);}
+.tr.active{background:var(--surface2);border-left:2px solid var(--red);}
+.tn{font-size:10px;color:var(--muted);min-width:20px;font-weight:600;font-variant-numeric:tabular-nums;}
+.tt{font-size:11px;color:#bbb;line-height:1.35;}
+
+/* ─── STAGE ────────────────────────────────────────────── */
+#stage{
+  position:fixed;top:48px;left:0;right:0;bottom:48px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
+
+/* ─── SLIDES ───────────────────────────────────────────── */
+.slide{
+  position:absolute;display:none;border-radius:3px;overflow:hidden;
+  background:var(--bg);
+}
+.slide.active{display:block;}
+.slide img{width:100%;height:100%;object-fit:contain;display:block;}
+
+/* ─── HTML SLIDES BASE ─────────────────────────────────── */
+.hs{background:var(--bg);}
+.hs-wrap{
+  width:100%;height:100%;
+  display:grid;grid-template-columns:30% 1fr;
+  padding:3.5% 4%;gap:4%;
+}
+.hs-left{
+  display:flex;flex-direction:column;justify-content:center;gap:.6em;
+}
+.hs-tag{
+  font-size:clamp(9px,.85vw,12px);font-weight:600;
+  color:var(--red);letter-spacing:.08em;text-transform:uppercase;
+}
+.hs-h1{
+  font-size:clamp(18px,2.8vw,40px);font-weight:700;line-height:1.2;
+  color:#fff;
+}
+.hs-h1 em{font-style:normal;color:var(--red);}
+.hs-h2{
+  font-size:clamp(13px,1.6vw,22px);font-weight:600;line-height:1.3;color:#ddd;
+}
+.hs-lead{
+  font-size:clamp(9px,1vw,13px);color:var(--muted);line-height:1.6;
+  border-left:2px solid var(--border2);padding-left:.8em;
+}
+.hs-right{display:flex;flex-direction:column;justify-content:center;gap:2%;}
+.hs-cta{
+  background:var(--surface);border:1px solid var(--border2);
+  border-left:2px solid var(--red);
+  padding:.7em 1em;border-radius:4px;
+  font-size:clamp(9px,.9vw,12px);font-weight:500;color:#bbb;
+  margin-top:auto;
+}
+.red{color:var(--red);}
+
+/* ─── SLIDE 9: ANIMALS ─────────────────────────────────── */
+.animal-list{display:flex;flex-direction:column;gap:2%;flex:1;}
+.animal-row{
+  display:flex;align-items:center;gap:3%;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:7px;padding:.9em 1em;
+  transition:border-color .15s;
+}
+.animal-row:hover{border-color:var(--border2);}
+.a-icon{font-size:clamp(16px,1.8vw,26px);flex-shrink:0;}
+.a-body{display:flex;flex-direction:column;gap:2px;}
+.a-body strong{font-size:clamp(10px,1.1vw,15px);font-weight:600;color:#fff;}
+.a-body span{font-size:clamp(8px,.85vw,11px);color:var(--muted);}
+
+/* ─── SLIDE 12: CARDS ──────────────────────────────────── */
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:2%;height:100%;}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:1em 1.1em;
+  display:flex;flex-direction:column;gap:.4em;
+  transition:border-color .15s;
+}
+.card:hover{border-color:var(--border2);}
+.card-num{font-size:clamp(20px,2.8vw,40px);font-weight:700;color:var(--red);line-height:1;}
+.card-title{font-size:clamp(11px,1.15vw,16px);font-weight:600;color:#fff;}
+.card-body{font-size:clamp(8px,.88vw,12px);color:var(--muted);line-height:1.55;}
+
+/* ─── SLIDE 13: GAMES ──────────────────────────────────── */
+.game-stack{display:flex;flex-direction:column;gap:2%;flex:1;}
+.game-row{
+  display:flex;align-items:center;gap:3%;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:7px;padding:.8em 1em;flex:1;
+}
+.g-num{
+  font-size:clamp(22px,3vw,44px);font-weight:700;color:var(--red);
+  min-width:clamp(32px,4vw,56px);text-align:center;line-height:1;flex-shrink:0;
+}
+.g-body{display:flex;flex-direction:column;gap:3px;}
+.g-body strong{font-size:clamp(10px,1.1vw,15px);font-weight:600;color:#fff;}
+.g-body span{font-size:clamp(8px,.85vw,11px);color:var(--muted);}
+
+/* ─── SLIDE 21: STRATEGY ───────────────────────────────── */
+.strat-wrap{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  padding:2.8% 3.5%;gap:2%;
+}
+.strat-head{}
+.strat-label{
+  font-size:clamp(9px,.85vw,11px);font-weight:700;
+  color:var(--red);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:.3em;
+}
+.strat-title{font-size:clamp(16px,2vw,28px);font-weight:700;color:#fff;line-height:1.2;}
+.strat-top{display:grid;grid-template-columns:28% 1fr;gap:1.5%;flex:0 0 42%;}
+.strat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:1.2em 1.3em;
+  display:flex;flex-direction:column;gap:.6em;
+  overflow:hidden;
+}
+.sc-label{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--red);letter-spacing:.06em;}
+.sc-big{font-size:clamp(13px,1.5vw,21px);font-weight:700;color:#fff;line-height:1.3;}
+.sc-note{font-size:clamp(8px,.82vw,11px);color:var(--muted);line-height:1.55;margin-top:auto;}
+
+/* Key Message steps */
+.msg-steps{display:flex;flex-direction:column;gap:.5em;flex:1;}
+.msg-step{display:flex;align-items:flex-start;gap:.7em;}
+.ms-tag{
+  flex-shrink:0;
+  background:var(--red);color:#fff;
+  font-size:clamp(7px,.75vw,10px);font-weight:700;letter-spacing:.06em;
+  padding:.2em .5em;border-radius:3px;margin-top:.15em;
+  min-width:clamp(40px,5vw,64px);text-align:center;
+}
+.ms-text{font-size:clamp(9px,.92vw,12px);color:#ccc;line-height:1.5;}
+
+/* Timeline */
+.tl-label{font-size:clamp(9px,.85vw,11px);font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+.tl-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1%;flex:1;min-height:0;}
+.tl-col{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;display:flex;flex-direction:column;
+}
+.tc-head{
+  padding:.7em 1em;background:var(--surface2);
+  border-bottom:1px solid var(--border);
+}
+.tc-phase{font-size:clamp(8px,.78vw,10px);color:var(--muted);margin-bottom:2px;}
+.tc-name{font-size:clamp(11px,1.1vw,15px);font-weight:700;}
+.tc-goal{font-size:clamp(8px,.78vw,10px);color:var(--muted);margin-top:2px;}
+.tc1{border-top:2px solid #E31E24;} .tc1 .tc-name{color:#E31E24;}
+.tc2{border-top:2px solid #E67E22;} .tc2 .tc-name{color:#E67E22;}
+.tc3{border-top:2px solid #f0c040;} .tc3 .tc-name{color:#f0c040;}
+.tc4{border-top:2px solid #7B5EA7;} .tc4 .tc-name{color:#7B5EA7;}
+.tc-list{
+  list-style:none;padding:.6em .9em;
+  display:flex;flex-direction:column;gap:.35em;flex:1;
+}
+.tc-list li{
+  font-size:clamp(8px,.82vw,11px);color:#999;line-height:1.4;
+  padding-left:.8em;position:relative;
+}
+.tc-list li::before{content:"·";position:absolute;left:0;color:var(--faint);}
+.tc-list li b{color:#ccc;font-weight:600;}
+.tc-list li.hot b{color:var(--red);}
+.tc-list li.hot{color:#bbb;}
+</style>
+</head>
+<body>
+
+<div id="bar">
+  <div class="bar-title">Marketing Plan — ออฟฟิศนี้เฮงซวย (สัตว์) 2026</div>
+  <div class="bar-r">
+    <button class="btn" onclick="go(cur-1)">&#9664;</button>
+    <span id="ctr">01 / 21</span>
+    <button class="btn" onclick="go(cur+1)">&#9654;</button>
+    <button class="btn btn-red" onclick="togglePanel()">&#9776;</button>
+  </div>
+</div>
+
+<div id="prog"></div>
+
+<div id="panel"><div id="panel-inner">
+<div class="tr" id="tr1" onclick="go(1)"><span class="tn">01</span><span class="tt">Cover</span></div>
+<div class="tr" id="tr2" onclick="go(2)"><span class="tn">02</span><span class="tt">สารบัญ</span></div>
+<div class="tr" id="tr3" onclick="go(3)"><span class="tn">03</span><span class="tt">Market Overview</span></div>
+<div class="tr" id="tr4" onclick="go(4)"><span class="tn">04</span><span class="tt">Target Audience</span></div>
+<div class="tr" id="tr5" onclick="go(5)"><span class="tn">05</span><span class="tt">Product</span></div>
+<div class="tr" id="tr6" onclick="go(6)"><span class="tn">06</span><span class="tt">Channel Strategy</span></div>
+<div class="tr" id="tr7" onclick="go(7)"><span class="tn">07</span><span class="tt">Content Pillars</span></div>
+<div class="tr" id="tr8" onclick="go(8)"><span class="tn">08</span><span class="tt">Calendar</span></div>
+<div class="tr" id="tr9" onclick="go(9)"><span class="tn">09</span><span class="tt">6 พ.ค. — Book Teaser</span></div>
+<div class="tr" id="tr10" onclick="go(10)"><span class="tn">10</span><span class="tt">Channel Distribution</span></div>
+<div class="tr" id="tr11" onclick="go(11)"><span class="tn">11</span><span class="tt">BEP Analysis</span></div>
+<div class="tr" id="tr12" onclick="go(12)"><span class="tn">12</span><span class="tt">26 พ.ค. — สิงโต</span></div>
+<div class="tr" id="tr13" onclick="go(13)"><span class="tn">13</span><span class="tt">2 มิ.ย. — 4 Toxic Games</span></div>
+<div class="tr" id="tr14" onclick="go(14)"><span class="tn">14</span><span class="tt">Budget</span></div>
+<div class="tr" id="tr15" onclick="go(15)"><span class="tn">15</span><span class="tt">Timeline</span></div>
+<div class="tr" id="tr16" onclick="go(16)"><span class="tn">16</span><span class="tt">KPI</span></div>
+<div class="tr" id="tr17" onclick="go(17)"><span class="tn">17</span><span class="tt">Risk</span></div>
+<div class="tr" id="tr18" onclick="go(18)"><span class="tn">18</span><span class="tt">Action Plan</span></div>
+<div class="tr" id="tr19" onclick="go(19)"><span class="tn">19</span><span class="tt">Team</span></div>
+<div class="tr" id="tr20" onclick="go(20)"><span class="tn">20</span><span class="tt">Appendix</span></div>
+<div class="tr" id="tr21" onclick="go(21)"><span class="tn">21</span><span class="tt">Content Strategy</span></div>
+</div></div>
+
+<div id="stage">
+<div class="slide" data-slide="1"><img src="slides_img/slide-01.jpg" alt="Cover"></div>
+<div class="slide" data-slide="2"><img src="slides_img/slide-02.jpg" alt="สารบัญ"></div>
+<div class="slide" data-slide="3"><img src="slides_img/slide-03.jpg" alt="Market Overview"></div>
+<div class="slide" data-slide="4"><img src="slides_img/slide-04.jpg" alt="Target Audience"></div>
+<div class="slide" data-slide="5"><img src="slides_img/slide-05.jpg" alt="Product Overview"></div>
+<div class="slide" data-slide="6"><img src="slides_img/slide-06.jpg" alt="Channel Strategy"></div>
+<div class="slide" data-slide="7"><img src="slides_img/slide-07.jpg" alt="Content Pillars"></div>
+<div class="slide" data-slide="8"><img src="slides_img/slide-08.jpg" alt="Content Calendar"></div>
+<div class="slide hs" data-slide="9">
+<div class="hs-wrap">
+  <div class="hs-left">
+    <p class="hs-tag">POST · 6 พ.ค. 68</p>
+    <h1 class="hs-h1">คุณทำงานกับ<br><em>"สัตว์"</em><br>ประเภทไหน?</h1>
+    <p class="hs-lead">นับดูสิ — ออฟฟิศคุณมีกี่ตัว</p>
+  </div>
+  <div class="hs-right">
+    <div class="animal-list">
+      <div class="animal-row">
+        <span class="a-icon">🐶</span>
+        <div class="a-body">
+          <strong>หมาบ้าปากร้าย</strong>
+          <span>ด่าทุกอย่าง วิจารณ์ทุกคน ไม่มีใครถูกใจ</span>
+        </div>
+      </div>
+      <div class="animal-row">
+        <span class="a-icon">🕷️</span>
+        <div class="a-body">
+          <strong>แมงมุมจอมบงการ</strong>
+          <span>ดึงสายใยควบคุมทุกคนในทีมโดยไม่รู้ตัว</span>
+        </div>
+      </div>
+      <div class="animal-row">
+        <span class="a-icon">🦅</span>
+        <div class="a-body">
+          <strong>เหยี่ยวจอมจับผิด</strong>
+          <span>จ้องจับผิดทุกจุด ไม่มีใครพ้นสายตา</span>
+        </div>
+      </div>
+      <div class="animal-row">
+        <span class="a-icon">🦁</span>
+        <div class="a-body">
+          <strong>สิงโตบ้าอำนาจ</strong>
+          <span>ครองเวที ข่มทุกคน อยากใหญ่คนเดียว</span>
+        </div>
+      </div>
+      <div class="animal-row">
+        <span class="a-icon">🦆</span>
+        <div class="a-body">
+          <strong>แม่เป็ดอุ้มชูดูแลแต่ลูกรัก</strong>
+          <span>รักแบบเอนเอียง ทำทีมแตกทุกครั้ง</span>
+        </div>
+      </div>
+    </div>
+    <div class="hs-cta">
+      ✦ &nbsp;"ออฟฟิศนี้เฮงซวย (สัตว์)" — วางจำหน่ายแล้ววันนี้
+    </div>
+  </div>
+</div>
+</div>
+<div class="slide" data-slide="10"><img src="slides_img/slide-10.jpg" alt="Channel Distribution"></div>
+<div class="slide" data-slide="11"><img src="slides_img/slide-11.jpg" alt="BEP Analysis"></div>
+<div class="slide hs" data-slide="12">
+<div class="hs-wrap">
+  <div class="hs-left">
+    <p class="hs-tag">POST · 26 พ.ค. 68</p>
+    <h1 class="hs-h1"><span class="red">สิงโต<br>บ้าอำนาจ</span></h1>
+    <p class="hs-h2">รู้จักเกมของเขา<br>แล้วคุณจะชนะ</p>
+    <p class="hs-lead">เขาไม่ได้เก่งกว่าคุณ<br>แค่เล่นเกมอำนาจเป็นกว่า</p>
+  </div>
+  <div class="hs-right">
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">อ่านเกมออก</div>
+        <div class="card-body">จดจำรูปแบบพฤติกรรม ว่าเขาใช้อำนาจตอนไหน กับใคร เพื่ออะไร</div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">อย่าเล่นในสนามเขา</div>
+        <div class="card-body">เลือก Battleground ที่คุณได้เปรียบ อย่าสู้ด้วยเงื่อนไขของเขา</div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <div class="card-title">ข้อมูลแทนอารมณ์</div>
+        <div class="card-body">สิงโตกลัวตัวเลขและหลักฐาน ไม่กลัวคนที่โกรธ</div>
+      </div>
+      <div class="card">
+        <div class="card-num">04</div>
+        <div class="card-title">สร้าง Alliance</div>
+        <div class="card-body">คนเดียวสู้สิงโตไม่ได้ แต่ทีมที่แน่นพร้อมทุกคู่</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="slide hs" data-slide="13">
+<div class="hs-wrap">
+  <div class="hs-left">
+    <p class="hs-tag">POST · 2 มิ.ย. 68</p>
+    <h1 class="hs-h1"><span class="red">4 เกม<br>Toxic</span></h1>
+    <p class="hs-h2">ที่คนรอบข้าง<br>มักเล่นใส่คุณ</p>
+    <p class="hs-lead">รู้จักเกมก่อน<br>ถึงจะหยุดมันได้</p>
+  </div>
+  <div class="hs-right">
+    <div class="game-stack">
+      <div class="game-row">
+        <span class="g-num">01</span>
+        <div class="g-body">
+          <strong>Blame Game — เกมโยนความผิด</strong>
+          <span>ทุกอย่างที่ผิดพลาดคือความผิดคุณ แม้คุณไม่ได้เกี่ยวเลย</span>
+        </div>
+      </div>
+      <div class="game-row">
+        <span class="g-num">02</span>
+        <div class="g-body">
+          <strong>Victim Game — เกมเหยื่อ</strong>
+          <span>แกล้งทำเป็นเหยื่อให้คนอื่นรู้สึกผิด แล้วยอมแพ้ให้เอง</span>
+        </div>
+      </div>
+      <div class="game-row">
+        <span class="g-num">03</span>
+        <div class="g-body">
+          <strong>Gossip Game — เกมความลับ</strong>
+          <span>ใช้ข้อมูลลับสร้างอิทธิพล กระจายข่าวแบบเลือกฝ่าย</span>
+        </div>
+      </div>
+      <div class="game-row">
+        <span class="g-num">04</span>
+        <div class="g-body">
+          <strong>Favoritism Game — เกมอุ้มชู</strong>
+          <span>เลือกรักเลือกชัง สร้างทีมตัวเอง แล้วกันคนที่ไม่ใช่พวกออก</span>
+        </div>
+      </div>
+    </div>
+    <div class="hs-cta">
+      ✦ &nbsp;"ออฟฟิศนี้เฮงซวย (สัตว์)" — รู้จักเกม รับมือได้จริง
+    </div>
+  </div>
+</div>
+</div>
+<div class="slide" data-slide="14"><img src="slides_img/slide-14.jpg" alt="Budget"></div>
+<div class="slide" data-slide="15"><img src="slides_img/slide-15.jpg" alt="Timeline"></div>
+<div class="slide" data-slide="16"><img src="slides_img/slide-16.jpg" alt="KPI Overview"></div>
+<div class="slide" data-slide="17"><img src="slides_img/slide-17.jpg" alt="Risk"></div>
+<div class="slide" data-slide="18"><img src="slides_img/slide-18.jpg" alt="Action Plan"></div>
+<div class="slide" data-slide="19"><img src="slides_img/slide-19.jpg" alt="Team"></div>
+<div class="slide" data-slide="20"><img src="slides_img/slide-20.jpg" alt="Appendix"></div>
+<div class="slide hs" data-slide="21">
+<div class="strat-wrap">
+
+  <!-- Header -->
+  <div class="strat-head">
+    <div class="strat-label">CONTENT MARKETING STRATEGY</div>
+    <h2 class="strat-title">จาก <span class="red">Pain Point</span> สู่ยอดขาย</h2>
+  </div>
+
+  <!-- Top row: Core Idea + Key Message -->
+  <div class="strat-top">
+
+    <div class="strat-card core-card">
+      <div class="sc-label">🎯 CORE IDEA</div>
+      <div class="sc-big">"ไม่ใช่คุณที่แย่ —<br><span class="red">ออฟฟิศมันแค่เฮงซวย"</span></div>
+      <div class="sc-note">Positioning: ให้คนรู้สึกว่าปัญหาระบุได้<br>และหนังสือนี้คือคำตอบที่หาอยู่</div>
+    </div>
+
+    <div class="strat-card msg-card">
+      <div class="sc-label">💬 KEY MESSAGE — 4 ขั้นสู่การซื้อ</div>
+      <div class="msg-steps">
+        <div class="msg-step">
+          <span class="ms-tag">HOOK</span>
+          <div class="ms-text">"ทำงานหนักทุกวัน แต่รู้สึกหมดแรงโดยไม่รู้สาเหตุ?"</div>
+        </div>
+        <div class="msg-step">
+          <span class="ms-tag">REFRAME</span>
+          <div class="ms-text">"ปัญหาไม่ได้อยู่ที่คุณ — อยู่ที่คนรอบข้างที่ยังไม่รู้จักพอ"</div>
+        </div>
+        <div class="msg-step">
+          <span class="ms-tag">PROMISE</span>
+          <div class="ms-text">"รู้จักแค่ 5 ประเภทนี้ ชีวิตทำงานเปลี่ยนทันที"</div>
+        </div>
+        <div class="msg-step">
+          <span class="ms-tag">CTA</span>
+          <div class="ms-text">"อ่านแล้วรู้ว่าออฟฟิศตัวเองเฮงซวยแค่ไหน — และจะรับมือยังไง"</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Timeline -->
+  <div class="tl-label">📅 CONTENT TIMELINE</div>
+  <div class="tl-bar">
+
+    <div class="tl-col tc1">
+      <div class="tc-head">
+        <div class="tc-phase">พ.ค. 1–9</div>
+        <div class="tc-name">🔥 PAIN</div>
+        <div class="tc-goal">สร้าง Pain Point</div>
+      </div>
+      <ul class="tc-list">
+        <li><b>1 พ.ค.</b> Poll "ออฟฟิศคุณเฮงซวยแค่ไหน?"</li>
+        <li><b>3 พ.ค.</b> Reel: 5 สัญญาณคนพิษในทีม</li>
+        <li class="hot"><b>6 พ.ค. ✦</b> LAUNCH — เปิดตัว 5 ประเภท</li>
+        <li><b>8 พ.ค.</b> "Tag เพื่อนที่เจอแบบนี้"</li>
+      </ul>
+    </div>
+
+    <div class="tl-col tc2">
+      <div class="tc-head">
+        <div class="tc-phase">พ.ค. 10–20</div>
+        <div class="tc-name">🎯 RELATE</div>
+        <div class="tc-goal">ให้คนรู้สึกว่าใช่เลย</div>
+      </div>
+      <ul class="tc-list">
+        <li><b>10 พ.ค.</b> "เหนื่อยกับงาน หรือเหนื่อยกับคน?"</li>
+        <li><b>13 พ.ค.</b> Series: คนในออฟฟิศที่ทำให้ชีวิตแย่</li>
+        <li><b>16 พ.ค.</b> Reel: วิธีรับมือคนที่ชอบจับผิด</li>
+        <li><b>19 พ.ค.</b> Carousel: 5 ประโยคที่คนพิษใช้บ่อย</li>
+      </ul>
+    </div>
+
+    <div class="tl-col tc3">
+      <div class="tc-head">
+        <div class="tc-phase">พ.ค. 21–31</div>
+        <div class="tc-name">💰 SELL</div>
+        <div class="tc-goal">Push ให้ซื้อ</div>
+      </div>
+      <ul class="tc-list">
+        <li><b>21 พ.ค.</b> Social Proof + Quote จากผู้อ่าน</li>
+        <li class="hot"><b>26 พ.ค. ✦</b> Technique: รับมือคนบ้าอำนาจ</li>
+        <li><b>28 พ.ค.</b> Promo / Bundle / ราคาพิเศษ</li>
+        <li><b>31 พ.ค.</b> Urgency: "สิ้นเดือนนี้เท่านั้น"</li>
+      </ul>
+    </div>
+
+    <div class="tl-col tc4">
+      <div class="tc-head">
+        <div class="tc-phase">มิ.ย. 1–15</div>
+        <div class="tc-name">🔄 KEEP</div>
+        <div class="tc-goal">รักษาโมเมนตัม</div>
+      </div>
+      <ul class="tc-list">
+        <li class="hot"><b>2 มิ.ย. ✦</b> 4 เกมที่คนรอบข้างเล่นใส่คุณ</li>
+        <li><b>5 มิ.ย.</b> Reader Story: อ่านแล้วชีวิตเปลี่ยนยังไง?</li>
+        <li><b>9 มิ.ย.</b> "ซื้อให้เพื่อนที่กำลังเหนื่อย"</li>
+        <li><b>13 มิ.ย.</b> Recap + Re-CTA</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+<div id="botbar">
+<button class="dot" onclick="go(1)" title="Slide 1"></button>
+<button class="dot" onclick="go(2)" title="Slide 2"></button>
+<button class="dot" onclick="go(3)" title="Slide 3"></button>
+<button class="dot" onclick="go(4)" title="Slide 4"></button>
+<button class="dot" onclick="go(5)" title="Slide 5"></button>
+<button class="dot" onclick="go(6)" title="Slide 6"></button>
+<button class="dot" onclick="go(7)" title="Slide 7"></button>
+<button class="dot" onclick="go(8)" title="Slide 8"></button>
+<button class="dot" onclick="go(9)" title="Slide 9"></button>
+<button class="dot" onclick="go(10)" title="Slide 10"></button>
+<button class="dot" onclick="go(11)" title="Slide 11"></button>
+<button class="dot" onclick="go(12)" title="Slide 12"></button>
+<button class="dot" onclick="go(13)" title="Slide 13"></button>
+<button class="dot" onclick="go(14)" title="Slide 14"></button>
+<button class="dot" onclick="go(15)" title="Slide 15"></button>
+<button class="dot" onclick="go(16)" title="Slide 16"></button>
+<button class="dot" onclick="go(17)" title="Slide 17"></button>
+<button class="dot" onclick="go(18)" title="Slide 18"></button>
+<button class="dot" onclick="go(19)" title="Slide 19"></button>
+<button class="dot" onclick="go(20)" title="Slide 20"></button>
+<button class="dot sdot" onclick="go(21)" title="Slide 21"></button>
+</div>
+
+<script>
+var cur=1, tot=21, panelOpen=false;
+var $slides, $dots, $thumbs;
+
+window.addEventListener('DOMContentLoaded', function() {
+  $slides = document.querySelectorAll('.slide');
+  $dots   = document.querySelectorAll('.dot');
+  $thumbs = document.querySelectorAll('.tr');
+  size(); window.addEventListener('resize', size);
+  go(1);
+});
+
+function size() {
+  var el = document.getElementById('stage');
+  var W = el.clientWidth, H = el.clientHeight, r = 16/9;
+  var w, h;
+  if (W/H > r) { h=H; w=h*r; } else { w=W; h=w/r; }
+  $slides.forEach(function(s){ s.style.width=w+'px'; s.style.height=h+'px'; });
+}
+
+function go(n) {
+  if (n<1) n=1; if (n>tot) n=tot;
+  $slides.forEach(function(s,i){ s.classList.toggle('active', i===n-1); });
+  $dots.forEach(function(d,i){   d.classList.toggle('active', i===n-1); });
+  $thumbs.forEach(function(t,i){ t.classList.toggle('active', i===n-1); });
+  var th = document.getElementById('tr'+n);
+  if (th) th.scrollIntoView({block:'nearest'});
+  cur = n;
+  document.getElementById('ctr').textContent = String(n).padStart(2,'0')+' / '+tot;
+  document.getElementById('prog').style.width = ((n-1)/(tot-1)*100)+'%';
+}
+
+function togglePanel() {
+  panelOpen = !panelOpen;
+  document.getElementById('panel').classList.toggle('open', panelOpen);
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); go(cur+1); }
+  else if (e.key==='ArrowLeft')            { e.preventDefault(); go(cur-1); }
+  else if (e.key==='Home') go(1);
+  else if (e.key==='End')  go(tot);
+  else if (e.key==='Escape') { panelOpen=false; document.getElementById('panel').classList.remove('open'); }
+});
+
+var tx=null;
+document.getElementById('stage').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('stage').addEventListener('touchend',function(e){
+  if(tx===null)return;
+  if(Math.abs(e.changedTouches[0].clientX-tx)>50){ e.changedTouches[0].clientX<tx?go(cur+1):go(cur-1); }
+  tx=null;
+});
+</script>
+</body>
+</html>

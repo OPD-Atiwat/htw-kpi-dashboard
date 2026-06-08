@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Spend vs Margin — Insight (มี.ค.–พ.ค. 2026)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{font-family:'IBM Plex Sans Thai',sans-serif;box-sizing:border-box}
+body{margin:0;padding:28px;background:#F7F6F2;color:#2C2C2A}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.sub{color:#5F5E5A;font-size:14px;margin:0 0 24px}
+.card{background:#fff;border:1px solid #E4E2DA;border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.card h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.card p{font-size:13px;color:#5F5E5A;margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#5F5E5A;margin-bottom:14px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.wrap{position:relative;width:100%;height:330px}
+.note{font-size:13px;color:#5F5E5A;line-height:1.8}
+</style></head><body>
+<h1>Ad Spend vs Margin — Insight</h1>
+<p class="sub">ที่มา: ADSM44 Ads Performance + MK01 Margin (ก่อนหักเงินเดือน) · มี.ค.–พ.ค. 2026 · Facebook = "OpenDurian HOW-TO"</p>
+
+<div class="legend">
+<span><span class="dot" style="background:#1D9E75"></span>Shopee</span>
+<span><span class="dot" style="background:#EF9F27"></span>TikTok</span>
+<span><span class="dot" style="background:#E24B4A"></span>Facebook</span>
+</div>
+
+<div class="card"><h2>ยิ่ง %Ads สูง → กำไรยิ่งต่ำ</h2>
+<p>ขนาดวง = ยอดขาย (พ.ค.) · เส้นแนวนอน = จุดคุ้มกำไร 0%</p>
+<div class="wrap"><canvas id="b1"></canvas></div></div>
+
+<div class="card"><h2>Facebook — งบแอด vs ยอดขาย วิ่งล็อกกัน</h2>
+<p>ลดแอด = ยอดหายทันที (เม.ย.) · อัดแอดกลับ = ยอดเด้ง (พ.ค.)</p>
+<div class="wrap" style="height:290px"><canvas id="b2"></canvas></div></div>
+
+<p class="note">(margin ก่อนหักเงินเดือน) <b>Shopee</b> %Ads ~3% → margin ~53% (ยอด organic ไม่พึ่งแอด = เครื่องทำเงิน) · <b>TikTok</b> %Ads ~42% → margin ~6% (ปั่นยอดได้ กำไรบาง) · <b>Facebook</b> %Ads ~60% → margin แค่ ~2% + ยอดผูกกับงบแอด 100% ปิดแอดยอดหายทันที (พอหักเงินเดือนยิ่งติดลบ)</p>
+
+<script>
+new Chart(b1,{type:'bubble',data:{datasets:[
+{label:'Shopee',data:[{x:3,y:52.6,r:14}],backgroundColor:'#1D9E75'},
+{label:'TikTok',data:[{x:42,y:5.7,r:26}],backgroundColor:'#EF9F27'},
+{label:'Facebook',data:[{x:60,y:2.3,r:16}],backgroundColor:'#E24B4A'}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+tooltip:{callbacks:{label:c=>c.dataset.label+': %Ads '+c.parsed.x+'% · margin '+c.parsed.y+'%'}}},
+scales:{x:{min:-5,max:80,title:{display:true,text:'%Ads (ต้นทุนแอด)'},ticks:{callback:v=>v+'%'}},
+y:{min:-10,max:65,title:{display:true,text:'%Margin ก่อนหักเงินเดือน (เฉลี่ย 4 เดือน)'},ticks:{callback:v=>v+'%'},
+grid:{color:c=>c.tick.value===0?'#888780':'rgba(136,135,128,0.15)'}}}}});
+const M=['มี.ค.','เม.ย.','พ.ค.'];
+new Chart(b2,{data:{labels:M,datasets:[
+{type:'bar',label:'งบแอด FB',data:[743740,544209,750679],backgroundColor:'#F09595'},
+{type:'bar',label:'ยอดขาย FB',data:[1016080,671802,1213251],backgroundColor:'#185FA5'},
+{type:'line',label:'%Ads',data:[73.2,81.0,61.9],borderColor:'#A32D2D',backgroundColor:'#A32D2D',yAxisID:'y1',tension:0.3,borderDash:[5,4]}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:11}}}},
+scales:{y:{ticks:{callback:v=>'฿'+(v/1000000).toFixed(1)+'M'}},
+y1:{position:'right',min:0,max:100,ticks:{callback:v=>v+'%'},grid:{drawOnChartArea:false}},
+x:{ticks:{autoSkip:false}}}}});
+</script></body></html>

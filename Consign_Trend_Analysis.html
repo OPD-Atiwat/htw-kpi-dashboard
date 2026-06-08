@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consignment Trend Analysis — HOW-TO 2025 vs 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f1117;
+    color: #e0e0e0;
+    padding: 24px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+  }
+  .header p {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+  }
+
+  /* KPI Cards */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: #1a1d27;
+    border-radius: 10px;
+    padding: 16px 18px;
+    border-left: 4px solid;
+  }
+  .kpi-card.red   { border-color: #ef4444; }
+  .kpi-card.amber { border-color: #f59e0b; }
+  .kpi-card.green { border-color: #22c55e; }
+  .kpi-card.blue  { border-color: #3b82f6; }
+  .kpi-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 26px; font-weight: 700; margin: 4px 0 2px; }
+  .kpi-card.red   .kpi-value { color: #ef4444; }
+  .kpi-card.amber .kpi-value { color: #f59e0b; }
+  .kpi-card.green .kpi-value { color: #22c55e; }
+  .kpi-card.blue  .kpi-value { color: #3b82f6; }
+  .kpi-sub { font-size: 11px; color: #666; }
+
+  /* Chart Grid */
+  .chart-grid {
+    display: grid;
+    gap: 18px;
+  }
+  .chart-card {
+    background: #1a1d27;
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .chart-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ccc;
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  .chart-wrap {
+    position: relative;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  /* Insight Box */
+  .insight-box {
+    background: #1a1d27;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 18px;
+  }
+  .insight-box h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ccc;
+    margin-bottom: 14px;
+  }
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .insight-item {
+    background: #12141c;
+    border-radius: 8px;
+    padding: 14px;
+    border-top: 3px solid;
+  }
+  .insight-item.danger  { border-color: #ef4444; }
+  .insight-item.warning { border-color: #f59e0b; }
+  .insight-item.info    { border-color: #3b82f6; }
+  .insight-item .tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .insight-item.danger  .tag { color: #ef4444; }
+  .insight-item.warning .tag { color: #f59e0b; }
+  .insight-item.info    .tag { color: #3b82f6; }
+  .insight-item p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #aaa;
+  }
+  .insight-item strong { color: #e0e0e0; }
+
+  /* Legend dot */
+  .dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📉 Consignment Collapse — HOW-TO Market Analysis</h1>
+  <p>Online vs Consignment Trend: 2025 Actuals → 2026 Reality vs Plan &nbsp;|&nbsp; Source: Product Monitor CSV + Finance Plan</p>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-row">
+  <div class="kpi-card red">
+    <div class="kpi-label">Avg Consign/Online % (2025)</div>
+    <div class="kpi-value">68%</div>
+    <div class="kpi-sub">Market average Jan–Dec 2025</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kpi-label">Avg Consign/Online % (2026 YTD)</div>
+    <div class="kpi-value">35.8%</div>
+    <div class="kpi-sub">Jan–Apr 2026 actual average</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">Drop vs 2025</div>
+    <div class="kpi-value">−47%</div>
+    <div class="kpi-sub">ลดลงเกือบครึ่ง เพียง 1 ปี</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">Plan Gap (Jan–Apr 26)</div>
+    <div class="kpi-value">−561K</div>
+    <div class="kpi-sub">Actual vs Plan: ขาด ฿561,277</div>
+  </div>
+</div>
+
+<!-- Chart 1: Market Ratio Timeline -->
+<div class="chart-card">
+  <div class="chart-title">📊 Market-Level Consign / Online Ratio (%) — Monthly Timeline</div>
+  <div class="chart-subtitle">2025 Actual (estimate) vs 2026 Actual vs 2026 Plan | เส้นสีแดงแสดงการพัง</div>
+  <div class="chart-wrap" style="height:280px">
+    <canvas id="chart1"></canvas>
+  </div>
+</div>
+
+<!-- Two column: Lifecycle + Gap -->
+<div class="two-col" style="margin-top:18px">
+
+  <div class="chart-card">
+    <div class="chart-title">🔄 Product Lifecycle Curve — Consign% by Months Since Launch</div>
+    <div class="chart-subtitle">แต่ละเส้น = 1 เล่ม | แกน X = เดือนนับจากเปิดตัว | แกน Y = Consign/Online %</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">🎯 2026 Consign: Plan vs Actual (Jan–Apr) + H2 Target</div>
+    <div class="chart-subtitle">แท่งสีเขียว = Actual | แท่งสีฟ้า = Plan | เส้นสีแดง = Gap %</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="chart3"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart 4: Per-product consign ratio 2026 -->
+<div class="chart-card" style="margin-top:18px">
+  <div class="chart-title">📦 Per-Product Consign/Online % — Jan to Apr 2026</div>
+  <div class="chart-subtitle">แต่ละเล่มเทียบ 4 เดือน | เล่มใหม่ (กับดัก) = Consign แทบ 0% | เล่มเก่าบางเล่ม Consign > 100% ของ Online เพราะ Online พัง</div>
+  <div class="chart-wrap" style="height:260px">
+    <canvas id="chart4"></canvas>
+  </div>
+</div>
+
+<!-- Insight Box -->
+<div class="insight-box">
+  <h3>💡 Root Cause Analysis — ทำไม Consignment ถึงพัง?</h3>
+  <div class="insight-grid">
+    <div class="insight-item danger">
+      <div class="tag">🚨 Root Cause #1</div>
+      <p><strong>ไม่มีเล่ม Blockbuster ใหม่ใน H1 2026</strong><br>
+      2025 มี Ghostly Brews (พ.ค.), ยินดีต้อนรับ (ม.ค.), ทุกความทรงจำ (มี.ค.) ที่ดัน Consign พุ่ง 86–421% ในเดือนแรก<br>
+      2026 มีแค่ กับดัก (ม.ค.) ที่ Consign Ratio <strong>≤ 4%</strong> เดือนแรก</p>
+    </div>
+    <div class="insight-item warning">
+      <div class="tag">⚠️ Root Cause #2</div>
+      <p><strong>เล่มปี 2025 อายุมากขึ้น Online ร่วงเร็ว Consign ลงช้า</strong><br>
+      ยินดีต้อนรับ (เปิดตัว ม.ค. 25): Online เหลือ 16,000 / เดือน ใน ม.ค. 26 แต่ Consign ยัง 24,771 → Ratio พุ่ง <strong>154%</strong><br>
+      สัญญาณ: Online พัง แต่ยอด Consign ยังค้างอยู่</p>
+    </div>
+    <div class="insight-item info">
+      <div class="tag">📌 Root Cause #3</div>
+      <p><strong>Structure: Consign เชื่อมกับ Online ที่ลดลงทุกปี</strong><br>
+      แผน 2026 ตั้ง Consign = ~28% ของ Online (May+) ลงมาจาก 35–38% ใน Jan-Apr<br>
+      H2 2026 Plan Consign อาจต่ำกว่า <strong>15%</strong> ของ Online (Jul–Oct)<br>
+      <em>ถ้า Online ไม่ถึงเป้า → Consign พังตามอัตโนมัติ</em></p>
+    </div>
+  </div>
+
+  <!-- Launch Calendar Impact -->
+  <div style="margin-top: 18px; background: #12141c; border-radius: 8px; padding: 16px;">
+    <div style="font-size: 13px; font-weight: 600; color: #ccc; margin-bottom: 12px;">📅 Title Launch Calendar — Impact on Consignment</div>
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; text-align: center;">
+      <div style="background:#1e3a5f; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#3b82f6; font-weight:600;">Jan 2025</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">ยินดีต้อนรับ</div>
+        <div style="font-size:10px; color:#22c55e;">Consign+100%</div>
+      </div>
+      <div style="background:#1e3a5f; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#3b82f6; font-weight:600;">Mar 2025</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">Witches+ทุกความทรงจำ</div>
+        <div style="font-size:10px; color:#22c55e;">Consign+95%</div>
+      </div>
+      <div style="background:#1e3a5f; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#3b82f6; font-weight:600;">May 2025</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">Ghostly Brews</div>
+        <div style="font-size:10px; color:#ef4444; font-weight:600;">↑SPIKE 86%</div>
+      </div>
+      <div style="background:#1e3a5f; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#3b82f6; font-weight:600;">Sep 2025</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">ปีศาจ2</div>
+        <div style="font-size:10px; color:#22c55e;">Consign ดี</div>
+      </div>
+      <div style="background:#2d1b3d; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#a855f7; font-weight:600;">Jan 2026</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">กับดัก</div>
+        <div style="font-size:10px; color:#ef4444; font-weight:600;">Consign ≤4%!</div>
+      </div>
+      <div style="background:#2d1b3d; border-radius:6px; padding:8px 4px;">
+        <div style="font-size:10px; color:#a855f7; font-weight:600;">May 2026</div>
+        <div style="font-size:11px; color:#ccc; margin-top:3px;">ออฟฟิศฯ เฮงซวย</div>
+        <div style="font-size:10px; color:#f59e0b;">Key Title H1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- H2 Strategy Recommendation -->
+  <div style="margin-top: 14px; background: #0d1f12; border: 1px solid #166534; border-radius: 8px; padding: 14px;">
+    <div style="font-size: 12px; font-weight: 600; color: #22c55e; margin-bottom: 8px;">✅ H2 Strategy Implication</div>
+    <div style="font-size: 12px; color: #aaa; line-height: 1.8;">
+      Consign จะฟื้นได้ต้องมี <strong style="color:#e0e0e0">New Title Launch ที่แข็งแกร่งใน H2</strong> (ต้องการ Consign/Online ≥ 50% เดือนแรก)<br>
+      ถ้าไม่มีเล่มใหม่ใน Jul–Sep 26 → Consign H2 จะอยู่ที่ <strong style="color:#ef4444">10–15% ของ Online</strong> เท่านั้น<br>
+      Target Consign 2026 ที่ 16.9M ต้องการ avg ratio ~<strong style="color:#f59e0b">31%</strong> ของ Online — ทำได้เฉพาะถ้ามีเล่ม Launch ใหม่อย่างน้อย 2–3 เล่มใน H2
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:16px; font-size:11px; color:#444;">
+  Generated: May 2026 &nbsp;|&nbsp; Data: Product Monitor CSV + Finance Plan 2026 &nbsp;|&nbsp; Aug–Dec 2025 consign = estimated
+</div>
+
+<script>
+Chart.defaults.color = '#888';
+Chart.defaults.borderColor = '#2a2d3a';
+
+// ─── Chart 1: Market Ratio Timeline ─────────────────────────────────────────
+const labels24 = ['Jan 25','Feb 25','Mar 25','Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25','Dec 25'];
+const labels26 = ['Jan 26','Feb 26','Mar 26','Apr 26','May 26*','Jun 26*','Jul 26*','Aug 26*','Sep 26*'];
+
+// 2025 Actuals (consign known Jan–Jul, Aug–Dec estimated)
+// Consign values: 1,422K | 2,217K | 2,811K | 2,702K | 2,687K | 4,608K | 3,501K | ~2,100K | ~1,900K | ~2,200K | ~1,900K | ~1,900K
+// Online (Pound Mock baseline): 2,985K | 3,800K | 5,000K | 4,800K | 4,000K | 5,350K | 5,400K | 5,500K | 4,400K | 4,500K | 2,425K | 2,425K
+const ratio2025 = [47.6, 58.3, 56.2, 56.3, 67.2, 86.1, 64.8, 38.2, 43.2, 48.9, 78.4, 78.4];
+
+// 2026 Actuals
+const ratio2026actual = [33.4, 36.2, 38.5, 35.2];
+
+// 2026 Plan (May+ from Finance CSV comparison table)
+const ratio2026plan = [26.2, 30.2, 36.5, 29.1, 28.4, 24.4, 16.1, 13.9, 14.0];
+
+const allLabels = [...labels24, ...labels26];
+const fullActual = [...ratio2025, ...ratio2026actual, null, null, null, null, null];
+const fullPlan2026 = [null,null,null,null,null,null,null,null,null,null,null,null, ...ratio2026plan];
+
+const ctx1 = document.getElementById('chart1').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: allLabels,
+    datasets: [
+      {
+        label: '2025 Actual (Consign/Online %)',
+        data: [...ratio2025, null,null,null,null,null,null,null,null,null],
+        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+        borderRadius: 3,
+      },
+      {
+        label: '2026 Actual (Jan–Apr)',
+        data: [null,null,null,null,null,null,null,null,null,null,null,null, ...ratio2026actual, null,null,null,null,null],
+        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+        borderRadius: 3,
+      },
+      {
+        label: '2026 Plan (May–Sep, *)',
+        data: fullPlan2026,
+        type: 'line',
+        borderColor: '#f59e0b',
+        borderDash: [6, 3],
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#f59e0b',
+        fill: false,
+        tension: 0.3,
+      },
+      {
+        label: 'Target Floor (28%)',
+        data: new Array(allLabels.length).fill(28),
+        type: 'line',
+        borderColor: 'rgba(239,68,68,0.4)',
+        borderDash: [3, 3],
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { size: 11 }, color: '#aaa', boxWidth: 14 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + (ctx.raw ? ctx.raw.toFixed(1) + '%' : '—')
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 }, maxRotation: 45 }, grid: { color: '#1e2130' } },
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 11 } },
+        grid: { color: '#1e2130' },
+        suggestedMin: 0,
+        suggestedMax: 100,
+        title: { display: true, text: 'Consign / Online %', font: { size: 11 }, color: '#666' }
+      }
+    }
+  }
+});
+
+// ─── Chart 2: Product Lifecycle Curves ───────────────────────────────────────
+const maxMonths = 20;
+const makeDataset = (name, color, monthArr, ratioArr) => {
+  const data = new Array(maxMonths).fill(null);
+  monthArr.forEach((m, i) => { if (m <= maxMonths) data[m-1] = ratioArr[i]; });
+  return { label: name, data, borderColor: color, backgroundColor: 'transparent',
+           borderWidth: 2, pointRadius: 3, tension: 0.3 };
+};
+
+const ctx2 = document.getElementById('chart2').getContext('2d');
+new Chart(ctx2, {
+  type: 'line',
+  data: {
+    labels: Array.from({length: maxMonths}, (_,i) => 'M'+(i+1)),
+    datasets: [
+      makeDataset('กว่าจะคิดได้ (Sep24)', '#FF6384',
+        [1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19],
+        [66,67,46,57,38,65,50,27,33,40,78,20,66,46,71,11,18,15]),
+      makeDataset('ความลับสู่เงินล้าน (Nov24)', '#36A2EB',
+        [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
+        [48,31,26,24,22,22,19,27,26,35,36,22,21,12,22,16]),
+      makeDataset('ชีวิตมีเรื่องฯ (Oct24)', '#9966FF',
+        [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,19],
+        [14,16,36,44,34,43,35,37,36,54,43,107,74,102,59,48,79,73]),
+      makeDataset('ยินดีต้อนรับ (Jan25)', '#FFCE56',
+        [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+        [100,75,147,261,227,191,351,391,421,333,216,142,155,66,132,84]),
+      makeDataset('ทุกความทรงจำ (Mar25)', '#4BC0C0',
+        [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+        [95,145,274,220,100,245,379,379,314,301,225,40,82,92]),
+      makeDataset('กับดัก (Jan26)', '#FF9F40',
+        [1], [4]),
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { size: 10 }, color: '#aaa', boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + (ctx.raw != null ? ctx.raw + '%' : '—')
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 } }, grid: { color: '#1e2130' } },
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 11 } },
+        grid: { color: '#1e2130' },
+        suggestedMin: 0,
+        suggestedMax: 450,
+        title: { display: true, text: 'Consign / Online %', font: { size: 11 }, color: '#666' }
+      }
+    }
+  }
+});
+
+// ─── Chart 3: 2026 Plan vs Actual + H2 ──────────────────────────────────────
+const months26 = ['Jan 26','Feb 26','Mar 26','Apr 26','May 26*','Jun 26*','Jul 26*'];
+const planConsign  = [1279478, 1628571, 1911708, 1650000, 1650000, 1500000, 1000000];
+const actualConsign = [1644243, 1365816, 1668705, 1409463, null, null, null];
+const gapPct = planConsign.map((p, i) => actualConsign[i] != null
+  ? Math.round((actualConsign[i] - p) / p * 100) : null);
+
+const ctx3 = document.getElementById('chart3').getContext('2d');
+new Chart(ctx3, {
+  type: 'bar',
+  data: {
+    labels: months26,
+    datasets: [
+      {
+        label: 'Plan Consign (฿)',
+        data: planConsign,
+        backgroundColor: 'rgba(59,130,246,0.5)',
+        borderRadius: 4,
+        order: 2,
+      },
+      {
+        label: 'Actual Consign (฿)',
+        data: actualConsign,
+        backgroundColor: actualConsign.map((v, i) =>
+          v == null ? 'transparent' :
+          v >= planConsign[i] ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)'),
+        borderRadius: 4,
+        order: 2,
+      },
+      {
+        label: 'Gap vs Plan (%)',
+        data: gapPct,
+        type: 'line',
+        borderColor: '#f59e0b',
+        borderWidth: 2,
+        pointRadius: 5,
+        pointBackgroundColor: gapPct.map(v => v == null ? 'transparent' : v >= 0 ? '#22c55e' : '#ef4444'),
+        fill: false,
+        yAxisID: 'y2',
+        tension: 0.3,
+        order: 1,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { size: 10 }, color: '#aaa', boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            if (ctx.datasetIndex < 2) {
+              return ctx.dataset.label + ': ฿' + (ctx.raw ? ctx.raw.toLocaleString() : '—');
+            }
+            return 'Gap: ' + (ctx.raw != null ? (ctx.raw > 0 ? '+' : '') + ctx.raw + '%' : '—');
+          }
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 } }, grid: { color: '#1e2130' } },
+      y: {
+        ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 10 } },
+        grid: { color: '#1e2130' },
+        title: { display: true, text: 'Consign Sales (฿)', font: { size: 11 }, color: '#666' }
+      },
+      y2: {
+        position: 'right',
+        ticks: { callback: v => v + '%', font: { size: 10 } },
+        grid: { display: false },
+        suggestedMin: -40,
+        suggestedMax: 40,
+        title: { display: true, text: 'Gap %', font: { size: 11 }, color: '#666' }
+      }
+    }
+  }
+});
+
+// ─── Chart 4: Per-Product Jan–Apr 2026 ───────────────────────────────────────
+const products = ['กว่าจะคิดได้\n(Ghost)', 'ความลับสู่เงินล้าน', 'ชีวิตมีเรื่องฯ', 'ยินดีต้อนรับ', 'ทุกความทรงจำ', 'กับดัก\n(New 2026)'];
+const jan26r = [71.5, 21.0, 0, 154.8, 224.7, 3.9];
+const feb26r = [11.1, 11.6, 1245, 66.0, 39.9, null];
+const mar26r = [18.2, 21.6, 79.0, 131.6, 81.7, null];
+const apr26r = [15.2, 16.1, 73.1, 84.2, 91.9, null];
+
+const ctx4 = document.getElementById('chart4').getContext('2d');
+new Chart(ctx4, {
+  type: 'bar',
+  data: {
+    labels: products,
+    datasets: [
+      { label: 'Jan 26', data: jan26r, backgroundColor: 'rgba(59,130,246,0.8)', borderRadius: 3 },
+      { label: 'Feb 26', data: feb26r, backgroundColor: 'rgba(34,197,94,0.7)', borderRadius: 3 },
+      { label: 'Mar 26', data: mar26r, backgroundColor: 'rgba(245,158,11,0.7)', borderRadius: 3 },
+      { label: 'Apr 26', data: apr26r, backgroundColor: 'rgba(239,68,68,0.7)', borderRadius: 3 },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { font: { size: 11 }, color: '#aaa', boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + (ctx.raw != null ? ctx.raw.toFixed(1) + '%' : '—')
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 } }, grid: { color: '#1e2130' } },
+      y: {
+        ticks: { callback: v => v + '%', font: { size: 11 } },
+        grid: { color: '#1e2130' },
+        suggestedMin: 0,
+        suggestedMax: 300,
+        title: { display: true, text: 'Consign / Online %', font: { size: 11 }, color: '#666' }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

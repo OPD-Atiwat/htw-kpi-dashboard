@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FB Ad Spend → Shopee Sales? (รายวัน 2026)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{font-family:'IBM Plex Sans Thai',sans-serif;box-sizing:border-box}
+body{margin:0;padding:28px;background:#F7F6F2;color:#2C2C2A}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.sub{color:#5F5E5A;font-size:14px;margin:0 0 16px}
+.flag{background:#FCEBEB;border:1px solid #F09595;border-radius:10px;padding:13px 16px;font-size:15px;color:#A32D2D;margin-bottom:16px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#5F5E5A;margin-bottom:14px}
+.legend span{display:flex;align-items:center;gap:4px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.card{background:#fff;border:1px solid #E4E2DA;border-radius:14px;padding:18px 20px}
+.wrap{position:relative;width:100%;height:400px}
+.note{font-size:13px;color:#5F5E5A;line-height:1.8;margin-top:16px}
+</style></head><body>
+<h1>ความเชื่อ: FB Ad Spend ↑ → Shopee ↑ ?</h1>
+<p class="sub">ที่มา: ADSM44 · FB Ad Spend vs Shopee Sales รายวัน · 99 วัน (ก.พ.–มิ.ย. 2026)</p>
+<div class="flag"><b>ข้อมูลไม่สนับสนุนความเชื่อนี้</b> — วันเดียวกัน r = 0.22 (อ่อน) · เหลื่อมวัน (FB วันนี้ → Shopee พรุ่งนี้) r = 0.08 (ไม่มี spillover)</div>
+<div class="legend">
+<span><span class="dot" style="background:#85B7EB"></span>ก.พ.</span>
+<span><span class="dot" style="background:#639922"></span>มี.ค.</span>
+<span><span class="dot" style="background:#EF9F27"></span>เม.ย.</span>
+<span><span class="dot" style="background:#E24B4A"></span>พ.ค.</span>
+</div>
+<div class="card"><div class="wrap"><canvas id="sc"></canvas></div></div>
+<p class="note"><b>จุดแดง (พ.ค.)</b> ขวาสุด — วัน FB Ad พุ่ง 40–45K/วัน (launch สัตว์) Shopee กลับต่ำสุด ~11K ตรงข้ามความเชื่อ · FB ปิดการขายในแชท/เพจเอง (COD) ลูกค้าไม่เด้งไป Shopee — คนละ funnel · จะโต Shopee ต้องลงทุนใน Shopee เอง (Shopee Ads / โปรในแอป / flash sale)</p>
+<script>
+const P=[{"x":17379,"y":40875,"m":"2026-02"},{"x":16091,"y":48272,"m":"2026-02"},{"x":14859,"y":35493,"m":"2026-02"},{"x":10910,"y":20850,"m":"2026-02"},{"x":12841,"y":27398,"m":"2026-02"},{"x":18580,"y":37022,"m":"2026-02"},{"x":31272,"y":60184,"m":"2026-03"},{"x":20430,"y":42441,"m":"2026-03"},{"x":26610,"y":92320,"m":"2026-03"},{"x":16551,"y":41219,"m":"2026-03"},{"x":19261,"y":44319,"m":"2026-03"},{"x":22576,"y":35377,"m":"2026-03"},{"x":20594,"y":28604,"m":"2026-03"},{"x":24643,"y":35163,"m":"2026-03"},{"x":33764,"y":35122,"m":"2026-03"},{"x":37455,"y":49340,"m":"2026-03"},{"x":37489,"y":28676,"m":"2026-03"},{"x":31449,"y":41931,"m":"2026-03"},{"x":26755,"y":32747,"m":"2026-03"},{"x":26937,"y":29927,"m":"2026-03"},{"x":26303,"y":65382,"m":"2026-03"},{"x":36116,"y":42451,"m":"2026-03"},{"x":32364,"y":39054,"m":"2026-03"},{"x":24783,"y":26208,"m":"2026-03"},{"x":22880,"y":17333,"m":"2026-03"},{"x":22675,"y":25305,"m":"2026-03"},{"x":17290,"y":14604,"m":"2026-03"},{"x":22256,"y":23288,"m":"2026-03"},{"x":26533,"y":21299,"m":"2026-03"},{"x":16159,"y":24897,"m":"2026-03"},{"x":20781,"y":27861,"m":"2026-03"},{"x":16363,"y":19949,"m":"2026-03"},{"x":17372,"y":15039,"m":"2026-03"},{"x":16107,"y":18478,"m":"2026-03"},{"x":14624,"y":23952,"m":"2026-03"},{"x":13675,"y":18128,"m":"2026-03"},{"x":21670,"y":22172,"m":"2026-03"},{"x":18383,"y":23433,"m":"2026-04"},{"x":15294,"y":17841,"m":"2026-04"},{"x":9614,"y":17432,"m":"2026-04"},{"x":11652,"y":46361,"m":"2026-04"},{"x":14123,"y":8980,"m":"2026-04"},{"x":16496,"y":23977,"m":"2026-04"},{"x":23900,"y":34963,"m":"2026-04"},{"x":20339,"y":27130,"m":"2026-04"},{"x":26361,"y":34971,"m":"2026-04"},{"x":22746,"y":27039,"m":"2026-04"},{"x":18005,"y":35058,"m":"2026-04"},{"x":17303,"y":43927,"m":"2026-04"},{"x":22421,"y":29691,"m":"2026-04"},{"x":19497,"y":28753,"m":"2026-04"},{"x":20785,"y":45306,"m":"2026-04"},{"x":19142,"y":26288,"m":"2026-04"},{"x":15983,"y":24093,"m":"2026-04"},{"x":19389,"y":25971,"m":"2026-04"},{"x":25396,"y":39242,"m":"2026-04"},{"x":22597,"y":34064,"m":"2026-04"},{"x":17911,"y":28906,"m":"2026-04"},{"x":19297,"y":24099,"m":"2026-04"},{"x":18809,"y":28110,"m":"2026-04"},{"x":17391,"y":23452,"m":"2026-04"},{"x":17124,"y":32681,"m":"2026-04"},{"x":16986,"y":17286,"m":"2026-04"},{"x":13909,"y":23169,"m":"2026-04"},{"x":17151,"y":24519,"m":"2026-04"},{"x":13142,"y":19263,"m":"2026-04"},{"x":13059,"y":24182,"m":"2026-04"},{"x":13361,"y":15412,"m":"2026-05"},{"x":17720,"y":19753,"m":"2026-05"},{"x":11805,"y":12305,"m":"2026-05"},{"x":13960,"y":23754,"m":"2026-05"},{"x":18803,"y":48472,"m":"2026-05"},{"x":15159,"y":31001,"m":"2026-05"},{"x":21212,"y":29146,"m":"2026-05"},{"x":26336,"y":31890,"m":"2026-05"},{"x":19621,"y":20554,"m":"2026-05"},{"x":22269,"y":23060,"m":"2026-05"},{"x":28300,"y":23987,"m":"2026-05"},{"x":34006,"y":28004,"m":"2026-05"},{"x":44854,"y":11253,"m":"2026-05"},{"x":40986,"y":11123,"m":"2026-05"},{"x":44375,"y":33711,"m":"2026-05"},{"x":35199,"y":32723,"m":"2026-05"},{"x":33848,"y":27795,"m":"2026-05"},{"x":24420,"y":17118,"m":"2026-05"},{"x":22049,"y":23695,"m":"2026-05"},{"x":20576,"y":21559,"m":"2026-05"},{"x":23619,"y":24498,"m":"2026-05"},{"x":26630,"y":23854,"m":"2026-05"},{"x":22472,"y":32060,"m":"2026-05"},{"x":26197,"y":32726,"m":"2026-05"},{"x":21965,"y":50067,"m":"2026-05"},{"x":19395,"y":33907,"m":"2026-05"},{"x":18371,"y":33866,"m":"2026-05"},{"x":20897,"y":30454,"m":"2026-05"},{"x":18731,"y":29752,"m":"2026-05"},{"x":20265,"y":33543,"m":"2026-05"},{"x":23280,"y":39571,"m":"2026-05"},{"x":24466,"y":38177,"m":"2026-06"}];
+const col={"2026-02":"#85B7EB","2026-03":"#639922","2026-04":"#EF9F27","2026-05":"#E24B4A","2026-06":"#7F77DD"};
+const ds=Object.keys(col).map(m=>({label:m,data:P.filter(p=>p.m===m).map(p=>({x:p.x,y:p.y})),backgroundColor:col[m],pointRadius:4}));
+const xs=P.map(p=>p.x),ys=P.map(p=>p.y),n=P.length;
+const mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;
+let sxy=0,sxx=0;for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2;}
+const sl=sxy/sxx,ic=my-sl*mx,xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs);
+ds.push({type:'line',label:'trend',data:[{x:xmin,y:sl*xmin+ic},{x:xmax,y:sl*xmax+ic}],borderColor:'#5F5E5A',borderDash:[6,4],pointRadius:0,borderWidth:2,fill:false});
+new Chart(sc,{type:'scatter',data:{datasets:ds},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+tooltip:{callbacks:{label:c=>'FB ad ฿'+c.parsed.x.toLocaleString()+' · Shopee ฿'+c.parsed.y.toLocaleString()}}},
+scales:{x:{title:{display:true,text:'FB Ad Spend/วัน'},ticks:{callback:v=>'฿'+(v/1000)+'K'}},
+y:{title:{display:true,text:'ยอด Shopee/วัน'},ticks:{callback:v=>'฿'+(v/1000)+'K'}}}}});
+</script></body></html>

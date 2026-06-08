@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📦 Shopify Product Builder — How-to | OpenDurian</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Prompt', sans-serif; background: #F0F4F8; color: #2D3748; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* ===== HEADER ===== */
+    .app-header { background: linear-gradient(135deg,#0277BD,#0288D1,#03A9F4); color: white; padding: 12px 24px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 16px rgba(2,119,189,0.35); flex-shrink: 0; z-index: 10; }
+    .app-header h1 { font-size: 18px; font-weight: 700; line-height: 1; }
+    .app-header span { font-size: 12px; opacity: 0.8; margin-top: 2px; display: block; }
+    .header-badge { margin-left: auto; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+    /* ===== LAYOUT ===== */
+    .app-body { display: grid; grid-template-columns: 430px 1fr; flex: 1; overflow: hidden; }
+
+    /* ===== LEFT PANEL ===== */
+    .form-panel { background: white; overflow-y: auto; padding: 20px; border-right: 2px solid #E2E8F0; }
+    .form-panel::-webkit-scrollbar { width: 5px; }
+    .form-panel::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 3px; }
+
+    .form-section { margin-bottom: 20px; }
+    .form-section-title { font-size: 11px; font-weight: 700; color: #0288D1; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid #E3F2FD; display: flex; align-items: center; gap: 6px; }
+
+    label { display: block; font-size: 12px; font-weight: 600; color: #4A5568; margin-bottom: 4px; margin-top: 10px; }
+    label:first-of-type { margin-top: 0; }
+    input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 9px 12px; border: 1.5px solid #E2E8F0; border-radius: 10px; font-family: 'Prompt', sans-serif; font-size: 13px; color: #2D3748; background: #F8FAFC; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus { border-color: #0288D1; box-shadow: 0 0 0 3px rgba(2,136,209,0.12); background: white; }
+    textarea { resize: vertical; }
+
+    .hint { font-size: 11px; color: #A0AEC0; margin-top: 3px; line-height: 1.4; }
+    .char-counter { font-size: 11px; text-align: right; margin-top: 3px; font-weight: 500; }
+    .c-ok { color: #48BB78; } .c-warn { color: #ED8936; } .c-err { color: #F56565; }
+
+    .slug-preview { background: #F0FFF4; border: 1px solid #C6F6D5; border-radius: 8px; padding: 7px 12px; font-size: 12px; color: #276749; margin-top: 5px; font-family: 'Courier New', monospace; display: none; }
+
+    /* Badge Selector */
+    .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 4px; }
+    .badge-radio { display: none; }
+    .badge-label { padding: 9px 8px; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 700; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; color: white; text-transform: uppercase; letter-spacing: 0.5px; display: block; user-select: none; }
+    .badge-radio:checked + .badge-label { border-color: #2D3748; box-shadow: 0 0 0 3px rgba(2,136,209,0.4); transform: scale(1.03); }
+    .b-rising  { background: linear-gradient(135deg,#FFD200,#F7971E); }
+    .b-new     { background: linear-gradient(135deg,#667eea,#764ba2); }
+    .b-best    { background: linear-gradient(135deg,#11998e,#38ef7d); }
+    .b-limited { background: linear-gradient(135deg,#f12711,#f5af19); }
+
+    /* ===== VARIANT TABLE ===== */
+    .variant-prefix-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
+    .variant-prefix-row > div { flex: 1; }
+    .variant-prefix-row label { margin-top: 0; }
+
+    .variant-table-wrap { border: 1.5px solid #E2E8F0; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+    .variant-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .variant-table thead th { background: #F7FAFC; padding: 8px 6px; font-size: 10px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1.5px solid #E2E8F0; text-align: center; white-space: nowrap; }
+    .variant-table thead th.th-name { text-align: left; padding-left: 10px; }
+    .variant-table thead th.th-dummy { background: #F7FAFC; }
+    .variant-table thead th.th-aplus { background: #FFFFF0; color: #744210; }
+    .variant-table thead th.th-legacy { background: #EBF8FF; color: #2C5282; }
+
+    .variant-row { border-top: 1px solid #EDF2F7; }
+    .variant-row:hover { background: #FAFBFF; }
+    .variant-row td { padding: 6px 4px; vertical-align: middle; }
+    .variant-row td.td-num { text-align: center; color: #A0AEC0; font-size: 11px; width: 24px; }
+
+    .vi { width: 100%; padding: 6px 8px; border: 1.5px solid #E2E8F0; border-radius: 8px; font-family: 'Prompt', sans-serif; font-size: 12px; background: #F8FAFC; outline: none; transition: border-color 0.2s; }
+    .vi:focus { border-color: #0288D1; background: white; }
+    .vi-name { background: #F8FAFC; }
+    .vi-dummy { background: #F7F7F7; color: #4A5568; text-align: right; width: 64px; }
+    .vi-dummy:focus { border-color: #718096; }
+    .vi-aplus { background: #FFFFF0; border-color: #F6E05E; color: #744210; font-weight: 600; text-align: right; width: 64px; }
+    .vi-aplus:focus { border-color: #D69E2E; }
+    .vi-legacy { background: #EBF8FF; border-color: #BEE3F8; color: #2C5282; text-align: center; width: 72px; font-family: 'Courier New', monospace; font-size: 11px; }
+    .vi-legacy:focus { border-color: #0288D1; }
+
+    .btn-rm-row { background: none; border: none; cursor: pointer; color: #FEB2B2; font-size: 14px; padding: 4px; border-radius: 6px; transition: all 0.2s; line-height: 1; }
+    .btn-rm-row:hover { background: #FFF5F5; color: #E53E3E; }
+
+    .btn-add-variant { width: 100%; padding: 8px; background: #EBF8FF; border: 1.5px dashed #90CDF4; border-radius: 10px; color: #0288D1; font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-add-variant:hover { background: #BEE3F8; border-color: #0288D1; }
+
+    /* Generate Button */
+    .btn-generate { width: 100%; padding: 13px; background: linear-gradient(135deg,#0277BD,#0288D1); color: white; border: none; border-radius: 12px; font-family: 'Prompt', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 16px; transition: all 0.25s; box-shadow: 0 6px 18px rgba(2,119,189,0.35); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(2,119,189,0.45); }
+    .btn-generate.success { background: linear-gradient(135deg,#48BB78,#38A169); }
+
+    /* ===== RIGHT PANEL ===== */
+    .output-panel { display: flex; flex-direction: column; overflow: hidden; }
+    .tabs { display: flex; background: white; border-bottom: 2px solid #E2E8F0; padding: 0 20px; gap: 2px; flex-shrink: 0; }
+    .tab-btn { padding: 12px 18px; border: none; background: none; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .tab-btn.active { color: #0288D1; border-bottom-color: #0288D1; }
+    .tab-btn:hover { color: #0288D1; }
+
+    .tab-content { display: none; flex: 1; overflow: auto; flex-direction: column; }
+    .tab-content.active { display: flex; }
+    .tab-content::-webkit-scrollbar { width: 6px; }
+    .tab-content::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 3px; }
+
+    /* HTML Tab */
+    .html-wrap { padding: 16px 20px; display: flex; flex-direction: column; height: 100%; gap: 12px; }
+    .code-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-action { padding: 9px 18px; border-radius: 10px; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .btn-blue { background: #0288D1; color: white; } .btn-blue:hover { background: #0277BD; }
+    .btn-green { background: #48BB78; color: white; }
+    .code-hint { font-size: 12px; color: #718096; }
+    .code-box { flex: 1; background: #1A202C; color: #A0F0A0; padding: 18px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 11.5px; line-height: 1.65; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+    .code-box::-webkit-scrollbar { width: 6px; height: 6px; }
+    .code-box::-webkit-scrollbar-thumb { background: #4A5568; border-radius: 3px; }
+
+    /* Fields Tab */
+    .fields-wrap { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    .field-card { background: white; border-radius: 12px; padding: 14px 18px; border: 1.5px solid #E2E8F0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .field-card-label { font-size: 10px; font-weight: 700; color: #0288D1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; display: flex; align-items: center; gap: 6px; }
+    .field-card-value { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .field-card-value span { font-size: 14px; color: #2D3748; line-height: 1.5; flex: 1; }
+    .field-card-value span.empty { color: #CBD5E0; font-style: italic; }
+    .btn-copy-field { background: #EBF8FF; color: #0288D1; border: none; border-radius: 8px; padding: 5px 12px; font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .btn-copy-field:hover { background: #0288D1; color: white; }
+    .len-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 600; }
+    .len-ok { background: #C6F6D5; color: #22543D; } .len-warn { background: #FEEBCB; color: #7B341E; }
+
+    /* Variant Output Table */
+    .variant-out-card { background: white; border-radius: 12px; border: 1.5px solid #E2E8F0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .variant-out-header { background: #F7FAFC; padding: 12px 18px; border-bottom: 1.5px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; }
+    .variant-out-header span { font-size: 10px; font-weight: 700; color: #0288D1; text-transform: uppercase; letter-spacing: 1px; }
+    .variant-out-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .variant-out-table th { background: #F7FAFC; padding: 8px 10px; font-size: 10px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid #E2E8F0; text-align: left; }
+    .variant-out-table th.th-price { text-align: right; }
+    .variant-out-table td { padding: 9px 10px; border-bottom: 1px solid #F7FAFC; color: #2D3748; }
+    .variant-out-table td.td-num { color: #A0AEC0; font-size: 11px; width: 24px; }
+    .variant-out-table td.td-dummy { text-align: right; color: #718096; }
+    .variant-out-table td.td-dummy del { color: #CBD5E0; }
+    .variant-out-table td.td-aplus { text-align: right; background: #FFFFF0; font-weight: 700; color: #744210; }
+    .variant-out-table td.td-legacy { font-family: 'Courier New', monospace; color: #2C5282; background: #EBF8FF; font-size: 11px; }
+    .variant-out-table td.td-copy { text-align: right; }
+    .btn-cp-row { background: #EBF8FF; color: #0288D1; border: none; border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; }
+    .btn-cp-row:hover { background: #0288D1; color: white; }
+    .variant-out-table tr:last-child td { border-bottom: none; }
+
+    /* Checklist */
+    .checklist-card { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: 12px; padding: 14px 18px; }
+    .checklist-title { font-size: 12px; font-weight: 700; color: #92400E; margin-bottom: 10px; }
+    .checklist-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #78350F; padding: 3px 0; }
+    .check-icon { font-size: 14px; width: 20px; text-align: center; }
+
+    /* Preview Tab */
+    .preview-wrap { flex: 1; overflow: auto; background: #EDF2F7; padding: 16px; }
+    .preview-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-height: 300px; }
+    #preview-area { width: 100%; }
+
+    /* Empty State */
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 250px; color: #CBD5E0; gap: 10px; text-align: center; padding: 30px; }
+    .empty-icon { font-size: 42px; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div style="font-size:26px">📦</div>
+  <div>
+    <h1>Shopify Product Builder</h1>
+    <span>How-to | OpenDurian — กรอกข้อมูลทีเดียว ได้ HTML + Fields + Variants พร้อม Upload</span>
+  </div>
+  <div class="header-badge">v2.0</div>
+</div>
+
+<div class="app-body">
+
+  <!-- ===== LEFT: FORM ===== -->
+  <div class="form-panel">
+
+    <!-- 1. BADGE -->
+    <div class="form-section">
+      <div class="form-section-title">🏷️ Badge & Status</div>
+      <div class="badge-grid">
+        <div><input type="radio" name="badge" id="b1" value="Rising Star" class="badge-radio" checked><label for="b1" class="badge-label b-rising">⭐ Rising Star</label></div>
+        <div><input type="radio" name="badge" id="b2" value="New Release" class="badge-radio"><label for="b2" class="badge-label b-new">✨ New Release</label></div>
+        <div><input type="radio" name="badge" id="b3" value="Best Seller" class="badge-radio"><label for="b3" class="badge-label b-best">🔥 Best Seller</label></div>
+        <div><input type="radio" name="badge" id="b4" value="Limited" class="badge-radio"><label for="b4" class="badge-label b-limited">⚡ Limited</label></div>
+      </div>
+    </div>
+
+    <!-- 2. BOOK INFO -->
+    <div class="form-section">
+      <div class="form-section-title">📚 ข้อมูลหนังสือ</div>
+      <label>ชื่อหนังสือ (ภาษาไทย)</label>
+      <input type="text" id="titleTH" placeholder="เช่น โอบกอด ความไม่สมบูรณ์แบบของเธอ">
+      <label>ชื่อผู้แต่ง</label>
+      <input type="text" id="author" placeholder="เช่น Kidmakk (คิดมาก)">
+      <label>Handle / URL (ภาษาอังกฤษ)</label>
+      <input type="text" id="titleEN" placeholder="เช่น embrace imperfection" oninput="updateSlug()">
+      <div class="hint">⚡ พิมพ์ได้ปกติ — แปลงเป็น slug ให้อัตโนมัติ</div>
+      <div class="slug-preview" id="slugPreview"></div>
+    </div>
+
+    <!-- 3. STORY -->
+    <div class="form-section">
+      <div class="form-section-title">💬 Story Box</div>
+      <label>Hook Quote</label>
+      <textarea id="hookQuote" rows="2" placeholder='"Hook Quote ที่โดนใจ..."'></textarea>
+      <label>เนื้อหา Description</label>
+      <textarea id="descBody" rows="4" placeholder="รายละเอียดหนังสือ...&#10;ใส่ <strong>คำ</strong> เพื่อ Bold ได้เลย"></textarea>
+    </div>
+
+    <!-- 4. FEATURES -->
+    <div class="form-section">
+      <div class="form-section-title">☁️ จุดเด่น 3 ข้อ</div>
+      <label>จุดเด่น 1</label><input type="text" id="feat1" placeholder="จุดเด่นที่ 1...">
+      <label>จุดเด่น 2</label><input type="text" id="feat2" placeholder="จุดเด่นที่ 2...">
+      <label>จุดเด่น 3</label><input type="text" id="feat3" placeholder="จุดเด่นที่ 3...">
+    </div>
+
+    <!-- 5. MEDIA -->
+    <div class="form-section">
+      <div class="form-section-title">🖼️ รูปภาพ & ตัวอย่าง</div>
+      <label>Image URL (รูปปกหนังสือ)</label>
+      <input type="text" id="imgURL" placeholder="https://cdn.shopify.com/...">
+      <label>Google Drive Link (PDF ตัวอย่าง)</label>
+      <input type="text" id="driveURL" placeholder="https://drive.google.com/file/d/.../view">
+      <div class="hint">⚡ วางลิงก์ปกติได้เลย — แปลงเป็น embed URL ให้อัตโนมัติ</div>
+    </div>
+
+    <!-- 6. SEO -->
+    <div class="form-section">
+      <div class="form-section-title">🔍 SEO Fields (ภาษาอังกฤษ)</div>
+      <label>Meta Title <span style="color:#A0AEC0;font-weight:400">≤ 60 ตัวอักษร</span></label>
+      <input type="text" id="metaTitle" placeholder="Book Title | How-to Books" oninput="checkLen('metaTitle','cMT',60)">
+      <div class="char-counter c-ok" id="cMT">0 / 60</div>
+      <label>Meta Description <span style="color:#A0AEC0;font-weight:400">≤ 160 ตัวอักษร</span></label>
+      <textarea id="metaDesc" rows="3" placeholder="Discover..." oninput="checkLen('metaDesc','cMD',160)"></textarea>
+      <div class="char-counter c-ok" id="cMD">0 / 160</div>
+    </div>
+
+    <!-- 7. VARIANTS -->
+    <div class="form-section">
+      <div class="form-section-title">🎁 Variants & ราคา</div>
+
+      <!-- Prefix -->
+      <div class="variant-prefix-row">
+        <div>
+          <label style="margin-top:0">Prefix ชื่อ Variant (ชื่อหลัก)</label>
+          <input type="text" id="varPrefix" placeholder="เช่น โอบกอด">
+        </div>
+      </div>
+      <div class="hint" style="margin-bottom:8px;">ชื่อ Variant = <strong>Prefix + Bundle</strong> (เว้นว่าง Bundle ถ้าขายเดี่ยว)</div>
+
+      <!-- Variant Table -->
+      <div class="variant-table-wrap">
+        <table class="variant-table">
+          <thead>
+            <tr>
+              <th style="width:22px">#</th>
+              <th class="th-name">Bundle กับ (ปล่อยว่าง = Standalone)</th>
+              <th class="th-dummy" style="width:68px">Dummy<br>฿ Compare</th>
+              <th class="th-aplus" style="width:68px">A+<br>฿ ราคาขาย</th>
+              <th class="th-legacy" style="width:76px">Legacy ID</th>
+              <th style="width:28px"></th>
+            </tr>
+          </thead>
+          <tbody id="variantBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-add-variant" onclick="addVariantRow()">+ เพิ่ม Variant</button>
+    </div>
+
+    <!-- GENERATE -->
+    <button class="btn-generate" id="genBtn" onclick="generate()">⚡ Generate ทุกอย่าง</button>
+
+  </div>
+
+  <!-- ===== RIGHT: OUTPUT ===== -->
+  <div class="output-panel">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('html',this)">📄 HTML Code</button>
+      <button class="tab-btn" onclick="switchTab('fields',this)">📋 Shopify Fields</button>
+      <button class="tab-btn" onclick="switchTab('variants',this)">🎁 Variants</button>
+      <button class="tab-btn" onclick="switchTab('preview',this)">👁️ Preview</button>
+    </div>
+
+    <!-- HTML Tab -->
+    <div class="tab-content active" id="tab-html">
+      <div class="html-wrap">
+        <div class="code-actions">
+          <button class="btn-action btn-blue" id="copyHTMLBtn" onclick="copyHTML()">📋 Copy HTML</button>
+          <span class="code-hint">← Copy แล้วไปวางใน Shopify Description → "<strong>Show HTML</strong>"</span>
+        </div>
+        <div class="code-box" id="htmlOutput"><span style="color:#4A5568;font-style:italic">// กรอกข้อมูลด้านซ้าย แล้วกด Generate ☁️</span></div>
+      </div>
+    </div>
+
+    <!-- Fields Tab -->
+    <div class="tab-content" id="tab-fields">
+      <div class="fields-wrap" id="fieldsContent">
+        <div class="empty-state"><div class="empty-icon">📦</div><p>กด Generate เพื่อดู<br>ทุก Field ที่ต้องกรอกใน Shopify</p></div>
+      </div>
+    </div>
+
+    <!-- Variants Tab -->
+    <div class="tab-content" id="tab-variants">
+      <div class="fields-wrap" id="variantsContent">
+        <div class="empty-state"><div class="empty-icon">🎁</div><p>กด Generate เพื่อดู<br>ตาราง Variants พร้อมราคา<br>และ Legacy ID</p></div>
+      </div>
+    </div>
+
+    <!-- Preview Tab -->
+    <div class="tab-content" id="tab-preview">
+      <div class="preview-wrap">
+        <div class="preview-container">
+          <div id="preview-area">
+            <div class="empty-state"><div class="empty-icon">🖼️</div><p>กด Generate เพื่อดู Preview</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== STATE =====
+  let variantCount = 0;
+
+  // ===== INIT: add 1 default standalone + 1 bundle row =====
+  window.addEventListener('DOMContentLoaded', () => {
+    addVariantRow('', '', '', '');   // standalone
+    addVariantRow('', '', '', '');   // first bundle
+  });
+
+  // ===== TAB =====
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ===== CHAR COUNTER =====
+  function checkLen(id, cid, max) {
+    const v = document.getElementById(id).value.length;
+    const el = document.getElementById(cid);
+    el.textContent = v + ' / ' + max;
+    el.className = 'char-counter ' + (v > max ? 'c-err' : v > max * 0.85 ? 'c-warn' : 'c-ok');
+  }
+
+  // ===== SLUG =====
+  function toSlug(t) {
+    return t.trim().toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  }
+  function updateSlug() {
+    const slug = toSlug(document.getElementById('titleEN').value);
+    const el = document.getElementById('slugPreview');
+    if (slug) { el.style.display = 'block'; el.textContent = '🔗 /products/' + slug; }
+    else { el.style.display = 'none'; }
+  }
+
+  // ===== DRIVE URL =====
+  function convertDrive(url) {
+    const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    return m ? 'https://drive.google.com/file/d/' + m[1] + '/preview' : url;
+  }
+
+  // ===== BADGE CONFIG =====
+  const BADGES = {
+    'Rising Star': { icon:'⭐', grad:'linear-gradient(135deg,#FFD200,#F7971E)', shadow:'rgba(247,151,30,0.4)', pulse:'rgba(255,210,0,0.7)' },
+    'New Release': { icon:'✨', grad:'linear-gradient(135deg,#667eea,#764ba2)', shadow:'rgba(102,126,234,0.4)', pulse:'rgba(102,126,234,0.7)' },
+    'Best Seller': { icon:'🔥', grad:'linear-gradient(135deg,#11998e,#38ef7d)', shadow:'rgba(17,153,142,0.4)',  pulse:'rgba(17,153,142,0.7)' },
+    'Limited':     { icon:'⚡', grad:'linear-gradient(135deg,#f12711,#f5af19)', shadow:'rgba(241,39,17,0.4)',   pulse:'rgba(241,39,17,0.7)' }
+  };
+
+  // ===== VARIANT ROWS =====
+  function addVariantRow(bundle='', dummy='', aplus='', legacy='') {
+    variantCount++;
+    const n = variantCount;
+    const tbody = document.getElementById('variantBody');
+    const tr = document.createElement('tr');
+    tr.className = 'variant-row';
+    tr.id = 'vrow-' + n;
+    tr.innerHTML = `
+      <td class="td-num">${tbody.rows.length + 1}</td>
+      <td><input class="vi vi-name" type="text" placeholder="ชื่อหนังสือที่ Bundle (ว่าง = Standalone)" value="${escAttr(bundle)}"></td>
+      <td><input class="vi vi-dummy" type="number" placeholder="279" value="${dummy}" min="0"></td>
+      <td><input class="vi vi-aplus" type="number" placeholder="237" value="${aplus}" min="0"></td>
+      <td><input class="vi vi-legacy" type="text" placeholder="1625" value="${escAttr(legacy)}"></td>
+      <td><button class="btn-rm-row" onclick="removeRow('vrow-${n}')" title="ลบแถวนี้">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+    reNumberRows();
+  }
+
+  function removeRow(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+    reNumberRows();
+  }
+
+  function reNumberRows() {
+    document.querySelectorAll('#variantBody .variant-row').forEach((r, i) => {
+      r.querySelector('.td-num').textContent = i + 1;
+    });
+  }
+
+  function getVariants() {
+    const prefix = document.getElementById('varPrefix').value.trim();
+    const rows = document.querySelectorAll('#variantBody .variant-row');
+    return Array.from(rows).map((r, i) => {
+      const bundle = r.querySelector('.vi-name').value.trim();
+      const dummy  = r.querySelector('.vi-dummy').value.trim();
+      const aplus  = r.querySelector('.vi-aplus').value.trim();
+      const legacy = r.querySelector('.vi-legacy').value.trim();
+      let name = prefix;
+      if (bundle) name = prefix ? prefix + ' + ' + bundle : bundle;
+      if (!name) name = 'Variant ' + (i + 1);
+      return { name, bundle, dummy, aplus, legacy };
+    }).filter(v => v.aplus || v.dummy || v.legacy || v.bundle);
+  }
+
+  // ===== ESCAPE =====
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s) { return String(s).replace(/"/g,'&quot;'); }
+
+  // ===== COPY =====
+  function copyHTML() {
+    const text = document.getElementById('htmlOutput').textContent;
+    if (!text || text.includes('กรอกข้อมูล')) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyHTMLBtn');
+      btn.textContent = '✅ Copied!'; btn.classList.remove('btn-blue'); btn.classList.add('btn-green');
+      setTimeout(() => { btn.textContent = '📋 Copy HTML'; btn.classList.add('btn-blue'); btn.classList.remove('btn-green'); }, 2200);
+    });
+  }
+  function cpTxt(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent; btn.textContent = '✅';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // ===== GENERATE =====
+  function generate() {
+    const badge    = document.querySelector('input[name="badge"]:checked').value;
+    const titleTH  = document.getElementById('titleTH').value.trim()   || 'ชื่อหนังสือ';
+    const author   = document.getElementById('author').value.trim()     || 'ผู้แต่ง';
+    const titleEN  = document.getElementById('titleEN').value.trim();
+    const hook     = document.getElementById('hookQuote').value.trim()  || '"Hook Quote..."';
+    const desc     = document.getElementById('descBody').value.trim()   || 'รายละเอียดหนังสือ';
+    const feat1    = document.getElementById('feat1').value.trim()      || 'จุดเด่นที่ 1';
+    const feat2    = document.getElementById('feat2').value.trim()      || 'จุดเด่นที่ 2';
+    const feat3    = document.getElementById('feat3').value.trim()      || 'จุดเด่นที่ 3';
+    const imgURL   = document.getElementById('imgURL').value.trim();
+    const driveRaw = document.getElementById('driveURL').value.trim();
+    const driveEmbed = driveRaw ? convertDrive(driveRaw) : 'REPLACE_WITH_DRIVE_PREVIEW_URL';
+    const metaTitle  = document.getElementById('metaTitle').value.trim();
+    const metaDesc   = document.getElementById('metaDesc').value.trim();
+    const slug = toSlug(titleEN);
+    const bc = BADGES[badge];
+    const variants = getVariants();
+
+    // ---- HTML ----
+    const imgTag = imgURL
+      ? `<img src="${imgURL}" alt="${escHtml(titleTH)}" class="opd-goodlife-mockup">`
+      : `<div style="width:100%;max-width:400px;height:480px;background:linear-gradient(135deg,#E3F2FD,#B3E5FC);border-radius:40px;display:flex;align-items:center;justify-content:center;color:#0288D1;font-size:16px;font-weight:600;border:8px solid #FFF;">📚 รูปปกหนังสือ</div>`;
+
+    const html = `<!-- ===== BOOK SECTION: ${escHtml(titleTH)} ===== -->
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  #opd-goodlife-section {
+    font-family: 'Prompt', sans-serif;
+    background: linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%);
+    color: #455A64; padding: 80px 20px;
+    box-sizing: border-box; display: block; width: 100%; overflow: hidden; position: relative;
+  }
+  #opd-goodlife-section * { box-sizing: border-box; }
+  #opd-goodlife-section::before {
+    content:''; position:absolute; top:-50px; right:-50px;
+    width:300px; height:300px; background:rgba(255,255,255,0.6);
+    border-radius:50%; filter:blur(60px); z-index:1;
+  }
+  .opd-goodlife-container { max-width:1000px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:60px; position:relative; z-index:2; }
+  .opd-goodlife-image { flex:1 1 380px; display:flex; justify-content:center; }
+  .opd-goodlife-mockup { width:100%; max-width:400px; border-radius:40px; box-shadow:0 20px 50px rgba(135,206,250,0.25); transition:transform 0.3s ease; border:8px solid #FFF; }
+  .opd-goodlife-mockup:hover { transform:translateY(-8px) scale(1.02); }
+  .opd-goodlife-content { flex:1 1 500px; }
+  .opd-goodlife-badge {
+    background:${bc.grad}; color:#FFF; padding:10px 25px; border-radius:50px;
+    font-size:16px; font-weight:800; margin-bottom:25px; display:inline-flex;
+    align-items:center; gap:10px; box-shadow:0 10px 20px ${bc.shadow};
+    text-transform:uppercase; letter-spacing:1px; border:3px solid #FFF; animation:badgePulse 2s infinite;
+  }
+  @keyframes badgePulse {
+    0%   { transform:scale(1);    box-shadow:0 0 0 0   ${bc.pulse}; }
+    70%  { transform:scale(1.05); box-shadow:0 0 0 10px rgba(0,0,0,0); }
+    100% { transform:scale(1);    box-shadow:0 0 0 0   rgba(0,0,0,0); }
+  }
+  .opd-goodlife-title { font-size:42px; font-weight:700; line-height:1.2; margin:0 0 10px 0; color:#263238; }
+  .opd-goodlife-author { font-size:20px; color:#78909C; font-weight:400; margin-bottom:25px; }
+  .opd-goodlife-story { background:rgba(255,255,255,0.7); border:1px solid #E1F5FE; padding:25px; border-radius:30px; margin-bottom:30px; backdrop-filter:blur(5px); }
+  .opd-goodlife-hook { font-size:18px; font-weight:600; color:#0288D1; margin-bottom:10px; }
+  .opd-goodlife-desc { font-size:16px; color:#546E7A; line-height:1.7; margin:0; font-weight:300; }
+  .opd-goodlife-features { list-style:none; padding:0; margin:0 0 35px 0; }
+  .opd-goodlife-feat-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; font-size:15px; color:#455A64; }
+  .opd-goodlife-icon { font-size:18px; margin-top:2px; }
+  .opd-goodlife-btn-wrapper { display:flex; gap:15px; }
+  .opd-goodlife-btn {
+    background:#0288D1; color:#FFF; padding:16px 40px; border-radius:50px;
+    font-size:18px; font-weight:600; text-decoration:none; display:inline-flex;
+    align-items:center; gap:10px; cursor:pointer; border:none;
+    box-shadow:0 10px 25px rgba(2,136,209,0.3); transition:all 0.3s; font-family:'Prompt',sans-serif;
+  }
+  .opd-goodlife-btn:hover { background:#0277BD; transform:translateY(-4px); }
+  .opd-modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(8px); }
+  .opd-modal-container { width:90%; max-width:900px; height:85vh; background:#FFF; border-radius:30px; display:flex; flex-direction:column; box-shadow:0 30px 60px rgba(0,0,0,0.15); animation:modalPopUp 0.4s cubic-bezier(0.175,0.885,0.32,1.275); border:1px solid #E3F2FD; }
+  @keyframes modalPopUp { from{opacity:0;transform:scale(0.9) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  .opd-modal-header { padding:20px 30px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; border-radius:30px 30px 0 0; }
+  .opd-modal-title { font-size:20px; font-weight:700; color:#0288D1; margin:0; }
+  .opd-modal-close { background:#F1F5F9; border:none; width:36px; height:36px; border-radius:50%; font-size:20px; color:#64748B; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+  .opd-modal-close:hover { background:#FFCDD2; color:#D32F2F; }
+  .opd-modal-body { flex:1; overflow:hidden; background:#F8FAFC; border-radius:0 0 30px 30px; }
+  .opd-modal-iframe { width:100%; height:100%; border:none; }
+  @media(max-width:900px){
+    .opd-goodlife-image{order:1;flex:1 1 100%} .opd-goodlife-content{order:2;text-align:center}
+    .opd-goodlife-badge{margin:0 auto 20px auto} .opd-goodlife-feat-item{justify-content:flex-start}
+    .opd-goodlife-btn{width:100%;justify-content:center}
+  }
+</style>
+
+<section id="opd-goodlife-section">
+  <div class="opd-goodlife-container">
+    <div class="opd-goodlife-image">
+      ${imgTag}
+    </div>
+    <div class="opd-goodlife-content">
+      <div class="opd-goodlife-badge">${bc.icon} ${badge}</div>
+      <h1 class="opd-goodlife-title">${escHtml(titleTH)}</h1>
+      <h3 class="opd-goodlife-author">โดย ${escHtml(author)}</h3>
+      <div class="opd-goodlife-story">
+        <div class="opd-goodlife-hook">${escHtml(hook)}</div>
+        <p class="opd-goodlife-desc">${desc}</p>
+      </div>
+      <ul class="opd-goodlife-features">
+        <li class="opd-goodlife-feat-item"><span class="opd-goodlife-icon">☁️</span> <span>${escHtml(feat1)}</span></li>
+        <li class="opd-goodlife-feat-item"><span class="opd-goodlife-icon">☁️</span> <span>${escHtml(feat2)}</span></li>
+        <li class="opd-goodlife-feat-item"><span class="opd-goodlife-icon">☁️</span> <span>${escHtml(feat3)}</span></li>
+      </ul>
+      <div class="opd-goodlife-btn-wrapper">
+        <button class="opd-goodlife-btn" onclick="document.getElementById('glModal').style.display='flex'">
+          <i class="fa-solid fa-book-open"></i> อ่านตัวอย่าง
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="opd-modal-overlay" id="glModal">
+  <div class="opd-modal-container">
+    <div class="opd-modal-header">
+      <h4 class="opd-modal-title">ตัวอย่างหนังสือ: ${escHtml(titleTH)}</h4>
+      <button class="opd-modal-close" onclick="document.getElementById('glModal').style.display='none'">×</button>
+    </div>
+    <div class="opd-modal-body">
+      <iframe src="${driveEmbed}" class="opd-modal-iframe"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('glModal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+<\/script>`;
+
+    document.getElementById('htmlOutput').textContent = html;
+
+    // ---- SHOPIFY FIELDS ----
+    const mtLen = metaTitle.length;
+    const mdLen = metaDesc.length;
+    const checks = [
+      { label:'Handle / URL',          done: !!slug },
+      { label:'ชื่อหนังสือ (Title)',   done: !!document.getElementById('titleTH').value.trim() },
+      { label:'รูปปก (Image)',         done: !!imgURL },
+      { label:'Google Drive Preview',  done: !!driveRaw },
+      { label:'Meta Title (EN)',        done: !!metaTitle },
+      { label:'Meta Description (EN)', done: !!metaDesc },
+      { label:'Variants ใส่ครบ',       done: variants.length > 0 && variants.every(v => v.aplus) },
+      { label:'Tags (genre, badge)',    done: false },
+    ];
+    document.getElementById('fieldsContent').innerHTML = `
+      <div class="field-card">
+        <div class="field-card-label">🔗 Handle (URL Slug)</div>
+        <div class="field-card-value">
+          <span ${slug?'':'class="empty"'}>${slug||'กรอก URL ภาษาอังกฤษก่อน'}</span>
+          ${slug?`<button class="btn-copy-field" onclick="cpTxt('${slug}',this)">Copy</button>`:''}
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-card-label">📖 Title (ชื่อสินค้า)</div>
+        <div class="field-card-value">
+          <span>${escHtml(titleTH)}</span>
+          <button class="btn-copy-field" onclick="cpTxt(${JSON.stringify(titleTH)},this)">Copy</button>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-card-label">🏪 Vendor</div>
+        <div class="field-card-value"><span>How-to</span><button class="btn-copy-field" onclick="cpTxt('How-to',this)">Copy</button></div>
+      </div>
+      <div class="field-card">
+        <div class="field-card-label">🔍 SEO Meta Title <span class="len-badge ${mtLen>60?'len-warn':'len-ok'}">${mtLen}/60</span></div>
+        <div class="field-card-value">
+          <span ${metaTitle?'':'class="empty"'}>${metaTitle||'ยังไม่ได้กรอก'}</span>
+          ${metaTitle?`<button class="btn-copy-field" onclick="cpTxt(${JSON.stringify(metaTitle)},this)">Copy</button>`:''}
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-card-label">📝 SEO Meta Description <span class="len-badge ${mdLen>160?'len-warn':'len-ok'}">${mdLen}/160</span></div>
+        <div class="field-card-value">
+          <span ${metaDesc?'':'class="empty"'}>${escHtml(metaDesc)||'ยังไม่ได้กรอก'}</span>
+          ${metaDesc?`<button class="btn-copy-field" onclick="cpTxt(${JSON.stringify(metaDesc)},this)">Copy</button>`:''}
+        </div>
+      </div>
+      <div class="checklist-card">
+        <div class="checklist-title">📋 Checklist ก่อนกด Publish</div>
+        ${checks.map(c=>`<div class="checklist-item"><span class="check-icon">${c.done?'✅':'⬜'}</span>${c.label}</div>`).join('')}
+      </div>
+    `;
+
+    // ---- VARIANTS TAB ----
+    if (variants.length === 0) {
+      document.getElementById('variantsContent').innerHTML = `<div class="empty-state"><div class="empty-icon">🎁</div><p>ยังไม่มี Variant<br>เพิ่มแถวในฟอร์มด้านซ้ายก่อน</p></div>`;
+    } else {
+      const rows = variants.map((v, i) => `
+        <tr>
+          <td class="td-num">${i+1}</td>
+          <td>${escHtml(v.name)}</td>
+          <td class="td-dummy">${v.dummy ? '฿' + Number(v.dummy).toLocaleString() : '<span style="color:#CBD5E0">—</span>'}</td>
+          <td class="td-aplus">${v.aplus ? '฿' + Number(v.aplus).toLocaleString() : '<span style="color:#CBD5E0">—</span>'}</td>
+          <td class="td-legacy">${v.legacy || '<span style="color:#CBD5E0">—</span>'}</td>
+          <td class="td-copy">
+            <button class="btn-cp-row" onclick="cpTxt(${JSON.stringify(v.name)},this)" title="Copy ชื่อ">ชื่อ</button>
+            ${v.aplus?`<button class="btn-cp-row" onclick="cpTxt('${v.aplus}',this)" title="Copy ราคาขาย">A+</button>`:''}
+            ${v.dummy?`<button class="btn-cp-row" onclick="cpTxt('${v.dummy}',this)" title="Copy Dummy Price">Dum</button>`:''}
+            ${v.legacy?`<button class="btn-cp-row" onclick="cpTxt('${v.legacy}',this)" title="Copy Legacy ID">ID</button>`:''}
+          </td>
+        </tr>`).join('');
+
+      // CSV snippet
+      const csvLines = ['Handle,Title,Option1 Name,Option1 Value,Variant Price,Variant Compare At Price,Variant SKU (Legacy ID)'];
+      variants.forEach((v, i) => {
+        csvLines.push(`${slug},"${v.name}",${i===0?'Title':''},"${v.name}",${v.aplus||''},${v.dummy||''},${v.legacy||''}`);
+      });
+
+      document.getElementById('variantsContent').innerHTML = `
+        <div class="variant-out-card">
+          <div class="variant-out-header">
+            <span>🎁 Variants — ${variants.length} รายการ</span>
+            <button class="btn-copy-field" onclick="cpAllVariants(${JSON.stringify(csvLines.join('\n'))},this)">📋 Copy ทั้งหมด (CSV)</button>
+          </div>
+          <table class="variant-out-table">
+            <thead>
+              <tr>
+                <th style="width:28px">#</th>
+                <th>ชื่อ Variant (Option1 Value)</th>
+                <th class="th-price" style="background:#F7FAFC">฿ Dummy<br><span style="font-weight:400;color:#A0AEC0">Compare At</span></th>
+                <th class="th-price" style="background:#FFFFF0;color:#744210">฿ A+<br><span style="font-weight:400">ราคาขาย</span></th>
+                <th style="background:#EBF8FF;color:#2C5282">Legacy ID</th>
+                <th style="width:110px">Copy</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="field-card" style="background:#F0FFF4;border-color:#C6F6D5;">
+          <div class="field-card-label" style="color:#276749;">💡 วิธีใช้ใน Shopify</div>
+          <div style="font-size:13px;color:#276749;line-height:1.8;">
+            1. ไปที่ Product → <strong>Variants</strong><br>
+            2. ชื่อ Option = <strong>Title</strong> (หรือ Bundle)<br>
+            3. ราคาขาย = <strong>A+ (สีเหลือง)</strong> → ช่อง Price<br>
+            4. ราคาขีดทับ = <strong>Dummy</strong> → ช่อง Compare at price<br>
+            5. Legacy ID → ใส่ใน <strong>SKU</strong> หรือ Metafield
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- PREVIEW ----
+    document.getElementById('preview-area').innerHTML = html;
+
+    // ---- Animate button ----
+    const btn = document.getElementById('genBtn');
+    btn.textContent = '✅ Generated!'; btn.classList.add('success');
+    setTimeout(() => { btn.innerHTML = '⚡ Generate ทุกอย่าง'; btn.classList.remove('success'); }, 2200);
+  }
+
+  function cpAllVariants(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent; btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = orig, 2200);
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ช่องทางหลัก รายเดือน — ยอด/แอด/กำไร (ก.พ.–พ.ค. 2026)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{font-family:'IBM Plex Sans Thai',sans-serif;box-sizing:border-box}
+body{margin:0;padding:28px;background:#F7F6F2;color:#2C2C2A}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.sub{color:#5F5E5A;font-size:14px;margin:0 0 22px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#5F5E5A;margin-bottom:18px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.card{background:#fff;border:1px solid #E4E2DA;border-radius:14px;padding:18px 20px;margin-bottom:20px}
+.card h2{font-size:16px;font-weight:600;margin:0 0 2px}
+.card .d{font-size:13px;color:#5F5E5A;margin:0 0 12px}
+.wrap{position:relative;width:100%;height:230px}
+.note{font-size:13px;color:#5F5E5A;line-height:1.8}
+</style></head><body>
+<h1>3 ช่องทางหลัก รายเดือน — ยอดขาย / งบแอด / กำไร</h1>
+<p class="sub">ที่มา: MK01 · margin ก่อนหักเงินเดือน · Facebook = "OpenDurian HOW-TO"</p>
+
+<div class="legend">
+<span><span class="dot" style="background:#85B7EB"></span>ยอดขาย</span>
+<span><span class="dot" style="background:#F0997B"></span>งบแอด (Ads+Affiliate)</span>
+<span><span class="dot" style="background:#1D9E75"></span>กำไร (ก่อนหักเงินเดือน)</span>
+</div>
+
+<div class="card"><h2>Facebook</h2><p class="d">กำไรบางมาก แกว่งตามแอด/ยอด · เม.ย. ลดแอดยอดร่วง กำไรติดลบ</p><div class="wrap"><canvas id="fb"></canvas></div></div>
+<div class="card"><h2>TikTok</h2><p class="d">ยอดสูงสุด แต่กำไรบาง 5–8% · พ.ค. ยอดขึ้นแต่กำไรลด (ปั่นยอดไม่คุ้ม)</p><div class="wrap"><canvas id="tt"></canvas></div></div>
+<div class="card"><h2>Shopee</h2><p class="d">กำไรหนา ~50% แอดถูก · แต่ยอดถดถอย ก.พ. 1.06M → พ.ค. 0.86M</p><div class="wrap"><canvas id="sp"></canvas></div></div>
+
+<p class="note"><b>กระทบกำไรมากสุด:</b> Shopee (ตัวทำกำไรหลัก) ยอดถดถอย −200K → กำไรหาย −160K · FB เผาเงิน เม.ย. ตอนยอดตก · TikTok พ.ค. ปั่นยอดไม่คุ้ม → โฟกัสควรเป็น <b>กู้ยอด Shopee</b></p>
+
+<script>
+const M=['ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+function mk(id,sale,ads,mg){new Chart(document.getElementById(id),{type:'bar',
+data:{labels:M,datasets:[
+{label:'ยอดขาย',data:sale,backgroundColor:'#85B7EB'},
+{label:'งบแอด',data:ads,backgroundColor:'#F0997B'},
+{label:'กำไร',data:mg,backgroundColor:mg.map(v=>v<0?'#E24B4A':'#1D9E75')}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+tooltip:{callbacks:{label:c=>c.dataset.label+': ฿'+c.parsed.y.toLocaleString()}}},
+scales:{y:{ticks:{callback:v=>(v<0?'-':'')+'฿'+Math.abs(v/1000000).toFixed(1)+'M'}},x:{ticks:{autoSkip:false}}}}});}
+mk('fb',[892127,1250128,801275,1370096],[488548,761860,565963,758888],[7142,11127,-42725,124863]);
+mk('tt',[2430224,1992292,2071571,2305927],[1055314,830076,866062,932738],[114919,113538,156080,120245]);
+mk('sp',[1064637,1042072,836543,856748],[27805,37303,29362,31853],[581525,556204,438733,421086]);
+</script></body></html>

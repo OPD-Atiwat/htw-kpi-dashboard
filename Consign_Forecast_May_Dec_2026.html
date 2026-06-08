@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Consignment Forecast May–Dec 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e0e0e0; padding: 24px; }
+
+  .header { text-align: center; margin-bottom: 6px; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #fff; }
+  .header p { font-size: 12px; color: #666; margin-top: 5px; }
+
+  .assumption-bar {
+    background: #1a1d27; border: 1px solid #2a2d3a; border-radius: 8px;
+    padding: 12px 18px; margin: 14px 0; display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
+  }
+  .assumption-bar .label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .assumption-bar .val   { font-size: 12px; color: #ccc; margin-top: 2px; }
+  .assumption-bar .val strong { color: #f59e0b; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .kpi { background: #1a1d27; border-radius: 8px; padding: 14px 16px; border-top: 3px solid; }
+  .kpi.r { border-color: #ef4444; }
+  .kpi.y { border-color: #f59e0b; }
+  .kpi.g { border-color: #22c55e; }
+  .kpi.b { border-color: #3b82f6; }
+  .kpi .lbl { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi .num { font-size: 22px; font-weight: 700; margin: 3px 0; }
+  .kpi.r .num { color: #ef4444; }
+  .kpi.y .num { color: #f59e0b; }
+  .kpi.g .num { color: #22c55e; }
+  .kpi.b .num { color: #3b82f6; }
+  .kpi .sub { font-size: 10px; color: #555; }
+
+  .card { background: #1a1d27; border-radius: 10px; padding: 18px 22px; }
+  .ctitle { font-size: 13px; font-weight: 600; color: #ccc; margin-bottom: 3px; }
+  .csub   { font-size: 11px; color: #555; margin-bottom: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  /* Gap Table */
+  .gap-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .gap-table th { background: #12141c; color: #888; font-weight: 600; padding: 8px 10px; text-align: right; border-bottom: 1px solid #2a2d3a; }
+  .gap-table th:first-child { text-align: left; }
+  .gap-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid #1e2030; }
+  .gap-table td:first-child { text-align: left; color: #aaa; font-weight: 600; }
+  .gap-table tr:last-child td { border-bottom: none; font-weight: 700; color: #e0e0e0; background: #12141c; }
+  .pos { color: #22c55e; }
+  .neg { color: #ef4444; }
+  .neu { color: #f59e0b; }
+
+  .scenario-legend {
+    display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
+    font-size: 11px; color: #888; margin-bottom: 14px;
+  }
+  .scenario-legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+
+  /* Strategy Box */
+  .strategy-box { background: #0d1f12; border: 1px solid #166534; border-radius: 8px; padding: 16px 18px; margin-top: 14px; }
+  .strategy-box h4 { font-size: 13px; font-weight: 600; color: #22c55e; margin-bottom: 10px; }
+  .strategy-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .strategy-item { background: #071209; border-radius: 6px; padding: 10px 12px; }
+  .strategy-item .stag { font-size: 10px; color: #4ade80; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+  .strategy-item p { font-size: 11px; color: #888; line-height: 1.7; }
+  .strategy-item strong { color: #d1fae5; }
+
+  .warning-box { background: #1c0a00; border: 1px solid #7c2d12; border-radius: 8px; padding: 14px 18px; margin-top: 14px; }
+  .warning-box h4 { font-size: 13px; font-weight: 600; color: #f97316; margin-bottom: 8px; }
+  .warning-box p  { font-size: 12px; color: #888; line-height: 1.7; }
+  .warning-box strong { color: #fdba74; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔮 Bottom-Up Forecast: Consignment + Online — May to Dec 2026</h1>
+  <p>Portfolio Lifecycle Decay Model | 3 Scenarios for ออฟฟิศนี้เฮงซวย | ไม่มีเล่มใหม่อื่นใน H2</p>
+</div>
+
+<!-- Assumptions Bar -->
+<div class="assumption-bar">
+  <div>
+    <div class="label">Portfolio Decay Rate</div>
+    <div class="val">~<strong>6–8%</strong>/month (online) | Consign follows</div>
+  </div>
+  <div>
+    <div class="label">ออฟฟิศฯ Online (M1 Est.)</div>
+    <div class="val"><strong>~1.5M</strong> (ทำให้ Market เพิ่มจาก 4.3M → 5.4M)</div>
+  </div>
+  <div>
+    <div class="label">New H2 Titles</div>
+    <div class="val"><strong>ไม่มี</strong> — Existing portfolio only + ออฟฟิศฯ</div>
+  </div>
+  <div>
+    <div class="label">Base Case ออฟฟิศฯ Consign</div>
+    <div class="val"><strong>ดี แต่ไม่เท่า Ghostly Brews</strong> (~30–35% M1)</div>
+  </div>
+</div>
+
+<!-- KPI Summary Cards -->
+<div class="kpi-row">
+  <div class="kpi r">
+    <div class="lbl">Consign Gap (May–Jun)</div>
+    <div class="num">−358K</div>
+    <div class="sub">H1 ช่วงที่หนักที่สุด ออฟฟิศฯ ชดเชยได้ไม่พอ</div>
+  </div>
+  <div class="kpi g">
+    <div class="lbl">Consign Gap (Jul–Dec)</div>
+    <div class="num">+952K</div>
+    <div class="sub">H2 Plan ต่ำพอ Portfolio เก่าดูแลได้</div>
+  </div>
+  <div class="kpi y">
+    <div class="lbl">Full Year Consign (Base)</div>
+    <div class="num">13.8M</div>
+    <div class="sub">vs Plan 16.9M → ขาด ~3.1M (−18%)</div>
+  </div>
+  <div class="kpi r">
+    <div class="lbl">Online Gap (Jun–Aug)</div>
+    <div class="num">−6.3M</div>
+    <div class="sub">Plan Jump ใน H2 ไม่มีเล่มใหม่รองรับ</div>
+  </div>
+</div>
+
+<!-- Chart 1: Consign Forecast -->
+<div class="card" style="margin-bottom:16px">
+  <div class="ctitle">📦 Consignment Forecast — May to Dec 2026 (3 Scenarios)</div>
+  <div class="csub">แกน Y = ยอด Consign (฿) | เส้นประ = Plan | ไม่มีเล่มใหม่ H2 นอกจาก ออฟฟิศฯ</div>
+  <div class="scenario-legend">
+    <span><span class="dot" style="background:#22c55e"></span>Base Case — ออฟฟิศฯ ดี ~30–35% M1 (ยินดีต้อนรับ-level)</span>
+    <span><span class="dot" style="background:#f59e0b"></span>Bear Case — ออฟฟิศฯ คล้าย กับดัก (~5–8%)</span>
+    <span><span class="dot" style="background:#a855f7"></span>Bull Case — ออฟฟิศฯ คล้าย Witches/ขอใช้ชีวิต (~50–55%)</span>
+    <span><span class="dot" style="background:#ef4444; border-radius:0; height:3px; width:16px"></span>Plan Target</span>
+  </div>
+  <div style="height:280px; position:relative">
+    <canvas id="chartConsign"></canvas>
+  </div>
+</div>
+
+<!-- Chart 2 + Chart 3 Grid -->
+<div class="grid2">
+
+  <div class="card">
+    <div class="ctitle">📈 Online Sales Forecast — May to Dec 2026</div>
+    <div class="csub">Existing Portfolio Decay + ออฟฟิศฯ | Plan ที่ Jun–Aug สูงมาก ต้องการเล่มใหม่</div>
+    <div style="height:250px; position:relative">
+      <canvas id="chartOnline"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Consign/Online Ratio Forecast (%)</div>
+    <div class="csub">ออฟฟิศฯ ดึง Ratio ขึ้นใน May–Jun แต่หลังจากนั้นจะลงต่อเนื่อง</div>
+    <div style="height:250px; position:relative">
+      <canvas id="chartRatio"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Gap Table -->
+<div class="card" style="margin-bottom:16px">
+  <div class="ctitle">🎯 Monthly Forecast vs Plan — Base Case Detail</div>
+  <div class="csub">Consign Forecast = Existing Portfolio + ออฟฟิศฯ (Base Scenario)</div>
+  <table class="gap-table">
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Online Plan</th>
+        <th>Online Forecast</th>
+        <th>Online Gap</th>
+        <th>Consign Plan</th>
+        <th>Consign Forecast</th>
+        <th>Consign Gap</th>
+        <th>C/O Ratio (Fcst)</th>
+      </tr>
+    </thead>
+    <tbody id="gapTableBody"></tbody>
+  </table>
+</div>
+
+<!-- Warning Box -->
+<div class="warning-box">
+  <h4>⚠️ Critical Finding: Online Target Jun–Aug ไม่ Realistic</h4>
+  <p>
+    Plan Online สำหรับ Jun 26 = <strong>6.15M</strong>, Jul 26 = <strong>6.28M</strong>, Aug 26 = <strong>6.3M</strong><br>
+    แต่ Existing Portfolio + ออฟฟิศฯ (decay curve) จะให้ได้แค่ <strong>~4.5M, ~3.9M, ~3.4M</strong> ตามลำดับ<br>
+    Gap รวม Jun–Aug = <strong>ขาดกว่า 6.3M ในออนไลน์</strong> — ต้องการเล่มใหม่อีกอย่างน้อย <strong>2–3 เล่ม</strong> ใน Jul–Aug<br>
+    ถ้าไม่มี → Profit H2 จะพลาดเป้าหนัก เพราะ Fix Cost 880K/เดือน กิน Margin หมด
+  </p>
+</div>
+
+<!-- Strategy Box -->
+<div class="strategy-box">
+  <h4>✅ Revised Strategy: ทำอะไรได้บ้างใน H2</h4>
+  <div class="strategy-row">
+    <div class="strategy-item">
+      <div class="stag">🎯 Lever #1: ออฟฟิศฯ Distribution Push</div>
+      <p>ถ้า Push Consignment ออฟฟิศฯ ให้ได้ <strong>45%+ ของ Online เดือนแรก</strong> จะ close consign gap May–Jun ได้เกือบหมด<br>
+      Ghostly Brews ทำได้เพราะ Marketing Awareness สูง → ร้านหนังสือ order เยอะ</p>
+    </div>
+    <div class="strategy-item">
+      <div class="stag">📅 Lever #2: เร่ง Launch เล่มใหม่ Q3</div>
+      <p>ถ้ามีเล่มใหม่ Launch <strong>ใน Jul–Aug</strong> จะ Rescue Online 1–2M และ Consign 300–600K ต่อเดือน<br>
+      Online Gap ใหญ่ที่สุดใน Jul–Aug → เล่มใหม่ใน Q3 คือ key lever ที่ดีที่สุด</p>
+    </div>
+    <div class="strategy-item">
+      <div class="stag">🎯 Lever #3: Reset Consign Target H2</div>
+      <p>Base Forecast แสดงว่า Jul–Dec Consign จะอยู่ที่ <strong>4.6–5.0M</strong> (Base) vs Plan 3.8M<br>
+      → Plan H2 Consign อาจ <strong>ต่ำเกินไปแล้ว</strong>, โยกงบ Margin expectation ไปที่ Online แทน</p>
+    </div>
+    <div class="strategy-item">
+      <div class="stag">⚡ Lever #4: Margin Protection</div>
+      <p>ถ้า Online ไม่ถึง 5.8M ใน H2 → Fix Cost 880K/เดือน = <strong>18–25%+ ของ Online</strong><br>
+      ลด Fixed Cost หรือ ดัน Online ให้เกิน 5M/เดือน คือ priority สูงสุดเพื่อรักษา Margin ไม่ให้ติดลบ</p>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:14px; font-size:10px; color:#333">
+  Forecast Model v1.0 — May 2026 | Bottom-Up: Portfolio Lifecycle Decay + ออฟฟิศฯ Scenarios | Assumptions: Aug–Dec 2025 consign estimated
+</div>
+
+<script>
+Chart.defaults.color = '#888';
+Chart.defaults.borderColor = '#1e2130';
+
+const months = ['May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26'];
+
+// ─── ONLINE FORECAST ─────────────────────────────────────────────────────────
+// Existing portfolio decay (from Apr 26 actual 4,334K, ex-bookfair)
+// ~8%/month for May-Jul (aggressive titles aging), then ~6% for Aug+
+const existOnline = [3944, 3550, 3160, 2812, 2503, 2253, 2028, 1825];
+
+// ออฟฟิศฯ online trajectory (M1=1500K, then -33%, -30%, -28%, -25%, -20%, -18%)
+const officeOnline = [1500, 1000, 700, 500, 380, 300, 250, 210];
+const totalOnlineFcst = existOnline.map((v,i) => v + officeOnline[i]);
+const planOnline = [5800, 6150, 6200, 6300, 4900, 6500, 2930, 2930]; // from Finance plan
+
+// ─── CONSIGN FORECAST ────────────────────────────────────────────────────────
+// Existing portfolio consign (from Apr actual 1,409K, decay ~6.5-8%)
+const existConsign = [1050, 950, 830, 730, 630, 550, 470, 450];
+
+// ออฟฟิศฯ consign — 3 scenarios
+// Bull: like ยินดีต้อนรับ/Witches ~50-55% initially
+const officeBull   = [750, 380, 200, 130, 90, 60, 45, 35];
+// Base: "ดี แต่ไม่เท่า Ghostly Brews" ~30-35% initially
+const officeBase   = [450, 220, 126, 75, 49, 33, 25, 19];
+// Bear: like กับดัก ~5-8%
+const officeBear   = [90,  55,  40,  30,  22, 15, 12, 10];
+
+const totalBull = existConsign.map((v,i) => v + officeBull[i]);
+const totalBase = existConsign.map((v,i) => v + officeBase[i]);
+const totalBear = existConsign.map((v,i) => v + officeBear[i]);
+
+const planConsign = [1650, 1500, 1000, 882, 686, 438, 410, 410]; // from Finance plan (Jul-Dec from plan)
+
+// ─── RATIO FORECAST ──────────────────────────────────────────────────────────
+const ratioBase = totalBase.map((c,i) => Math.round(c / totalOnlineFcst[i] * 100));
+const ratioBull = totalBull.map((c,i) => Math.round(c / totalOnlineFcst[i] * 100));
+const ratioBear = totalBear.map((c,i) => Math.round(c / totalOnlineFcst[i] * 100));
+const ratioPlan = planConsign.map((c,i) => Math.round(c / planOnline[i] * 100));
+
+// ─── Chart 1: Consign Forecast ───────────────────────────────────────────────
+new Chart(document.getElementById('chartConsign').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Existing Portfolio Consign',
+        data: existConsign,
+        backgroundColor: 'rgba(59,130,246,0.5)',
+        stack: 'forecast',
+        order: 2,
+      },
+      {
+        label: 'ออฟฟิศฯ Consign (Base)',
+        data: officeBase,
+        backgroundColor: 'rgba(34,197,94,0.7)',
+        stack: 'forecast',
+        order: 2,
+      },
+      {
+        label: 'Total — Bull Case',
+        data: totalBull,
+        type: 'line',
+        borderColor: '#a855f7',
+        borderWidth: 2.5,
+        pointRadius: 5,
+        pointBackgroundColor: '#a855f7',
+        fill: false,
+        tension: 0.3,
+        order: 1,
+      },
+      {
+        label: 'Total — Bear Case',
+        data: totalBear,
+        type: 'line',
+        borderColor: '#f59e0b',
+        borderWidth: 2,
+        borderDash: [5,4],
+        pointRadius: 4,
+        pointBackgroundColor: '#f59e0b',
+        fill: false,
+        tension: 0.3,
+        order: 1,
+      },
+      {
+        label: 'Plan Target',
+        data: planConsign,
+        type: 'line',
+        borderColor: '#ef4444',
+        borderWidth: 2,
+        borderDash: [8, 4],
+        pointRadius: 4,
+        pointBackgroundColor: '#ef4444',
+        fill: false,
+        tension: 0.2,
+        order: 0,
+      },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { font: { size: 11 }, color: '#aaa', boxWidth: 14 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ฿' + (ctx.raw ? (ctx.raw/1000).toFixed(0) + 'K' : '—') } }
+    },
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 11 } }, grid: { color: '#1e2130' } },
+      y: { stacked: true, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 11 } },
+           grid: { color: '#1e2130' }, title: { display: true, text: 'Consign (฿K)', font: { size: 11 }, color: '#555' } }
+    }
+  }
+});
+
+// ─── Chart 2: Online Forecast ─────────────────────────────────────────────────
+new Chart(document.getElementById('chartOnline').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Existing Portfolio Online',
+        data: existOnline,
+        backgroundColor: 'rgba(59,130,246,0.5)',
+        stack: 'online',
+        order: 2,
+      },
+      {
+        label: 'ออฟฟิศฯ Online',
+        data: officeOnline,
+        backgroundColor: 'rgba(168,85,247,0.65)',
+        stack: 'online',
+        order: 2,
+      },
+      {
+        label: 'Plan Target',
+        data: planOnline,
+        type: 'line',
+        borderColor: '#ef4444',
+        borderDash: [7, 4],
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#ef4444',
+        fill: false,
+        tension: 0.2,
+        order: 0,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { font: { size: 10 }, color: '#aaa', boxWidth: 12 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ฿' + (ctx.raw ? (ctx.raw/1000).toFixed(0) + 'K' : '—') } }
+    },
+    scales: {
+      x: { stacked: true, ticks: { font: { size: 10 } }, grid: { color: '#1e2130' } },
+      y: { stacked: true, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 10 } },
+           grid: { color: '#1e2130' }, suggestedMax: 8000 }
+    }
+  }
+});
+
+// ─── Chart 3: Consign/Online Ratio ────────────────────────────────────────────
+new Chart(document.getElementById('chartRatio').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Base Case Ratio', data: ratioBase, borderColor: '#22c55e', borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#22c55e', fill: false, tension: 0.3 },
+      { label: 'Bull Case Ratio', data: ratioBull, borderColor: '#a855f7', borderWidth: 2, borderDash: [5,3], pointRadius: 4, pointBackgroundColor: '#a855f7', fill: false, tension: 0.3 },
+      { label: 'Bear Case Ratio', data: ratioBear, borderColor: '#f59e0b', borderWidth: 2, borderDash: [5,3], pointRadius: 4, pointBackgroundColor: '#f59e0b', fill: false, tension: 0.3 },
+      { label: 'Plan Ratio', data: ratioPlan, borderColor: '#ef4444', borderDash: [7,4], borderWidth: 1.5, pointRadius: 3, pointBackgroundColor: '#ef4444', fill: false, tension: 0.2 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { labels: { font: { size: 10 }, color: '#aaa', boxWidth: 12 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.raw != null ? ctx.raw + '%' : '—') } }
+    },
+    scales: {
+      x: { ticks: { font: { size: 10 } }, grid: { color: '#1e2130' } },
+      y: { ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#1e2130' },
+           suggestedMin: 0, suggestedMax: 40,
+           title: { display: true, text: 'Consign / Online %', font: { size: 10 }, color: '#555' } }
+    }
+  }
+});
+
+// ─── Gap Table ────────────────────────────────────────────────────────────────
+const fmt = (v, prefix='฿') => prefix + (v >= 0 ? '' : '') + Math.abs(v/1000).toFixed(0) + 'K';
+const fmtGap = (v) => {
+  const s = (v >= 0 ? '+' : '−') + '฿' + Math.abs(v/1000).toFixed(0) + 'K';
+  const cls = v >= 0 ? 'pos' : 'neg';
+  return `<span class="${cls}">${s}</span>`;
+};
+
+const tbody = document.getElementById('gapTableBody');
+let totOnlinePlan=0, totOnlineFcst=0, totConsignPlan=0, totConsignFcst=0;
+
+months.forEach((m, i) => {
+  const onFcst = totalOnlineFcst[i];
+  const onPlan = planOnline[i];
+  const coFcst = totalBase[i];
+  const coPlan = planConsign[i];
+  const onGap  = onFcst - onPlan;
+  const coGap  = coFcst - coPlan;
+  const ratio  = Math.round(coFcst / onFcst * 100);
+
+  totOnlinePlan   += onPlan;
+  totOnlineFcst   += onFcst;
+  totConsignPlan  += coPlan;
+  totConsignFcst  += coFcst;
+
+  tbody.innerHTML += `
+    <tr>
+      <td>${m}</td>
+      <td>฿${(onPlan/1000).toFixed(0)}K</td>
+      <td>฿${(onFcst/1000).toFixed(0)}K</td>
+      <td>${fmtGap(onGap)}</td>
+      <td>฿${(coPlan/1000).toFixed(0)}K</td>
+      <td>฿${(coFcst/1000).toFixed(0)}K</td>
+      <td>${fmtGap(coGap)}</td>
+      <td><span class="${ratio >= 25 ? 'pos' : ratio >= 15 ? 'neu' : 'neg'}">${ratio}%</span></td>
+    </tr>`;
+});
+
+// Total row
+const onTotalGap = totOnlineFcst - totOnlinePlan;
+const coTotalGap = totConsignFcst - totConsignPlan;
+const avgRatio   = Math.round(totConsignFcst / totOnlineFcst * 100);
+tbody.innerHTML += `
+  <tr>
+    <td>TOTAL</td>
+    <td>฿${(totOnlinePlan/1000).toFixed(0)}K</td>
+    <td>฿${(totOnlineFcst/1000).toFixed(0)}K</td>
+    <td>${fmtGap(onTotalGap)}</td>
+    <td>฿${(totConsignPlan/1000).toFixed(0)}K</td>
+    <td>฿${(totConsignFcst/1000).toFixed(0)}K</td>
+    <td>${fmtGap(coTotalGap)}</td>
+    <td><span class="neu">${avgRatio}%</span></td>
+  </tr>`;
+</script>
+</body>
+</html>

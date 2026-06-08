@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Sales Trend — How-to MK13</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f1117; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .subtitle { font-size: 12px; color: #888; margin-bottom: 20px; }
+
+  /* KPI Cards */
+  .kpi-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .kpi-card {
+    background: #1a1d27; border-radius: 10px; padding: 14px 18px;
+    flex: 1; min-width: 130px; border: 1px solid #2a2d3a;
+  }
+  .kpi-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .kpi-val { font-size: 20px; font-weight: 800; color: #fff; }
+  .kpi-sub { font-size: 11px; color: #666; margin-top: 2px; }
+
+  /* Month Filter */
+  .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 11px; color: #666; margin-right: 4px; }
+  .month-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid #2a2d3a;
+    background: #1a1d27; color: #aaa; font-size: 12px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .month-btn:hover { border-color: #4f8ef7; color: #4f8ef7; }
+  .month-btn.active { background: #4f8ef7; border-color: #4f8ef7; color: #fff; font-weight: 700; }
+
+  /* View Toggle */
+  .view-toggle { display: flex; gap: 6px; margin-left: auto; }
+  .view-btn {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid #2a2d3a;
+    background: #1a1d27; color: #aaa; font-size: 11px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .view-btn.active { background: #252836; border-color: #555; color: #fff; }
+
+  /* Chart */
+  .chart-wrap {
+    background: #1a1d27; border-radius: 12px; border: 1px solid #2a2d3a;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .chart-wrap canvas { max-height: 340px; }
+
+  /* Channel Legend */
+  .legend-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 8px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .legend-item:hover { border-color: #333; background: #22252f; }
+  .legend-item.hidden { opacity: 0.3; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-name { font-size: 11px; color: #ccc; }
+
+  /* MA Toggle */
+  .ma-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .ma-toggle label { font-size: 12px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .ma-toggle input[type=checkbox] { accent-color: #f5a623; width: 14px; height: 14px; cursor: pointer; }
+
+  /* Tooltip custom */
+  .chart-tooltip {
+    position: absolute; background: #1e2130; border: 1px solid #333;
+    border-radius: 8px; padding: 10px 14px; pointer-events: none;
+    font-size: 12px; min-width: 180px; z-index: 99; display: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>📈 Daily Sales Trend — How-to MK13</h1>
+<div class="subtitle">ยอดขายรายวันจาก OPD_DAILY (มกราคม–พฤษภาคม 2026)</div>
+
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="filter-row">
+  <span class="filter-label">เดือน:</span>
+  <button class="month-btn active" data-month="all" onclick="setMonth('all',this)">ทั้งหมด</button>
+  <button class="month-btn" data-month="2026-01" onclick="setMonth('2026-01',this)">ม.ค. 26</button>
+  <button class="month-btn" data-month="2026-02" onclick="setMonth('2026-02',this)">ก.พ. 26</button>
+  <button class="month-btn" data-month="2026-03" onclick="setMonth('2026-03',this)">มี.ค. 26</button>
+  <button class="month-btn" data-month="2026-04" onclick="setMonth('2026-04',this)">เม.ย. 26</button>
+  <button class="month-btn" data-month="2026-05" onclick="setMonth('2026-05',this)">พ.ค. 26</button>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btnTotal" onclick="setView('total')">Total</button>
+    <button class="view-btn" id="btnChannel" onclick="setView('channel')">by Channel</button>
+    <button class="view-btn" id="btnStack" onclick="setView('stack')">Stacked</button>
+  </div>
+</div>
+
+<div class="ma-toggle">
+  <label><input type="checkbox" id="maCheck" checked onchange="toggleMA()"> แสดงเส้น 7-day Moving Average</label>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="myChart"></canvas>
+  <div class="legend-row" id="legendRow"></div>
+</div>
+
+<script>
+const RAW = [{"d":"2026-01-01","total":99663,"TikTok Affi":60624,"TikTok":21774,"TikTok Live":0,"Facebook":3156,"Instagram":0,"Shopee":10283,"Shopee Live":3166,"Lazada":660,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-02","total":110047,"TikTok Affi":61717,"TikTok":18203,"TikTok Live":0,"Facebook":6880,"Instagram":499,"Shopee":14523,"Shopee Live":6867,"Lazada":999,"YouTube":0,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-03","total":100210,"TikTok Affi":50354,"TikTok":26872,"TikTok Live":0,"Facebook":5931,"Instagram":0,"Shopee":10890,"Shopee Live":5503,"Lazada":660,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-04","total":109956,"TikTok Affi":70948,"TikTok":18003,"TikTok Live":0,"Facebook":1932,"Instagram":0,"Shopee":12346,"Shopee Live":6007,"Lazada":330,"YouTube":0,"LINE":0,"Web":390,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-05","total":86532,"TikTok Affi":43935,"TikTok":15617,"TikTok Live":0,"Facebook":11814,"Instagram":0,"Shopee":10281,"Shopee Live":3982,"Lazada":903,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-06","total":95561,"TikTok Affi":50140,"TikTok":25720,"TikTok Live":0,"Facebook":6396,"Instagram":0,"Shopee":7589,"Shopee Live":3906,"Lazada":1810,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-07","total":63778,"TikTok Affi":31287,"TikTok":8622,"TikTok Live":0,"Facebook":7400,"Instagram":0,"Shopee":10510,"Shopee Live":5959,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-08","total":70702,"TikTok Affi":22892,"TikTok":17540,"TikTok Live":0,"Facebook":7369,"Instagram":0,"Shopee":16492,"Shopee Live":6409,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-09","total":67628,"TikTok Affi":26707,"TikTok":12293,"TikTok Live":0,"Facebook":5768,"Instagram":698,"Shopee":13009,"Shopee Live":8555,"Lazada":598,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-10","total":66594,"TikTok Affi":16294,"TikTok":16341,"TikTok Live":0,"Facebook":12179,"Instagram":349,"Shopee":11370,"Shopee Live":8852,"Lazada":1209,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-11","total":78929,"TikTok Affi":30307,"TikTok":10880,"TikTok Live":0,"Facebook":13121,"Instagram":998,"Shopee":8850,"Shopee Live":14078,"Lazada":305,"YouTube":0,"LINE":0,"Web":390,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-12","total":78871,"TikTok Affi":28626,"TikTok":16016,"TikTok Live":0,"Facebook":7764,"Instagram":1787,"Shopee":15147,"Shopee Live":8659,"Lazada":513,"YouTube":0,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-13","total":69573,"TikTok Affi":30899,"TikTok":13753,"TikTok Live":0,"Facebook":7752,"Instagram":499,"Shopee":10359,"Shopee Live":6311,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-14","total":185542,"TikTok Affi":44953,"TikTok":13122,"TikTok Live":85813,"Facebook":12343,"Instagram":998,"Shopee":14059,"Shopee Live":12943,"Lazada":312,"YouTube":0,"LINE":999,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-15","total":90151,"TikTok Affi":30114,"TikTok":16026,"TikTok Live":2195,"Facebook":12126,"Instagram":1008,"Shopee":19583,"Shopee Live":9099,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-16","total":57238,"TikTok Affi":20084,"TikTok":10580,"TikTok Live":902,"Facebook":11600,"Instagram":0,"Shopee":7396,"Shopee Live":6676,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-17","total":54389,"TikTok Affi":25048,"TikTok":7333,"TikTok Live":329,"Facebook":6543,"Instagram":1427,"Shopee":9879,"Shopee Live":3830,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-18","total":62765,"TikTok Affi":29635,"TikTok":17313,"TikTok Live":0,"Facebook":5372,"Instagram":0,"Shopee":6948,"Shopee Live":2594,"Lazada":513,"YouTube":0,"LINE":0,"Web":390,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-19","total":81581,"TikTok Affi":32139,"TikTok":11461,"TikTok Live":299,"Facebook":19397,"Instagram":1975,"Shopee":12597,"Shopee Live":0,"Lazada":1059,"YouTube":0,"LINE":2295,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-20","total":124085,"TikTok Affi":31726,"TikTok":23056,"TikTok Live":670,"Facebook":44109,"Instagram":3122,"Shopee":12845,"Shopee Live":8218,"Lazada":339,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-21","total":102319,"TikTok Affi":21882,"TikTok":16141,"TikTok Live":0,"Facebook":32644,"Instagram":1865,"Shopee":23597,"Shopee Live":5176,"Lazada":1014,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-22","total":89521,"TikTok Affi":19971,"TikTok":23486,"TikTok Live":0,"Facebook":17857,"Instagram":698,"Shopee":23310,"Shopee Live":3497,"Lazada":702,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-23","total":114187,"TikTok Affi":29467,"TikTok":22724,"TikTok Live":0,"Facebook":33876,"Instagram":499,"Shopee":20112,"Shopee Live":7509,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-24","total":66106,"TikTok Affi":19622,"TikTok":11394,"TikTok Live":0,"Facebook":15178,"Instagram":759,"Shopee":13244,"Shopee Live":5666,"Lazada":243,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-25","total":89326,"TikTok Affi":37237,"TikTok":18092,"TikTok Live":341,"Facebook":6821,"Instagram":0,"Shopee":14086,"Shopee Live":10941,"Lazada":1808,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-26","total":83579,"TikTok Affi":26750,"TikTok":17413,"TikTok Live":0,"Facebook":18507,"Instagram":590,"Shopee":15147,"Shopee Live":5172,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-27","total":65449,"TikTok Affi":20363,"TikTok":12785,"TikTok Live":0,"Facebook":13449,"Instagram":0,"Shopee":14979,"Shopee Live":3483,"Lazada":0,"YouTube":0,"LINE":0,"Web":390,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-28","total":216872,"TikTok Affi":102285,"TikTok":22821,"TikTok Live":55138,"Facebook":15246,"Instagram":0,"Shopee":20070,"Shopee Live":0,"Lazada":903,"YouTube":0,"LINE":409,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-29","total":164265,"TikTok Affi":97890,"TikTok":22114,"TikTok Live":1691,"Facebook":21131,"Instagram":0,"Shopee":20341,"Shopee Live":0,"Lazada":348,"YouTube":0,"LINE":390,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-30","total":162105,"TikTok Affi":106410,"TikTok":28140,"TikTok Live":827,"Facebook":11232,"Instagram":0,"Shopee":11285,"Shopee Live":3132,"Lazada":1079,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-01-31","total":118605,"TikTok Affi":78122,"TikTok":18612,"TikTok Live":545,"Facebook":10613,"Instagram":1190,"Shopee":4903,"Shopee Live":4620,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-01","total":150820,"TikTok Affi":96116,"TikTok":23990,"TikTok Live":249,"Facebook":12391,"Instagram":0,"Shopee":8572,"Shopee Live":9502,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-02","total":172017,"TikTok Affi":89454,"TikTok":30300,"TikTok Live":1542,"Facebook":15508,"Instagram":409,"Shopee":17294,"Shopee Live":16577,"Lazada":572,"YouTube":0,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-03","total":156105,"TikTok Affi":74230,"TikTok":50155,"TikTok Live":498,"Facebook":10727,"Instagram":0,"Shopee":11124,"Shopee Live":9054,"Lazada":317,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-04","total":116734,"TikTok Affi":27357,"TikTok":48222,"TikTok Live":0,"Facebook":10793,"Instagram":0,"Shopee":14656,"Shopee Live":13948,"Lazada":1399,"YouTube":0,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-05","total":100523,"TikTok Affi":38325,"TikTok":27412,"TikTok Live":0,"Facebook":11143,"Instagram":409,"Shopee":11977,"Shopee Live":8091,"Lazada":1366,"YouTube":0,"LINE":1800,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-06","total":140879,"TikTok Affi":38586,"TikTok":33183,"TikTok Live":0,"Facebook":34310,"Instagram":1747,"Shopee":21676,"Shopee Live":7095,"Lazada":1224,"YouTube":0,"LINE":2659,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-07","total":131388,"TikTok Affi":29632,"TikTok":16425,"TikTok Live":0,"Facebook":37559,"Instagram":1377,"Shopee":32618,"Shopee Live":12331,"Lazada":1046,"YouTube":0,"LINE":400,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-08","total":136127,"TikTok Affi":35344,"TikTok":27635,"TikTok Live":0,"Facebook":37756,"Instagram":1786,"Shopee":24553,"Shopee Live":8653,"Lazada":0,"YouTube":0,"LINE":400,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-09","total":189564,"TikTok Affi":30207,"TikTok":22387,"TikTok Live":31364,"Facebook":47226,"Instagram":818,"Shopee":42032,"Shopee Live":14823,"Lazada":348,"YouTube":0,"LINE":359,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-10","total":135895,"TikTok Affi":25951,"TikTok":19609,"TikTok Live":339,"Facebook":37753,"Instagram":4402,"Shopee":36359,"Shopee Live":10426,"Lazada":1056,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-11","total":167883,"TikTok Affi":43624,"TikTok":21151,"TikTok Live":965,"Facebook":49958,"Instagram":1627,"Shopee":41101,"Shopee Live":8407,"Lazada":1050,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-12","total":160855,"TikTok Affi":41070,"TikTok":19441,"TikTok Live":590,"Facebook":43353,"Instagram":1777,"Shopee":49882,"Shopee Live":2929,"Lazada":1414,"YouTube":0,"LINE":0,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-13","total":152333,"TikTok Affi":36098,"TikTok":17366,"TikTok Live":296,"Facebook":54359,"Instagram":2366,"Shopee":40190,"Shopee Live":880,"Lazada":778,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-14","total":100365,"TikTok Affi":27201,"TikTok":19273,"TikTok Live":299,"Facebook":21702,"Instagram":1068,"Shopee":24209,"Shopee Live":6613,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-15","total":150883,"TikTok Affi":36768,"TikTok":17555,"TikTok Live":0,"Facebook":40968,"Instagram":818,"Shopee":38506,"Shopee Live":14890,"Lazada":778,"YouTube":0,"LINE":600,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-16","total":136314,"TikTok Affi":45034,"TikTok":21076,"TikTok Live":0,"Facebook":31477,"Instagram":3663,"Shopee":29757,"Shopee Live":3794,"Lazada":1513,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-17","total":212862,"TikTok Affi":71580,"TikTok":31880,"TikTok Live":0,"Facebook":57959,"Instagram":4560,"Shopee":27702,"Shopee Live":17038,"Lazada":1744,"YouTube":0,"LINE":0,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-18","total":210075,"TikTok Affi":77080,"TikTok":32780,"TikTok Live":0,"Facebook":46216,"Instagram":3222,"Shopee":37749,"Shopee Live":10858,"Lazada":766,"YouTube":646,"LINE":0,"Web":758,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-19","total":215125,"TikTok Affi":91728,"TikTok":26487,"TikTok Live":0,"Facebook":42795,"Instagram":3004,"Shopee":37113,"Shopee Live":11737,"Lazada":0,"YouTube":2261,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-20","total":163110,"TikTok Affi":59177,"TikTok":23454,"TikTok Live":0,"Facebook":31469,"Instagram":818,"Shopee":29564,"Shopee Live":17260,"Lazada":0,"YouTube":969,"LINE":0,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-21","total":154205,"TikTok Affi":56848,"TikTok":30003,"TikTok Live":674,"Facebook":31023,"Instagram":818,"Shopee":23375,"Shopee Live":7448,"Lazada":2102,"YouTube":1615,"LINE":0,"Web":299,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-22","total":140969,"TikTok Affi":54510,"TikTok":29755,"TikTok Live":0,"Facebook":18658,"Instagram":559,"Shopee":22217,"Shopee Live":10631,"Lazada":2306,"YouTube":1615,"LINE":0,"Web":718,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-23","total":141601,"TikTok Affi":50347,"TikTok":21305,"TikTok Live":0,"Facebook":26224,"Instagram":659,"Shopee":24786,"Shopee Live":16310,"Lazada":0,"YouTube":1635,"LINE":335,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-24","total":156175,"TikTok Affi":60959,"TikTok":17394,"TikTok Live":0,"Facebook":27855,"Instagram":0,"Shopee":30265,"Shopee Live":18391,"Lazada":312,"YouTube":999,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-25","total":135587,"TikTok Affi":50996,"TikTok":16956,"TikTok Live":0,"Facebook":18598,"Instagram":1227,"Shopee":28418,"Shopee Live":16982,"Lazada":766,"YouTube":1644,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-26","total":180241,"TikTok Affi":62208,"TikTok":25852,"TikTok Live":32767,"Facebook":17507,"Instagram":998,"Shopee":21018,"Shopee Live":15251,"Lazada":1480,"YouTube":3160,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-27","total":260420,"TikTok Affi":137217,"TikTok":68454,"TikTok Live":5203,"Facebook":20751,"Instagram":818,"Shopee":18675,"Shopee Live":7317,"Lazada":629,"YouTube":1356,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-02-28","total":229316,"TikTok Affi":100104,"TikTok":57722,"TikTok Live":959,"Facebook":29262,"Instagram":1068,"Shopee":27699,"Shopee Live":9795,"Lazada":0,"YouTube":2707,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-01","total":208107,"TikTok Affi":53833,"TikTok":25752,"TikTok Live":212,"Facebook":62251,"Instagram":3463,"Shopee":37672,"Shopee Live":21695,"Lazada":629,"YouTube":2034,"LINE":0,"Web":0,"Shopify":567,"หน้าร้าน":0},{"d":"2026-03-02","total":170310,"TikTok Affi":54619,"TikTok":30415,"TikTok Live":255,"Facebook":35732,"Instagram":3163,"Shopee":32239,"Shopee Live":10711,"Lazada":1085,"YouTube":1693,"LINE":0,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-03","total":245760,"TikTok Affi":63651,"TikTok":29340,"TikTok Live":688,"Facebook":39835,"Instagram":5124,"Shopee":60919,"Shopee Live":40723,"Lazada":4144,"YouTube":1336,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-04","total":144918,"TikTok Affi":56666,"TikTok":22148,"TikTok Live":249,"Facebook":18538,"Instagram":1986,"Shopee":28863,"Shopee Live":13827,"Lazada":707,"YouTube":1693,"LINE":240,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-05","total":146894,"TikTok Affi":49305,"TikTok":21941,"TikTok Live":0,"Facebook":24794,"Instagram":2475,"Shopee":32143,"Shopee Live":12696,"Lazada":1774,"YouTube":339,"LINE":1428,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-06","total":126512,"TikTok Affi":34662,"TikTok":16966,"TikTok Live":0,"Facebook":31791,"Instagram":4743,"Shopee":28335,"Shopee Live":7370,"Lazada":389,"YouTube":1987,"LINE":0,"Web":269,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-07","total":115650,"TikTok Affi":31471,"TikTok":15001,"TikTok Live":0,"Facebook":35351,"Instagram":818,"Shopee":14067,"Shopee Live":14267,"Lazada":1400,"YouTube":3275,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-08","total":130711,"TikTok Affi":30331,"TikTok":16908,"TikTok Live":0,"Facebook":40510,"Instagram":3063,"Shopee":19393,"Shopee Live":14387,"Lazada":1133,"YouTube":4407,"LINE":579,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-09","total":151497,"TikTok Affi":37036,"TikTok":16866,"TikTok Live":0,"Facebook":52064,"Instagram":4142,"Shopee":19012,"Shopee Live":16479,"Lazada":390,"YouTube":4320,"LINE":1188,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-10","total":162445,"TikTok Affi":37462,"TikTok":14610,"TikTok Live":0,"Facebook":54669,"Instagram":3547,"Shopee":36502,"Shopee Live":11364,"Lazada":2570,"YouTube":1721,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-11","total":155080,"TikTok Affi":35542,"TikTok":21612,"TikTok Live":0,"Facebook":61941,"Instagram":1886,"Shopee":19001,"Shopee Live":9839,"Lazada":1728,"YouTube":3132,"LINE":0,"Web":399,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-12","total":163095,"TikTok Affi":38342,"TikTok":16347,"TikTok Live":0,"Facebook":59034,"Instagram":3343,"Shopee":26336,"Shopee Live":14472,"Lazada":389,"YouTube":4832,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-13","total":128480,"TikTok Affi":32319,"TikTok":15730,"TikTok Live":0,"Facebook":44417,"Instagram":997,"Shopee":21873,"Shopee Live":11076,"Lazada":0,"YouTube":2068,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-14","total":120701,"TikTok Affi":26379,"TikTok":12076,"TikTok Live":0,"Facebook":48201,"Instagram":1168,"Shopee":21563,"Shopee Live":6735,"Lazada":0,"YouTube":4579,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-15","total":173243,"TikTok Affi":41542,"TikTok":18836,"TikTok Live":0,"Facebook":40367,"Instagram":3298,"Shopee":41591,"Shopee Live":21159,"Lazada":389,"YouTube":5702,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-16","total":152604,"TikTok Affi":36217,"TikTok":11344,"TikTok Live":0,"Facebook":50454,"Instagram":6178,"Shopee":28930,"Shopee Live":13579,"Lazada":1398,"YouTube":4504,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-17","total":152281,"TikTok Affi":33165,"TikTok":16047,"TikTok Live":0,"Facebook":51277,"Instagram":3012,"Shopee":27059,"Shopee Live":15425,"Lazada":766,"YouTube":5530,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-18","total":122095,"TikTok Affi":36240,"TikTok":9930,"TikTok Live":0,"Facebook":43548,"Instagram":748,"Shopee":16617,"Shopee Live":10076,"Lazada":780,"YouTube":4156,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-19","total":102715,"TikTok Affi":25287,"TikTok":14794,"TikTok Live":0,"Facebook":41993,"Instagram":1227,"Shopee":12486,"Shopee Live":3530,"Lazada":648,"YouTube":1392,"LINE":999,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-20","total":97151,"TikTok Affi":30969,"TikTok":9341,"TikTok Live":0,"Facebook":27994,"Instagram":678,"Shopee":15192,"Shopee Live":10202,"Lazada":1383,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-21","total":85181,"TikTok Affi":28085,"TikTok":13568,"TikTok Live":0,"Facebook":26943,"Instagram":409,"Shopee":8068,"Shopee Live":5643,"Lazada":1171,"YouTube":696,"LINE":0,"Web":598,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-22","total":119318,"TikTok Affi":46851,"TikTok":13525,"TikTok Live":0,"Facebook":31748,"Instagram":1807,"Shopee":13096,"Shopee Live":9242,"Lazada":1309,"YouTube":1740,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-23","total":135216,"TikTok Affi":54703,"TikTok":17073,"TikTok Live":0,"Facebook":37508,"Instagram":888,"Shopee":21518,"Shopee Live":0,"Lazada":1146,"YouTube":2380,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-24","total":92181,"TikTok Affi":34584,"TikTok":9986,"TikTok Live":0,"Facebook":19445,"Instagram":659,"Shopee":25119,"Shopee Live":0,"Lazada":0,"YouTube":2388,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-25","total":201049,"TikTok Affi":77115,"TikTok":62404,"TikTok Live":0,"Facebook":26048,"Instagram":2348,"Shopee":30626,"Shopee Live":0,"Lazada":769,"YouTube":1740,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-03-26","total":174796,"TikTok Affi":60916,"TikTok":27522,"TikTok Live":0,"Facebook":26395,"Instagram":1068,"Shopee":20010,"Shopee Live":0,"Lazada":0,"YouTube":1714,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":37171},{"d":"2026-03-27","total":162676,"TikTok Affi":71576,"TikTok":21251,"TikTok Live":0,"Facebook":20256,"Instagram":0,"Shopee":15157,"Shopee Live":0,"Lazada":748,"YouTube":1692,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":31996},{"d":"2026-03-28","total":212145,"TikTok Affi":73339,"TikTok":25990,"TikTok Live":0,"Facebook":17077,"Instagram":1348,"Shopee":18537,"Shopee Live":0,"Lazada":0,"YouTube":1360,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":74494},{"d":"2026-03-29","total":192515,"TikTok Affi":68390,"TikTok":19906,"TikTok Live":0,"Facebook":12164,"Instagram":409,"Shopee":24428,"Shopee Live":0,"Lazada":377,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":65449},{"d":"2026-03-30","total":135401,"TikTok Affi":39804,"TikTok":15900,"TikTok Live":0,"Facebook":18118,"Instagram":818,"Shopee":18265,"Shopee Live":0,"Lazada":377,"YouTube":4449,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":37311},{"d":"2026-03-31","total":220164,"TikTok Affi":0,"TikTok":118515,"TikTok Live":0,"Facebook":29991,"Instagram":818,"Shopee":32438,"Shopee Live":0,"Lazada":755,"YouTube":3480,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":34168},{"d":"2026-04-01","total":172486,"TikTok Affi":64688,"TikTok":24678,"TikTok Live":839,"Facebook":17072,"Instagram":409,"Shopee":18517,"Shopee Live":10926,"Lazada":0,"YouTube":3292,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":32065},{"d":"2026-04-02","total":196206,"TikTok Affi":63485,"TikTok":23774,"TikTok Live":41899,"Facebook":15208,"Instagram":0,"Shopee":11731,"Shopee Live":6348,"Lazada":389,"YouTube":2088,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":31283},{"d":"2026-04-03","total":142123,"TikTok Affi":58040,"TikTok":23793,"TikTok Live":1271,"Facebook":11678,"Instagram":0,"Shopee":12713,"Shopee Live":4499,"Lazada":0,"YouTube":1204,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":28924},{"d":"2026-04-04","total":210593,"TikTok Affi":53019,"TikTok":27091,"TikTok Live":1710,"Facebook":14481,"Instagram":0,"Shopee":25746,"Shopee Live":25107,"Lazada":2093,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":59955},{"d":"2026-04-05","total":177677,"TikTok Affi":59268,"TikTok":14409,"TikTok Live":584,"Facebook":20743,"Instagram":0,"Shopee":16120,"Shopee Live":6403,"Lazada":629,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":58129},{"d":"2026-04-06","total":146267,"TikTok Affi":38995,"TikTok":13027,"TikTok Live":635,"Facebook":21951,"Instagram":0,"Shopee":18036,"Shopee Live":6619,"Lazada":0,"YouTube":1044,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":45960},{"d":"2026-04-07","total":117092,"TikTok Affi":32710,"TikTok":17192,"TikTok Live":0,"Facebook":30297,"Instagram":0,"Shopee":25050,"Shopee Live":10410,"Lazada":389,"YouTube":1044,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-08","total":106717,"TikTok Affi":34836,"TikTok":14697,"TikTok Live":0,"Facebook":25163,"Instagram":0,"Shopee":23554,"Shopee Live":4020,"Lazada":1155,"YouTube":3292,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-09","total":150338,"TikTok Affi":34425,"TikTok":11786,"TikTok Live":33987,"Facebook":31240,"Instagram":1497,"Shopee":25225,"Shopee Live":10031,"Lazada":755,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-10","total":89919,"TikTok Affi":22701,"TikTok":10053,"TikTok Live":329,"Facebook":25229,"Instagram":409,"Shopee":19605,"Shopee Live":8139,"Lazada":389,"YouTube":3065,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-11","total":104476,"TikTok Affi":29172,"TikTok":6847,"TikTok Live":299,"Facebook":29949,"Instagram":409,"Shopee":21801,"Shopee Live":12283,"Lazada":1676,"YouTube":2039,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-12","total":109240,"TikTok Affi":25705,"TikTok":15066,"TikTok Live":598,"Facebook":35911,"Instagram":2634,"Shopee":21536,"Shopee Live":6355,"Lazada":776,"YouTube":0,"LINE":659,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-13","total":119435,"TikTok Affi":31942,"TikTok":11163,"TikTok Live":0,"Facebook":39966,"Instagram":3204,"Shopee":23905,"Shopee Live":6120,"Lazada":377,"YouTube":2758,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-14","total":97089,"TikTok Affi":23917,"TikTok":12380,"TikTok Live":0,"Facebook":27005,"Instagram":1618,"Shopee":20141,"Shopee Live":8855,"Lazada":389,"YouTube":2784,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-15","total":148613,"TikTok Affi":38794,"TikTok":18847,"TikTok Live":0,"Facebook":32040,"Instagram":5900,"Shopee":32971,"Shopee Live":12231,"Lazada":2096,"YouTube":5036,"LINE":0,"Web":698,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-16","total":96999,"TikTok Affi":31711,"TikTok":8704,"TikTok Live":0,"Facebook":23833,"Instagram":3345,"Shopee":18543,"Shopee Live":7440,"Lazada":0,"YouTube":3423,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-17","total":110800,"TikTok Affi":42605,"TikTok":16166,"TikTok Live":0,"Facebook":22534,"Instagram":1167,"Shopee":19149,"Shopee Live":4849,"Lazada":1600,"YouTube":1740,"LINE":990,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-18","total":108149,"TikTok Affi":34414,"TikTok":10808,"TikTok Live":0,"Facebook":32493,"Instagram":1087,"Shopee":18474,"Shopee Live":7098,"Lazada":2035,"YouTube":1740,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-19","total":162715,"TikTok Affi":50734,"TikTok":19876,"TikTok Live":0,"Facebook":46416,"Instagram":2095,"Shopee":25990,"Shopee Live":13307,"Lazada":0,"YouTube":4297,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-20","total":119849,"TikTok Affi":32151,"TikTok":12751,"TikTok Live":0,"Facebook":35699,"Instagram":2235,"Shopee":33800,"Shopee Live":0,"Lazada":766,"YouTube":2088,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-21","total":110444,"TikTok Affi":39523,"TikTok":14248,"TikTok Live":0,"Facebook":22350,"Instagram":1577,"Shopee":29614,"Shopee Live":0,"Lazada":0,"YouTube":3132,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-22","total":102369,"TikTok Affi":35171,"TikTok":17301,"TikTok Live":0,"Facebook":22772,"Instagram":409,"Shopee":24189,"Shopee Live":0,"Lazada":1135,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-23","total":111730,"TikTok Affi":37385,"TikTok":15936,"TikTok Live":0,"Facebook":28238,"Instagram":1229,"Shopee":26727,"Shopee Live":0,"Lazada":572,"YouTube":1643,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-24","total":86817,"TikTok Affi":24354,"TikTok":18630,"TikTok Live":0,"Facebook":17420,"Instagram":1157,"Shopee":23589,"Shopee Live":0,"Lazada":389,"YouTube":1278,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-25","total":173998,"TikTok Affi":86039,"TikTok":28277,"TikTok Live":0,"Facebook":18623,"Instagram":5156,"Shopee":33185,"Shopee Live":0,"Lazada":0,"YouTube":2718,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-26","total":137754,"TikTok Affi":71666,"TikTok":28107,"TikTok Live":0,"Facebook":16292,"Instagram":1298,"Shopee":17406,"Shopee Live":0,"Lazada":389,"YouTube":2596,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-27","total":197519,"TikTok Affi":94896,"TikTok":34262,"TikTok Live":30915,"Facebook":10944,"Instagram":818,"Shopee":23720,"Shopee Live":0,"Lazada":572,"YouTube":1392,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-28","total":151160,"TikTok Affi":66808,"TikTok":34992,"TikTok Live":1049,"Facebook":19987,"Instagram":2066,"Shopee":23381,"Shopee Live":0,"Lazada":778,"YouTube":1740,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-29","total":140475,"TikTok Affi":77796,"TikTok":29612,"TikTok Live":0,"Facebook":8800,"Instagram":3487,"Shopee":18663,"Shopee Live":0,"Lazada":377,"YouTube":1740,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-04-30","total":171157,"TikTok Affi":83244,"TikTok":39096,"TikTok Live":7171,"Facebook":13777,"Instagram":2315,"Shopee":24237,"Shopee Live":0,"Lazada":0,"YouTube":1317,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-01","total":110845,"TikTok Affi":63028,"TikTok":17521,"TikTok Live":0,"Facebook":12230,"Instagram":1636,"Shopee":9583,"Shopee Live":5910,"Lazada":937,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-02","total":138072,"TikTok Affi":68585,"TikTok":25902,"TikTok Live":499,"Facebook":21421,"Instagram":2116,"Shopee":10752,"Shopee Live":8408,"Lazada":389,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-03","total":156475,"TikTok Affi":102140,"TikTok":30759,"TikTok Live":249,"Facebook":10955,"Instagram":339,"Shopee":7590,"Shopee Live":3706,"Lazada":389,"YouTube":348,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-04","total":219683,"TikTok Affi":112924,"TikTok":38456,"TikTok Live":25834,"Facebook":19946,"Instagram":0,"Shopee":16833,"Shopee Live":4482,"Lazada":0,"YouTube":1208,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-05","total":189188,"TikTok Affi":79674,"TikTok":30942,"TikTok Live":337,"Facebook":26327,"Instagram":1118,"Shopee":31359,"Shopee Live":18584,"Lazada":0,"YouTube":348,"LINE":499,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-06","total":192201,"TikTok Affi":98624,"TikTok":23325,"TikTok Live":13641,"Facebook":22173,"Instagram":0,"Shopee":19941,"Shopee Live":12132,"Lazada":0,"YouTube":2365,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-07","total":110224,"TikTok Affi":31079,"TikTok":11129,"TikTok Live":0,"Facebook":33657,"Instagram":2286,"Shopee":22450,"Shopee Live":8655,"Lazada":0,"YouTube":348,"LINE":620,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-08","total":148500,"TikTok Affi":54856,"TikTok":14022,"TikTok Live":0,"Facebook":46656,"Instagram":310,"Shopee":20572,"Shopee Live":8442,"Lazada":0,"YouTube":1373,"LINE":1910,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-09","total":133815,"TikTok Affi":57166,"TikTok":13218,"TikTok Live":0,"Facebook":41405,"Instagram":409,"Shopee":14800,"Shopee Live":6121,"Lazada":0,"YouTube":696,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-10","total":134508,"TikTok Affi":46538,"TikTok":15419,"TikTok Live":255,"Facebook":46689,"Instagram":1409,"Shopee":10909,"Shopee Live":12294,"Lazada":0,"YouTube":995,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-11","total":142534,"TikTok Affi":36923,"TikTok":13189,"TikTok Live":519,"Facebook":64907,"Instagram":1529,"Shopee":19511,"Shopee Live":4553,"Lazada":0,"YouTube":1044,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-12","total":167882,"TikTok Affi":45907,"TikTok":18903,"TikTok Live":0,"Facebook":74438,"Instagram":1690,"Shopee":21990,"Shopee Live":3910,"Lazada":0,"YouTube":1044,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-13","total":165664,"TikTok Affi":36862,"TikTok":17774,"TikTok Live":0,"Facebook":94644,"Instagram":3759,"Shopee":10086,"Shopee Live":1167,"Lazada":0,"YouTube":1372,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-14","total":187393,"TikTok Affi":41666,"TikTok":23744,"TikTok Live":0,"Facebook":101885,"Instagram":5800,"Shopee":7458,"Shopee Live":4040,"Lazada":746,"YouTube":1695,"LINE":0,"Web":359,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-15","total":157433,"TikTok Affi":27925,"TikTok":9253,"TikTok Live":0,"Facebook":82575,"Instagram":3517,"Shopee":19013,"Shopee Live":13736,"Lazada":0,"YouTube":696,"LINE":0,"Web":718,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-16","total":141550,"TikTok Affi":26167,"TikTok":14892,"TikTok Live":0,"Facebook":65033,"Instagram":2269,"Shopee":18787,"Shopee Live":14092,"Lazada":0,"YouTube":0,"LINE":310,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-17","total":153163,"TikTok Affi":35092,"TikTok":17037,"TikTok Live":0,"Facebook":68763,"Instagram":3006,"Shopee":19183,"Shopee Live":8737,"Lazada":649,"YouTube":696,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-18","total":107467,"TikTok Affi":31270,"TikTok":12627,"TikTok Live":0,"Facebook":42354,"Instagram":2747,"Shopee":7315,"Shopee Live":10196,"Lazada":0,"YouTube":648,"LINE":310,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-19","total":99934,"TikTok Affi":21787,"TikTok":17900,"TikTok Live":0,"Facebook":36380,"Instagram":0,"Shopee":15957,"Shopee Live":7910,"Lazada":0,"YouTube":0,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-20","total":138175,"TikTok Affi":41398,"TikTok":37919,"TikTok Live":0,"Facebook":35728,"Instagram":1798,"Shopee":20984,"Shopee Live":0,"Lazada":0,"YouTube":348,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-21","total":133875,"TikTok Affi":37462,"TikTok":29388,"TikTok Live":0,"Facebook":39063,"Instagram":2997,"Shopee":24037,"Shopee Live":0,"Lazada":0,"YouTube":348,"LINE":580,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-22","total":100998,"TikTok Affi":24913,"TikTok":11403,"TikTok Live":0,"Facebook":38128,"Instagram":1029,"Shopee":25177,"Shopee Live":0,"Lazada":0,"YouTube":348,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-23","total":141463,"TikTok Affi":31302,"TikTok":35954,"TikTok Live":0,"Facebook":39713,"Instagram":1028,"Shopee":33118,"Shopee Live":0,"Lazada":0,"YouTube":348,"LINE":0,"Web":0,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-24","total":107377,"TikTok Affi":24610,"TikTok":12584,"TikTok Live":0,"Facebook":34938,"Instagram":310,"Shopee":33155,"Shopee Live":0,"Lazada":0,"YouTube":0,"LINE":1200,"Web":580,"Shopify":0,"หน้าร้าน":0},{"d":"2026-05-25","total":206229,"TikTok Affi":63104,"TikTok":46100,"TikTok Live":0,"Facebook":38892,"Instagram":1618,"Shopee":52276,"Shopee Live":0,"Lazada":0,"YouTube":2360,"LINE":1589,"Web":290,"Shopify":0,"หน้าร้าน":0}];
+
+const CH_COLORS = {
+  'TikTok Affi':  '#fe2c55',
+  'TikTok':       '#ff6b88',
+  'TikTok Live':  '#ff9ab0',
+  'Facebook':     '#4f8ef7',
+  'Instagram':    '#c13584',
+  'Shopee':       '#f96315',
+  'Shopee Live':  '#ffaa7a',
+  'Lazada':       '#0f146e',
+  'YouTube':      '#ff0000',
+  'LINE':         '#00b900',
+  'Web':          '#888888',
+  'Shopify':      '#95bf47',
+  'หน้าร้าน':    '#9b59b6',
+};
+const CHANNELS = Object.keys(CH_COLORS);
+const TOTAL_COLOR = '#4aeabc';
+const MA_COLOR = '#f5a623';
+
+let curMonth = 'all';
+let curView = 'total';
+let showMA = true;
+let hiddenChannels = new Set();
+let myChart = null;
+
+function fmt(v) {
+  if (v >= 1000000) return '฿' + (v/1000000).toFixed(2) + 'M';
+  if (v >= 1000) return '฿' + Math.round(v/1000) + 'K';
+  return '฿' + v;
+}
+function fmtFull(v) { return '฿' + v.toLocaleString('th-TH'); }
+
+function getFiltered() {
+  if (curMonth === 'all') return RAW;
+  return RAW.filter(r => r.d.startsWith(curMonth));
+}
+
+function ma7(arr) {
+  return arr.map((v, i) => {
+    const slice = arr.slice(Math.max(0, i-6), i+1);
+    return Math.round(slice.reduce((a,b)=>a+b,0)/slice.length);
+  });
+}
+
+function updateKPI(data) {
+  const totals = data.map(r=>r.total);
+  const sum = totals.reduce((a,b)=>a+b,0);
+  const avg = Math.round(sum/totals.length);
+  const mx = Math.max(...totals);
+  const mx_d = data[totals.indexOf(mx)].d;
+  const mn = Math.min(...totals);
+  const mn_d = data[totals.indexOf(mn)].d;
+  const days = totals.length;
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">รวม (${days} วัน)</div><div class="kpi-val">${fmt(sum)}</div><div class="kpi-sub">${fmtFull(sum)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">เฉลี่ย/วัน</div><div class="kpi-val">${fmt(avg)}</div><div class="kpi-sub">${fmtFull(avg)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">สูงสุด</div><div class="kpi-val" style="color:#4aeabc">${fmt(mx)}</div><div class="kpi-sub">${mx_d}</div></div>
+    <div class="kpi-card"><div class="kpi-label">ต่ำสุด</div><div class="kpi-val" style="color:#ff6b6b">${fmt(mn)}</div><div class="kpi-sub">${mn_d}</div></div>
+  `;
+}
+
+function buildDatasets(data) {
+  const labels = data.map(r => r.d.slice(5)); // MM-DD
+  const totals = data.map(r => r.total);
+  const maVals = ma7(totals);
+
+  if (curView === 'total') {
+    const ds = [{
+      label: 'Total',
+      data: totals,
+      borderColor: TOTAL_COLOR,
+      backgroundColor: TOTAL_COLOR + '15',
+      borderWidth: 2,
+      pointRadius: data.length > 31 ? 0 : 3,
+      pointHoverRadius: 5,
+      fill: true,
+      tension: 0.3,
+      type: 'line',
+      order: 1,
+    }];
+    if (showMA) ds.push({
+      label: '7d MA',
+      data: maVals,
+      borderColor: MA_COLOR,
+      borderWidth: 2,
+      borderDash: [5,3],
+      pointRadius: 0,
+      fill: false,
+      tension: 0.4,
+      type: 'line',
+      order: 0,
+    });
+    return { labels, datasets: ds };
+  }
+
+  if (curView === 'channel') {
+    const ds = CHANNELS.map(ch => ({
+      label: ch,
+      data: data.map(r => r[ch]),
+      borderColor: CH_COLORS[ch],
+      backgroundColor: CH_COLORS[ch] + '20',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      fill: false,
+      tension: 0.3,
+      type: 'line',
+      hidden: hiddenChannels.has(ch),
+    }));
+    if (showMA) ds.push({
+      label: '7d MA (Total)',
+      data: maVals,
+      borderColor: MA_COLOR,
+      borderWidth: 2.5,
+      borderDash: [6,3],
+      pointRadius: 0,
+      fill: false,
+      tension: 0.4,
+      type: 'line',
+      hidden: false,
+    });
+    return { labels, datasets: ds };
+  }
+
+  if (curView === 'stack') {
+    const ds = CHANNELS.map(ch => ({
+      label: ch,
+      data: data.map(r => r[ch]),
+      backgroundColor: CH_COLORS[ch] + 'cc',
+      borderColor: CH_COLORS[ch],
+      borderWidth: 0.5,
+      fill: true,
+      tension: 0,
+      type: 'bar',
+      stack: 'total',
+      hidden: hiddenChannels.has(ch),
+    }));
+    if (showMA) ds.push({
+      label: '7d MA',
+      data: maVals,
+      borderColor: MA_COLOR,
+      borderWidth: 2.5,
+      borderDash: [6,3],
+      pointRadius: 0,
+      fill: false,
+      tension: 0.4,
+      type: 'line',
+      stack: undefined,
+      order: -1,
+    });
+    return { labels, datasets: ds };
+  }
+}
+
+function buildLegend(data) {
+  const row = document.getElementById('legendRow');
+  if (curView === 'total') { row.innerHTML = ''; return; }
+  row.innerHTML = CHANNELS.map(ch => {
+    const total = data.reduce((a,r)=>a+r[ch],0);
+    if (total === 0) return '';
+    const hidden = hiddenChannels.has(ch);
+    return `<div class="legend-item ${hidden?'hidden':''}" onclick="toggleChannel('${ch}')">
+      <div class="legend-dot" style="background:${CH_COLORS[ch]}"></div>
+      <span class="legend-name">${ch} <span style="color:#666;font-size:10px">${fmt(total)}</span></span>
+    </div>`;
+  }).join('');
+}
+
+function renderChart() {
+  const data = getFiltered();
+  updateKPI(data);
+  const { labels, datasets } = buildDatasets(data);
+  buildLegend(data);
+
+  const isStack = curView === 'stack';
+  const cfg = {
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      animation: { duration: 300 },
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { color: '#1e2130' },
+          ticks: {
+            color: '#666',
+            font: { size: 10 },
+            maxTicksLimit: data.length > 31 ? 10 : 20,
+          }
+        },
+        y: {
+          stacked: isStack,
+          grid: { color: '#1e2130' },
+          ticks: {
+            color: '#666',
+            font: { size: 10 },
+            callback: v => fmt(v),
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e2130',
+          borderColor: '#333',
+          borderWidth: 1,
+          titleColor: '#fff',
+          bodyColor: '#ccc',
+          padding: 10,
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${fmtFull(ctx.parsed.y)}`,
+            footer: items => {
+              if (curView === 'total') return '';
+              const sum = items.filter(i=>i.dataset.label!=='7d MA (Total)'&&i.dataset.label!=='7d MA').reduce((a,i)=>a+i.parsed.y,0);
+              return `รวม: ${fmtFull(sum)}`;
+            }
+          }
+        }
+      }
+    }
+  };
+
+  if (myChart) {
+    myChart.data = cfg.data;
+    myChart.options = cfg.options;
+    myChart.update();
+  } else {
+    myChart = new Chart(document.getElementById('myChart'), { type: 'line', ...cfg });
+  }
+}
+
+function setMonth(m, btn) {
+  curMonth = m;
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderChart();
+}
+
+function setView(v) {
+  curView = v;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn' + v.charAt(0).toUpperCase() + v.slice(1)).classList.add('active');
+  renderChart();
+}
+
+function toggleMA() {
+  showMA = document.getElementById('maCheck').checked;
+  renderChart();
+}
+
+function toggleChannel(ch) {
+  if (hiddenChannels.has(ch)) hiddenChannels.delete(ch);
+  else hiddenChannels.add(ch);
+  renderChart();
+}
+
+renderChart();
+</script>
+</body>
+</html>

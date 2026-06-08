@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Margin by Channel — ก.พ.–พ.ค. 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{font-family:'IBM Plex Sans Thai',sans-serif;box-sizing:border-box}
+body{margin:0;padding:28px;background:#F7F6F2;color:#2C2C2A}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+.sub{color:#5F5E5A;font-size:14px;margin:0 0 24px}
+.card{background:#fff;border:1px solid #E4E2DA;border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.card h2{font-size:16px;font-weight:600;margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:#5F5E5A;margin-bottom:12px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.wrap{position:relative;width:100%;height:320px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:#fff;border:1px solid #E4E2DA;border-radius:12px;padding:16px 18px}
+.kpi .l{font-size:13px;color:#5F5E5A}
+.kpi .v{font-size:24px;font-weight:600;margin-top:4px}
+.note{font-size:13px;color:#5F5E5A;line-height:1.7}
+</style></head><body>
+<h1>Margin แยกช่องทาง — ก.พ.–พ.ค. 2026</h1>
+<p class="sub">ที่มา: MK01 ตารางสรุปยอดขาย · Facebook = "OpenDurian HOW-TO" · margin ก่อนหักเงินเดือน</p>
+
+<div class="kpis">
+<div class="kpi"><div class="l">Shopee — กำไร 4 เดือน (ก่อนหักเงินเดือน)</div><div class="v" style="color:#0F6E56">฿1,997,548</div></div>
+<div class="kpi"><div class="l">TikTok — กำไร 4 เดือน (ก่อนหักเงินเดือน)</div><div class="v" style="color:#854F0B">฿504,782</div></div>
+<div class="kpi"><div class="l">Facebook — กำไร 4 เดือน (ก่อนหักเงินเดือน)</div><div class="v" style="color:#A32D2D">฿100,407</div></div>
+</div>
+
+<div class="legend">
+<span><span class="dot" style="background:#1D9E75"></span>Shopee</span>
+<span><span class="dot" style="background:#EF9F27"></span>TikTok</span>
+<span><span class="dot" style="background:#E24B4A"></span>Facebook</span>
+</div>
+
+<div class="card"><h2>%Margin ก่อนหักเงินเดือน — รายเดือน</h2>
+<div class="wrap"><canvas id="c1"></canvas></div></div>
+
+<div class="card"><h2>ยอดขายรวม vs กำไรจริงรวม (4 เดือน) — ฿ ล้าน</h2>
+<div class="wrap"><canvas id="c2"></canvas></div></div>
+
+<p class="note"><b>Shopee</b> = เครื่องทำเงิน (margin ~50% เพราะ %Ads แค่ ~3%) · <b>TikTok</b> = ปั่นยอด ยอดสูงสุดแต่กำไรบาง 5–7% (โดน Ads + Affiliate ~42%) · <b>Facebook</b> = ยิ่งขายยิ่งขาดทุน หลังหักเงินเดือนติดลบทุกเดือน (%Ads ~43% + แบกเงินเดือนทีม)</p>
+
+<script>
+const M=['ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+new Chart(c1,{type:'bar',data:{labels:M,datasets:[
+{label:'Shopee',data:[54.6,53.4,52.4,49.1],backgroundColor:'#1D9E75'},
+{label:'TikTok',data:[4.7,5.7,7.5,5.2],backgroundColor:'#EF9F27'},
+{label:'Facebook',data:[0.8,0.9,-5.3,9.1],backgroundColor:'#E24B4A'}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+scales:{y:{ticks:{callback:v=>v+'%'}},x:{ticks:{autoSkip:false}}}}});
+new Chart(c2,{type:'bar',data:{labels:['Shopee','TikTok','Facebook'],datasets:[
+{label:'ยอดขาย',data:[3.80,8.80,4.31],backgroundColor:'#B5D4F4'},
+{label:'กำไร (ก่อนหักเงินเดือน)',data:[2.00,0.50,0.10],backgroundColor:['#1D9E75','#EF9F27','#E24B4A']}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+tooltip:{callbacks:{label:c=>c.dataset.label+': ฿'+c.parsed.y.toFixed(2)+'M'}}},
+scales:{y:{ticks:{callback:v=>(v<0?'-':'')+'฿'+Math.abs(v)+'M'}}}}});
+</script></body></html>
