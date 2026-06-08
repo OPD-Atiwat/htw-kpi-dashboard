@@ -323,8 +323,14 @@ def read_adsm44():
     sale_fb_sp_col  = find_col(header, ["Revenue FB Salepage", "Sale FB Salepage", "FB Salepage Rev"])
     sale_sp_col     = find_col(header, ["Revenue Shopee", "Sale Shopee", "Shopee Rev"])
     sale_total_col  = find_col(header, ["Revenue MMS", "Total revenue", "Sale Total", "Revenue Total"])
+    # Pre-computed % Ads columns (ถ้าSheet คำนวณไว้แล้ว ใช้ตรงๆ เลย — แม่นกว่า recompute)
+    pct_total_col   = find_col(header, ["% Ads"])          # col 24 overall %Ads
+    pct_fb_col      = find_col(header, ["% Ads FB MSG"])   # col 25 FB %Ads
+    pct_tt_ads_col  = find_col(header, ["% Ads Tiktok Ads"])  # col 27
+    pct_tt_aff_col  = find_col(header, ["% Ads Tiktok Aff"])  # col 28
+    pct_sp_col      = find_col(header, ["% Ads Shopee"])   # col 30
 
-    print(f"   Columns → product:{product_col} | Ads TT:{tt_ads_col} FB:{fb_msg_col} SP:{sp_ads_col} | Rev TT:{sale_tt_col} FB:{sale_fb_msg_col} SP:{sale_sp_col} | total_rev:{sale_total_col}")
+    print(f"   Columns → product:{product_col} | Ads TT:{tt_ads_col} FB:{fb_msg_col} SP:{sp_ads_col} | Rev TT:{sale_tt_col} FB:{sale_fb_msg_col} SP:{sale_sp_col} | total_rev:{sale_total_col} | pct_total:{pct_total_col}")
 
     if product_col < 0:
         print("⚠️  ADSM44: ไม่เจอ column Product/Book name — ข้าม")
@@ -400,6 +406,20 @@ def read_adsm44():
         tot_spend = _mkt_val  if _mkt_val  > 0 else (tt_spend + fb_spend + sp_spend)
         tot_rev   = _rev_val  if _rev_val  > 0 else (tt_rev   + fb_rev   + sp_rev)
 
+        # Pre-computed % Ads — อ่านตรงจาก Sheet (แม่นกว่า recompute จาก spend/sale)
+        # Sheet เก็บเป็น decimal 0-1 → ×100 ถ้า <1, ไม่งั้นใช้ตรง
+        def _read_pct(col):
+            if col < 0: return None
+            v = get_val(row, col)
+            if v == 0: return None
+            return round(v * 100, 2) if v < 1 else round(v, 2)
+
+        _pct_total  = _read_pct(pct_total_col)
+        _pct_fb     = _read_pct(pct_fb_col)
+        _pct_tt_ads = _read_pct(pct_tt_ads_col)
+        _pct_tt_aff = _read_pct(pct_tt_aff_col)
+        _pct_sp     = _read_pct(pct_sp_col)
+
         # %Ads cost ratio = spend/sale × 100 (per channel)
         def pct(spend, sale):
             if spend == 0 and sale == 0: return None
@@ -422,6 +442,12 @@ def read_adsm44():
             "_fb_sale":       fb_rev,
             "_sp_sale":       sp_rev,
             "_rev":           tot_rev,             # คำนวณจาก TT+FB+SP เสมอ
+            # Pre-computed % จาก Sheet (ใช้แทน recompute เมื่อมีค่า)
+            "_pct_total":    _pct_total,   # % Ads รวม (col 24)
+            "_pct_fb":       _pct_fb,      # % Ads FB MSG (col 25)
+            "_pct_tt_ads":   _pct_tt_ads,  # % Ads Tiktok Ads (col 27)
+            "_pct_tt_aff":   _pct_tt_aff,  # % Ads Tiktok Aff (col 28)
+            "_pct_sp":       _pct_sp,      # % Ads Shopee (col 30)
         }
 
     # Summary log
