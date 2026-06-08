@@ -9064,8 +9064,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  }
  /* ── Channel Revenue Distribution Bar ── */
  function chBar(p){
-  /* แสดงเฉพาะเมื่อมี OPD actual channel data — ป้องกัน GOALS_DATA allocation เก่าหลอก */
-  if(!p._hasOpdChannels) return '';
+  /* แสดงเสมอเมื่อมี channel data (OPD หรือ GOALS_DATA) — filter ด้วย sumSeg<=0 */
   var ch=p.channels||{};
   var total=Math.max(p.actual||1,1);
   var segs=[
@@ -9172,15 +9171,10 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  var _PILL_W='76px';
  var _achPanel=(function(){
   var _pa=p.pct_ads||{};
-  /* %Ads รวม — ใช้ per-channel monthly spend/sale (cols 19-24) ห้าม cumulative MKT column
-     fallback → _pct_*_pub ถ้าไม่มี per-channel data (เดือนยังไม่ปิด) */
-  var _mSp=(_pa._tt_ads_spend||0)+(_pa._tt_aff_spend||0)+(_pa._fb_spend||0)+(_pa._sp_spend||0);
-  var _mRv=(_pa._tt_ads_sale||0)+(_pa._tt_aff_sale||0)+(_pa._fb_sale||0)+(_pa._sp_sale||0);
-  /* ถ้ามี per-channel monthly data → คำนวณ %Ads จากนั้น
-     ถ้าไม่มี → fallback ใช้ _spend/_rev (ADSM44 summary) */
-  var _adsT=(_mSp>0&&_mRv>0)?(_mSp/_mRv*100)
-            :(_pa._spend>0&&_pa._rev>0)?(_pa._spend/_pa._rev*100):0;
-  var _tsp=_mSp>0?_mSp:0; /* แสดงเฉพาะ monthly spend */
+  /* %Ads รวม — ใช้ _spend/_rev จาก ADSM44 MKT column (monthly, correct)
+     _spend >= 5000 เพื่อกัน parse error (เช่น Jun 26 ที่ยังไม่มีข้อมูล) */
+  var _adsT=(_pa._spend>=5000&&_pa._rev>0)?_pa._spend/_pa._rev*100:0;
+  var _tsp=_pa._spend||0;
   if(_adsT<=0) return '';
   var _adC=_adsT>60?'#DC2626':_adsT>40?'#EA580C':_adsT>25?'#D97706':'#16A34A';
   var _abg=_adsT>60?'rgba(220,38,38,.06)':_adsT>40?'rgba(234,88,12,.06)':_adsT>25?'rgba(217,119,6,.05)':'rgba(16,185,129,.05)';
