@@ -4102,12 +4102,7 @@ function renderOverview(data){
  focusEl.innerHTML=focusHeader+focusGrid+nfBlock;
  }
 
- /* SMART FORECAST CARD — ใช้ focusRev+nonFocusRev (= ยอดรวมทุก channel)
-    ทำให้ตรงกับตัวเลข Focus header + NonFocus header ที่แสดงด้านบน (ทั้ง online+offline)
-    YTD: ยังใช้ Finance total เหมือนเดิม */
- var _fcActual=_isYTD?(_finSaleOnlineActual+_bfActual):(focusRev+nonFocusRev);
- var _fcGoal=_isYTD?_saleOnlineGoal:ovEffGoal;
- renderForecastCard(month, _fcActual, _fcGoal);
+ /* SMART FORECAST CARD — เรียกหลัง STATE.fcMultiplier ถูก set แล้ว (ด้านล่าง) */
 
  /* ROW 2: Status Badges */
  var stEl=document.getElementById('ov-status');
@@ -4394,6 +4389,14 @@ STATE.lbFc=_lbFc;
 STATE.lbProduct=_lbProdForMult;
  STATE.fcIsFinal=isFinal;
  STATE.fcMonth=month;
+ /* SMART FORECAST CARD — ใช้ _fcInputActual+goal เดียวกับ _fcResult
+    → Brand Overview FC = sum ของ per-product FC (Focus+NonFocus) ✅
+    YTD: ใช้ Finance total เหมือนเดิม */
+ (function(){
+  var _bAct=_isYTD?(_finSaleOnlineActual+_bfActual):_fcInputActual;
+  var _bGoal=_isYTD?_saleOnlineGoal:(_saleOnlineGoal+_fcAffiGoal);
+  renderForecastCard(month,_bAct,_bGoal);
+ })();
 
  var _consignGoal=(_ovMfg&&_ovMfg.consignGoal)||0;
  var _consignActual=(_ovMfg&&_ovMfg.consignActual)||0;
