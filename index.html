@@ -4389,13 +4389,12 @@ STATE.lbFc=_lbFc;
 STATE.lbProduct=_lbProdForMult;
  STATE.fcIsFinal=isFinal;
  STATE.fcMonth=month;
- /* SMART FORECAST CARD — ใช้ _fcInputActual+goal เดียวกับ _fcResult
-    → Brand Overview FC = sum ของ per-product FC (Focus+NonFocus) ✅
-    YTD: ใช้ Finance total เหมือนเดิม */
+ /* SMART FORECAST CARD — ส่ง onlineFc โดยตรง (รวม rateCapDaily + lbFc แล้ว)
+    → Brand FC = onlineFc = sum ของ per-product FC (Focus+NonFocus) ✅ */
  (function(){
   var _bAct=_isYTD?(_finSaleOnlineActual+_bfActual):_fcInputActual;
   var _bGoal=_isYTD?_saleOnlineGoal:(_saleOnlineGoal+_fcAffiGoal);
-  renderForecastCard(month,_bAct,_bGoal);
+  renderForecastCard(month,_bAct,_bGoal,(!_isYTD&&!isFinal)?onlineFc:null);
  })();
 
  var _consignGoal=(_ovMfg&&_ovMfg.consignGoal)||0;
@@ -6583,7 +6582,7 @@ function closeForecastInfoModal(){var m=document.getElementById('forecast-info-m
 /* 
  renderForecastCard — แสดง Smart Forecast ใน Overview Tab
  */
-function renderForecastCard(month, actualToDate, goalAmount){
+function renderForecastCard(month, actualToDate, goalAmount, overrideFcTotal){
  var el=document.getElementById('ov-forecast');
  if(!el) return;
 
@@ -6726,6 +6725,10 @@ function renderForecastCard(month, actualToDate, goalAmount){
  }
  var fc=FORECAST_ENGINE.calc(month, actualToDate, goalAmount, _fcCutoff);
  if(!fc){ el.innerHTML='<div style="color:var(--text2);font-size:12px;padding:8px 0">ข้อมูลไม่เพียงพอสำหรับคำนวณ Forecast</div>'; return; }
+ /* override forecastTotal ด้วย onlineFc (รวม rateCapDaily+lbFc) เพื่อ consistent กับ product FC sum */
+ if(overrideFcTotal!=null&&overrideFcTotal>0){
+  fc=Object.assign({},fc,{forecastTotal:overrideFcTotal,gap:overrideFcTotal-goalAmount,onTrack:overrideFcTotal>=goalAmount});
+ }
 
  /* ถ้า remainWeight=0 (สิ้นเดือนในวันสุดท้าย) ให้แสดง Final state เหมือนกัน */
  if(fc.remainWeight===0){
