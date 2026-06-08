@@ -387,10 +387,18 @@ def read_adsm44():
             fb_rev       = max(fb_rev,       ex["_fb_sale"])
             sp_rev       = max(sp_rev,       ex["_sp_sale"])
 
-        # _spend / _rev: คำนวณใหม่จาก per-channel เสมอ
+        # _spend / _rev: ใช้ MKT / Revenue MMS column จาก sheet เป็นหลัก
+        # (ครอบคลุม YouTube, LINE, หน้าร้าน ฯลฯ ที่ per-channel sum ไม่รวม)
         tt_rev    = tt_ads_rev + tt_aff_rev
-        tot_spend = tt_spend + fb_spend + sp_spend
-        tot_rev   = tt_rev   + fb_rev   + sp_rev
+        _mkt_val  = get_val(row, total_ad_col)  if total_ad_col  >= 0 else 0
+        _rev_val  = get_val(row, sale_total_col) if sale_total_col >= 0 else 0
+        # merge-safe: ถ้ามีหลาย rows ใช้ max กับค่าก่อนหน้า
+        if product in result[month_label]:
+            ex = result[month_label][product]
+            _mkt_val = max(_mkt_val, ex.get("_spend", 0))
+            _rev_val = max(_rev_val, ex.get("_rev",   0))
+        tot_spend = _mkt_val  if _mkt_val  > 0 else (tt_spend + fb_spend + sp_spend)
+        tot_rev   = _rev_val  if _rev_val  > 0 else (tt_rev   + fb_rev   + sp_rev)
 
         # %Ads cost ratio = spend/sale × 100 (per channel)
         def pct(spend, sale):
