@@ -821,16 +821,33 @@ def update_dashboard_goals(goals_data, html_path):
         print("   ⚠️  หา closing } ของ GOALS_DATA ไม่เจอ — ข้าม")
         return
 
-    # ป้องกัน overwrite เดือนเก่าด้วย actual=0
+    # ป้องกัน overwrite goal และ actual ด้วย 0
     try:
         existing = json.loads(content[start:end])
         for month, prods in list(goals_data.items()):
-            exist_map = {p["product"]: p for p in existing.get(month, []) if p.get("actual", 0) > 0}
+            exist_map = {p["product"]: p for p in existing.get(month, [])
+                         if p.get("actual", 0) > 0 or p.get("goal", 0) > 0}
             if exist_map:
-                goals_data[month] = [
-                    exist_map[p["product"]] if p.get("actual", 0) == 0 and p["product"] in exist_map else p
-                    for p in prods
-                ]
+                merged = []
+                for p in prods:
+                    ex = exist_map.get(p["product"])
+                    if ex:
+                        # คง goal ถ้า new=0 แต่ existing>0
+                        if p.get("goal", 0) == 0 and ex.get("goal", 0) > 0:
+                            p["goal"] = ex["goal"]
+                        # คง actual ถ้า new=0 หรือ new ลดจาก existing >50% (ผิดปกติ)
+                        new_actual = p.get("actual", 0)
+                        ex_actual  = ex.get("actual", 0)
+                        if new_actual == 0 and ex_actual > 0:
+                            p["actual"] = ex_actual
+                        elif ex_actual > 0 and 0 < new_actual < ex_actual * 0.5:
+                            print(f"   ⚠️  PROTECT actual {p['product'][:25]} {month}: "
+                                  f"{ex_actual:,.0f} → {new_actual:,.0f} (ลด {100-new_actual/ex_actual*100:.0f}%) — คง existing")
+                            p["actual"] = ex_actual
+                        if p["goal"] > 0:
+                            p["achieve"] = round(p["actual"] / p["goal"] * 100, 1)
+                    merged.append(p)
+                goals_data[month] = merged
     except Exception:
         pass
 
