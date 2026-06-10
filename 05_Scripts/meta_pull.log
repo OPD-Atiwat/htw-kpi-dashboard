@@ -16940,3 +16940,43 @@ Done: 2026-06-10 09:28:04
   Git push done
 Done: 2026-06-10 09:28:17
 ========================================
+========================================
+  Run: 2026-06-10 10:28:17
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-10 10:30
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-10 10:30:19
+========================================
+========================================
+  Run: 2026-06-10 11:30:19
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-10 11:31
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-10 11:31:45
+========================================
