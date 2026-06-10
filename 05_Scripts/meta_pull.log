@@ -16779,3 +16779,164 @@ Done: 2026-06-08 16:58:33
   Git push done
 Done: 2026-06-09 09:31:47
 ========================================
+========================================
+  Run: 2026-06-09 09:45:32
+========================================
+[1/3] Meta Ads + MK13 Sync...
+[2/3] OPD Pull (Affiliate + Goals)...
+[3/3] KMS Sheet Pull...
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+--- Git push ---
+  Git push done
+Done: 2026-06-09 09:46:56
+========================================
+========================================
+  Run: 2026-06-09 10:46:56
+========================================
+[1/3] Meta Ads + MK13 Sync...
+[2/3] OPD Pull (Affiliate + Goals)...
+[3/3] KMS Sheet Pull...
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+--- Git push ---
+  Git push done
+Done: 2026-06-09 10:48:31
+========================================
+========================================
+  Run: 2026-06-09 11:48:31
+========================================
+[1/3] Meta Ads + MK13 Sync...
+[2/3] OPD Pull (Affiliate + Goals)...
+[3/3] KMS Sheet Pull...
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+--- Git push ---
+  Git push done
+Done: 2026-06-09 11:50:09
+========================================
+========================================
+  Run: 2026-06-09 12:50:09
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+--- สรุป ---
+  FAIL meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: FAIL
+  Git push done
+Done: 2026-06-09 12:51:49
+========================================
+========================================
+  Run: 2026-06-09 13:51:49
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-09 13:54
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-09 13:54:30
+========================================
+========================================
+  Run: 2026-06-09 15:14:05
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-09 15:15
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-09 15:16:04
+========================================
+========================================
+  Run: 2026-06-09 16:23:29
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-09 16:25
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-09 16:25:04
+========================================
+========================================
+  Run: 2026-06-10 07:06:59
+========================================
+[1/5] Meta Ads + MK13 Sync...
+========================================
+  Run: 2026-06-10 09:22:01
+========================================
+[1/5] Meta Ads + MK13 Sync...
+[2/5] OPD Pull (Affiliate + Goals)...
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+[2/5] OPD Pull (Affiliate + Goals)...
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-10 09:27
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+[3/5] KMS Sheet Pull...
+[4/5] Patch AO_DATA: thumbnails + Sheet mapping...
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-10 09:28:04
+========================================
+[5/5] Fetch Ad Preview URLs (active ads)...
+  META_PULL_TS → 2026-06-10 09:28
+--- สรุป ---
+  OK meta_pull.py
+  OK opd_pull.py
+  OK kms_pull.py
+  OK patch_ao_thumbnails.py
+  OK fetch_previews.py
+--- Git push ---
+  Git push --force-with-lease: ok
+  Git push done
+Done: 2026-06-10 09:28:17
+========================================
