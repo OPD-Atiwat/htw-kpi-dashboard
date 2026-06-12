@@ -7323,6 +7323,22 @@ function renderForecastCard(month, actualToDate, goalAmount, overrideFcTotal){
   if(_tot<=0||_maxDay<=0) return '';
   var _dim=new Date(_ymU[0],_ymU[1],0).getDate();
   var _rate=_tot/_maxDay, _fcU=Math.round(_rate*_dim), _remain=Math.max(0,_dim-_maxDay);
+  /* ── เทียบช่วงเดียวกันเดือนก่อน (same-period) ── */
+  var _pmY=_ymU[0],_pmM=_ymU[1]-1; if(_pmM<1){_pmM=12;_pmY-=1;}
+  var _pPfxU=_pmY+'-'+(_pmM<10?'0':'')+_pmM;
+  var _pmDaysU=new Date(_pmY,_pmM,0).getDate();
+  var _ndU=Math.min(_maxDay,_pmDaysU);
+  var _prevTotU=0;
+  OPD_DAILY.data.forEach(function(r){
+   if(r.d.substring(0,7)!==_pPfxU) return;
+   if(parseInt(r.d.substring(8))>_ndU) return;
+   OPD_DAILY.channels.forEach(function(c){_prevTotU+=r[c+'_q']||0;});
+  });
+  var _uDeltaU=_prevTotU>0?((_tot-_prevTotU)/_prevTotU*100):null;
+  var _THU=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  var _pLabelU=_THU[_pmM-1]+' 1-'+_ndU;
+  var _dColU=(_uDeltaU==null)?'var(--text2)':(_uDeltaU>=0?'#16A34A':'#DC2626');
+  var _dArrU=(_uDeltaU==null)?'':(_uDeltaU>=0?'▲':'▼');
   var _C={'Facebook':'#1877F2','Instagram':'#E1306C','LINE':'#06C755','TikTok':'#1a1a1a',
    'TikTok Affi':'#7C3AED','TikTok Live':'#2563EB','Shopee':'#EE4D2D','Shopee Live':'#F97316',
    'Shopify':'#95BF47','YouTube':'#FF0000','Lazada':'#0F0F7D','Web':'#64748B','หน้าร้าน':'#92400E','Bookfair':'#D97706'};
@@ -7332,6 +7348,7 @@ function renderForecastCard(month, actualToDate, goalAmount, overrideFcTotal){
    +'<div style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">ขายแล้ว</div><div style="font-size:26px;font-weight:900;color:var(--text1);line-height:1.05;margin-top:4px">'+_n(_tot)+' <span style="font-size:13px;font-weight:700;color:var(--text2)">เล่ม</span></div></div>'
    +'<div style="flex:1;min-width:120px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(37,99,235,.03));border:1px solid rgba(37,99,235,.4);border-radius:12px;padding:12px 14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">อัตรา (Run Rate)</div><div style="font-size:26px;font-weight:900;color:#2563EB;line-height:1.05;margin-top:4px">'+_rate.toFixed(1)+' <span style="font-size:13px;font-weight:700;color:var(--text2)">เล่ม/วัน</span></div></div>'
    +'<div style="flex:1;min-width:120px;background:linear-gradient(135deg,rgba(22,163,74,.12),rgba(22,163,74,.03));border:1px solid rgba(22,163,74,.4);border-radius:12px;padding:12px 14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">คาดการณ์ปลายเดือน</div><div style="font-size:26px;font-weight:900;color:#16A34A;line-height:1.05;margin-top:4px">'+_n(_fcU)+' <span style="font-size:13px;font-weight:700;color:var(--text2)">เล่ม</span></div></div>'
+   +'<div style="flex:1;min-width:120px;background:var(--surface2);border:1px dashed var(--border);border-radius:12px;padding:12px 14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">เทียบ '+_pLabelU+'</div><div style="font-size:22px;font-weight:900;color:var(--text1);line-height:1.05;margin-top:4px">'+_n(_prevTotU)+' <span style="font-size:12px;font-weight:700;color:var(--text2)">เล่ม</span></div><div style="font-size:13px;font-weight:800;color:'+_dColU+';margin-top:2px">'+(_uDeltaU==null?'<span style=\"color:var(--text2)\">–</span>':_dArrU+' '+Math.abs(_uDeltaU).toFixed(1)+'%')+'</div></div>'
    +'</div>';
   var _chs=Object.keys(_chU).filter(function(c){return _chU[c]>0;}).sort(function(a,b){return _chU[b]-_chU[a];});
   if(_chs.length){
