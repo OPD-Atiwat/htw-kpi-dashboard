@@ -140,34 +140,34 @@
         ]
       },
       "Jun26": {
-        "revenue": 142265.36,
-        "orders": 536,
+        "revenue": 147206.36,
+        "orders": 551,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 90788.02
+            "revenue": 92620.02
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 27972.76
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 6202.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 5459.0
+            "revenue": 28869.76
           },
           {
             "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
-            "revenue": 5118.3
+            "revenue": 6709.3
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 6486.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 5796.0
           }
         ]
       },
       "__total": {
-        "revenue": 1873600.52,
-        "orders": 5836
+        "revenue": 1878541.52,
+        "orders": 5851
       }
     },
     "sukanyatoey5": {
@@ -302,20 +302,20 @@
         ]
       },
       "Jun26": {
-        "revenue": 101522.88,
-        "orders": 384,
+        "revenue": 109623.88,
+        "orders": 400,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 37926.28
+            "revenue": 39213.28
           },
           {
             "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 31465.76
+            "revenue": 34647.76
           },
           {
             "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 10149.16
+            "revenue": 12145.16
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -323,13 +323,13 @@
           },
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 5026.8
+            "revenue": 6662.8
           }
         ]
       },
       "__total": {
-        "revenue": 735709.17,
-        "orders": 2425
+        "revenue": 743810.17,
+        "orders": 2441
       }
     },
     "babykbrnb1p": {
@@ -438,34 +438,34 @@
         ]
       },
       "Jun26": {
-        "revenue": 168279.32,
-        "orders": 683,
+        "revenue": 175983.32,
+        "orders": 703,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 70367.84
+            "revenue": 72547.84
           },
           {
             "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 50293.56
+            "revenue": 52457.56
           },
           {
             "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 11177.6
+            "revenue": 12074.6
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 10056.48
+            "revenue": 10654.48
           },
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 8381.08
+            "revenue": 9120.08
           }
         ]
       },
       "__total": {
-        "revenue": 500696.39,
-        "orders": 1732
+        "revenue": 508400.39,
+        "orders": 1752
       }
     },
     "bbpw141": {
@@ -600,12 +600,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 20699.6,
-        "orders": 82,
+        "revenue": 23472.6,
+        "orders": 89,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 6709.6
+            "revenue": 7629.6
           },
           {
             "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
@@ -613,7 +613,7 @@
           },
           {
             "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
-            "revenue": 2885.0
+            "revenue": 3784.0
           },
           {
             "name": "[หนังสือ] ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (THE MILLIONAIRE'S TOP SECRET)",
@@ -626,8 +626,8 @@
         ]
       },
       "__total": {
-        "revenue": 464879.69,
-        "orders": 1355
+        "revenue": 467652.69,
+        "orders": 1362
       }
     },
     "jajaaaajj": {
@@ -762,12 +762,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 31369.38,
-        "orders": 105,
+        "revenue": 31668.38,
+        "orders": 106,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 17593.68
+            "revenue": 17892.68
           },
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
@@ -788,8 +788,8 @@
         ]
       },
       "__total": {
-        "revenue": 447224.11,
-        "orders": 1260
+        "revenue": 447523.11,
+        "orders": 1261
       }
     },
     "unsexnn": {
@@ -920,12 +920,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 23555.2,
-        "orders": 93,
+        "revenue": 23356.0,
+        "orders": 92,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 20532.0
+            "revenue": 20332.8
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
@@ -946,8 +946,8 @@
         ]
       },
       "__total": {
-        "revenue": 433361.64,
-        "orders": 1467
+        "revenue": 433162.44,
+        "orders": 1466
       }
     },
     "fonny290": {
@@ -1066,12 +1066,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 39081.08,
-        "orders": 159,
+        "revenue": 39380.08,
+        "orders": 160,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 30339.48
+            "revenue": 30638.48
           },
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
@@ -1092,8 +1092,8 @@
         ]
       },
       "__total": {
-        "revenue": 228661.18,
-        "orders": 802
+        "revenue": 228960.18,
+        "orders": 803
       }
     },
     "pearpmk": {
@@ -1150,12 +1150,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 20258.76,
-        "orders": 63,
+        "revenue": 20577.76,
+        "orders": 64,
         "top_products": [
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 17449.56
+            "revenue": 17768.56
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -1176,8 +1176,8 @@
         ]
       },
       "__total": {
-        "revenue": 200551.34,
-        "orders": 559
+        "revenue": 200870.34,
+        "orders": 560
       }
     },
     "zanierty": {
@@ -1312,16 +1312,16 @@
         ]
       },
       "Jun26": {
-        "revenue": 8293.8,
-        "orders": 33,
+        "revenue": 9107.8,
+        "orders": 36,
         "top_products": [
           {
             "name": "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา",
-            "revenue": 3687.2
+            "revenue": 3847.2
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 3418.4
+            "revenue": 3745.4
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -1330,12 +1330,16 @@
           {
             "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
             "revenue": 553.2
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 327.0
           }
         ]
       },
       "__total": {
-        "revenue": 146168.64,
-        "orders": 402
+        "revenue": 146982.64,
+        "orders": 405
       }
     },
     "peanut.bttt": {
@@ -1470,12 +1474,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 6617.4,
-        "orders": 15,
+        "revenue": 6916.4,
+        "orders": 16,
         "top_products": [
           {
             "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
-            "revenue": 5512.4
+            "revenue": 5811.4
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
@@ -1488,8 +1492,8 @@
         ]
       },
       "__total": {
-        "revenue": 142927.4,
-        "orders": 296
+        "revenue": 143226.4,
+        "orders": 297
       }
     },
     "ranrarinnn": {
@@ -1616,20 +1620,20 @@
         ]
       },
       "Jun26": {
-        "revenue": 28070.48,
-        "orders": 97,
+        "revenue": 30218.48,
+        "orders": 104,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 17446.32
+            "revenue": 18968.32
           },
           {
             "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
-            "revenue": 4705.8
+            "revenue": 5004.8
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 3074.56
+            "revenue": 3401.56
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -1642,8 +1646,8 @@
         ]
       },
       "__total": {
-        "revenue": 133980.04,
-        "orders": 402
+        "revenue": 136128.04,
+        "orders": 409
       }
     },
     "mm_cactuskpp": {
@@ -1900,8 +1904,8 @@
         ]
       },
       "Jun26": {
-        "revenue": 10892.18,
-        "orders": 54,
+        "revenue": 11191.18,
+        "orders": 55,
         "top_products": [
           {
             "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
@@ -1909,7 +1913,7 @@
           },
           {
             "name": "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา",
-            "revenue": 2059.0
+            "revenue": 2358.0
           },
           {
             "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
@@ -1926,8 +1930,8 @@
         ]
       },
       "__total": {
-        "revenue": 93801.93,
-        "orders": 255
+        "revenue": 94100.93,
+        "orders": 256
       }
     },
     "l7.24": {
@@ -2062,8 +2066,8 @@
         ]
       },
       "Jun26": {
-        "revenue": 12120.76,
-        "orders": 46,
+        "revenue": 12419.76,
+        "orders": 47,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
@@ -2071,7 +2075,7 @@
           },
           {
             "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 4396.6
+            "revenue": 4695.6
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
@@ -2088,8 +2092,8 @@
         ]
       },
       "__total": {
-        "revenue": 89321.0,
-        "orders": 264
+        "revenue": 89620.0,
+        "orders": 265
       }
     },
     "parichatdeethip": {
@@ -2200,12 +2204,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 12103.6,
-        "orders": 32,
+        "revenue": 13748.6,
+        "orders": 37,
         "top_products": [
           {
             "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
-            "revenue": 9365.8
+            "revenue": 11010.8
           },
           {
             "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
@@ -2218,8 +2222,8 @@
         ]
       },
       "__total": {
-        "revenue": 75064.02,
-        "orders": 216
+        "revenue": 76709.02,
+        "orders": 221
       }
     },
     "b.babe.ee.eee": {
@@ -2276,30 +2280,30 @@
         ]
       },
       "Jun26": {
-        "revenue": 19197.4,
-        "orders": 71,
+        "revenue": 21173.4,
+        "orders": 75,
         "top_products": [
           {
             "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 16754.6
+            "revenue": 18041.6
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 1310.6
           },
           {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 629.0
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 1192.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 503.2
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 629.0
           }
         ]
       },
       "__total": {
-        "revenue": 71445.96,
-        "orders": 207
+        "revenue": 73421.96,
+        "orders": 211
       }
     },
     "coconakaaa": {
@@ -2568,12 +2572,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 4747.8,
-        "orders": 19,
+        "revenue": 4996.8,
+        "orders": 20,
         "top_products": [
           {
             "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 2249.4
+            "revenue": 2498.4
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
@@ -2594,8 +2598,8 @@
         ]
       },
       "__total": {
-        "revenue": 64821.86,
-        "orders": 201
+        "revenue": 65070.86,
+        "orders": 202
       }
     },
     "nunjungreview": {
@@ -2686,18 +2690,18 @@
         ]
       },
       "Jun26": {
-        "revenue": 11310.2,
-        "orders": 53,
+        "revenue": 11609.2,
+        "orders": 54,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 11310.2
+            "revenue": 11609.2
           }
         ]
       },
       "__total": {
-        "revenue": 62254.94,
-        "orders": 234
+        "revenue": 62553.94,
+        "orders": 235
       }
     },
     "sry.saranya": {
@@ -2780,12 +2784,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 10825.2,
-        "orders": 42,
+        "revenue": 11110.2,
+        "orders": 43,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 8876.2
+            "revenue": 9161.2
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -2802,8 +2806,32 @@
         ]
       },
       "__total": {
-        "revenue": 60317.82,
-        "orders": 214
+        "revenue": 60602.82,
+        "orders": 215
+      }
+    },
+    "daily.noom.now": {
+      "Jun26": {
+        "revenue": 57159.88,
+        "orders": 229,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "revenue": 52068.88
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 4365.4
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 725.6
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 57159.88,
+        "orders": 229
       }
     },
     "opendurianenglish": {
@@ -2888,30 +2916,6 @@
       "__total": {
         "revenue": 56808.27,
         "orders": 106
-      }
-    },
-    "daily.noom.now": {
-      "Jun26": {
-        "revenue": 56172.88,
-        "orders": 226,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
-            "revenue": 51081.88
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 4365.4
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 725.6
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 56172.88,
-        "orders": 226
       }
     },
     "mena.forest": {
@@ -3338,6 +3342,138 @@
         "orders": 172
       }
     },
+    "anda_dq34": {
+      "Feb26": {
+        "revenue": 5689.18,
+        "orders": 23,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 1327.59
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 1196.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 1092.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 764.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 628.0
+          }
+        ]
+      },
+      "Mar26": {
+        "revenue": 6723.45,
+        "orders": 15,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 1877.25
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 1669.2
+          },
+          {
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "revenue": 969.0
+          },
+          {
+            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
+            "revenue": 738.0
+          },
+          {
+            "name": "[หนังสือ] สวนของหัวใจ BLOSSOMS OF THE SOUL’S GARDEN",
+            "revenue": 571.0
+          }
+        ]
+      },
+      "Apr26": {
+        "revenue": 4792.24,
+        "orders": 16,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
+            "revenue": 2950.65
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 724.59
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 598.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 519.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 9414.99,
+        "orders": 23,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 2648.99
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 2235.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
+            "revenue": 1887.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 828.0
+          },
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 818.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 24064.04,
+        "orders": 101,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 6173.6
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 5752.64
+          },
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 4067.2
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 2136.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 1628.4
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 50683.9,
+        "orders": 178
+      }
+    },
     "amawasumiw": {
       "Jan26": {
         "revenue": 8474.0,
@@ -3738,138 +3874,6 @@
         "orders": 135
       }
     },
-    "anda_dq34": {
-      "Feb26": {
-        "revenue": 5689.18,
-        "orders": 23,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 1327.59
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 1196.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 1092.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 764.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 628.0
-          }
-        ]
-      },
-      "Mar26": {
-        "revenue": 6723.45,
-        "orders": 15,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 1877.25
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 1669.2
-          },
-          {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
-            "revenue": 969.0
-          },
-          {
-            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
-            "revenue": 738.0
-          },
-          {
-            "name": "[หนังสือ] สวนของหัวใจ BLOSSOMS OF THE SOUL’S GARDEN",
-            "revenue": 571.0
-          }
-        ]
-      },
-      "Apr26": {
-        "revenue": 4792.24,
-        "orders": 16,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
-            "revenue": 2950.65
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 724.59
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 598.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 519.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 9414.99,
-        "orders": 23,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 2648.99
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 2235.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
-            "revenue": 1887.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 828.0
-          },
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 818.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 21413.04,
-        "orders": 95,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 5853.6
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 5053.64
-          },
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 4067.2
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 1819.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 1628.4
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 48032.9,
-        "orders": 172
-      }
-    },
     "junehabitcreative": {
       "Jan26": {
         "revenue": 6582.12,
@@ -4174,8 +4178,8 @@
         ]
       },
       "Jun26": {
-        "revenue": 4337.4,
-        "orders": 10,
+        "revenue": 4636.4,
+        "orders": 11,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
@@ -4186,18 +4190,18 @@
             "revenue": 1136.0
           },
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 644.0
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 898.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 599.2
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 644.0
           }
         ]
       },
       "__total": {
-        "revenue": 43075.71,
-        "orders": 145
+        "revenue": 43374.71,
+        "orders": 146
       }
     },
     "chapang36": {
@@ -4368,6 +4372,136 @@
       "__total": {
         "revenue": 39102.2,
         "orders": 106
+      }
+    },
+    "pravitaa456": {
+      "Jan26": {
+        "revenue": 11620.32,
+        "orders": 33,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 5324.0
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 4557.32
+          },
+          {
+            "name": "[หนังสือ] เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
+            "revenue": 749.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 683.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 307.0
+          }
+        ]
+      },
+      "Feb26": {
+        "revenue": 5898.59,
+        "orders": 17,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 2887.59
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 2484.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 278.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 249.0
+          }
+        ]
+      },
+      "Mar26": {
+        "revenue": 588.0,
+        "orders": 2,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 339.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 249.0
+          }
+        ]
+      },
+      "Apr26": {
+        "revenue": 4189.73,
+        "orders": 14,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 3572.75
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 616.98
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 4197.0,
+        "orders": 10,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 3013.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 598.0
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 267.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 11428.68,
+        "orders": 36,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 7819.28
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 1436.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 1226.2
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 479.2
+          },
+          {
+            "name": "[หนังสือ] OHM LUCKY ME เซียมซีชี้ชะตา",
+            "revenue": 308.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 37922.32,
+        "orders": 112
       }
     },
     "bb.maeistory": {
@@ -4650,136 +4784,6 @@
       "__total": {
         "revenue": 36079.93,
         "orders": 44
-      }
-    },
-    "pravitaa456": {
-      "Jan26": {
-        "revenue": 11620.32,
-        "orders": 33,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 5324.0
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 4557.32
-          },
-          {
-            "name": "[หนังสือ] เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
-            "revenue": 749.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 683.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 307.0
-          }
-        ]
-      },
-      "Feb26": {
-        "revenue": 5898.59,
-        "orders": 17,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 2887.59
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 2484.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 278.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "Mar26": {
-        "revenue": 588.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 339.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "Apr26": {
-        "revenue": 4189.73,
-        "orders": 14,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 3572.75
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 616.98
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 4197.0,
-        "orders": 10,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 3013.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 598.0
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 319.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 267.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 8610.68,
-        "orders": 31,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 6783.28
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 699.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 489.2
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 479.2
-          },
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 160.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 35104.32,
-        "orders": 107
       }
     },
     "ssaifonshop": {
@@ -5210,12 +5214,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 2482.68,
-        "orders": 11,
+        "revenue": 2781.68,
+        "orders": 12,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 2045.48
+            "revenue": 2344.48
           },
           {
             "name": "*ค่าจัดส่ง (หนังสือ)",
@@ -5228,8 +5232,8 @@
         ]
       },
       "__total": {
-        "revenue": 31129.47,
-        "orders": 78
+        "revenue": 31428.47,
+        "orders": 79
       }
     },
     "winniethestickoftruth": {
@@ -6012,12 +6016,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 6062.0,
-        "orders": 24,
+        "revenue": 6352.0,
+        "orders": 25,
         "top_products": [
           {
             "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 1849.0
+            "revenue": 2139.0
           },
           {
             "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
@@ -6038,8 +6042,8 @@
         ]
       },
       "__total": {
-        "revenue": 23245.14,
-        "orders": 75
+        "revenue": 23535.14,
+        "orders": 76
       }
     },
     "bf200021": {
@@ -6238,6 +6242,52 @@
       "__total": {
         "revenue": 22640.39,
         "orders": 78
+      }
+    },
+    "kidmaiaok12345": {
+      "May26": {
+        "revenue": 569.0,
+        "orders": 2,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 250.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 21139.8,
+        "orders": 72,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 16775.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 1726.8
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 699.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 699.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 689.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 21708.8,
+        "orders": 74
       }
     },
     "involveasiath01": {
@@ -6724,8 +6774,8 @@
         ]
       },
       "Jun26": {
-        "revenue": 6781.2,
-        "orders": 33,
+        "revenue": 7080.2,
+        "orders": 34,
         "top_products": [
           {
             "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
@@ -6733,7 +6783,7 @@
           },
           {
             "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 650.0
+            "revenue": 949.0
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
@@ -6750,8 +6800,8 @@
         ]
       },
       "__total": {
-        "revenue": 19933.15,
-        "orders": 66
+        "revenue": 20232.15,
+        "orders": 67
       }
     },
     "puiipuii4664": {
@@ -6878,6 +6928,90 @@
       "__total": {
         "revenue": 19586.39,
         "orders": 63
+      }
+    },
+    "tiktokshop_affiliate_th": {
+      "Apr26": {
+        "revenue": 3865.11,
+        "orders": 6,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 1038.81
+          },
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 1038.81
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 1038.81
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 476.59
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 272.09
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 4695.09,
+        "orders": 11,
+        "top_products": [
+          {
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "revenue": 879.0
+          },
+          {
+            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
+            "revenue": 879.0
+          },
+          {
+            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
+            "revenue": 879.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 519.0
+          },
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 290.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 10735.4,
+        "orders": 31,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 2579.84
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 2225.88
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 998.4
+          },
+          {
+            "name": "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา",
+            "revenue": 839.2
+          },
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 779.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 19295.6,
+        "orders": 48
       }
     },
     "gpp654217my": {
@@ -7010,136 +7144,6 @@
         "orders": 45
       }
     },
-    "tiktokshop_affiliate_th": {
-      "Apr26": {
-        "revenue": 3865.11,
-        "orders": 6,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 1038.81
-          },
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 1038.81
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 1038.81
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 476.59
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 272.09
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 4695.09,
-        "orders": 11,
-        "top_products": [
-          {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
-            "revenue": 879.0
-          },
-          {
-            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
-            "revenue": 879.0
-          },
-          {
-            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
-            "revenue": 879.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 519.0
-          },
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 290.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 10436.4,
-        "orders": 30,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 2579.84
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 2225.88
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 998.4
-          },
-          {
-            "name": "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา",
-            "revenue": 839.2
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 735.48
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 18996.6,
-        "orders": 47
-      }
-    },
-    "kidmaiaok12345": {
-      "May26": {
-        "revenue": 569.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 319.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 250.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 18238.8,
-        "orders": 67,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 14906.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 1726.8
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 699.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 699.0
-          },
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 208.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 18807.8,
-        "orders": 69
-      }
-    },
     "rosrssukhnth": {
       "Jan26": {
         "revenue": 5041.35,
@@ -7236,16 +7240,16 @@
         ]
       },
       "Jun26": {
-        "revenue": 1596.0,
-        "orders": 5,
+        "revenue": 1880.0,
+        "orders": 6,
         "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 723.2
+          },
           {
             "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
             "revenue": 478.4
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 439.2
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -7258,8 +7262,8 @@
         ]
       },
       "__total": {
-        "revenue": 18641.16,
-        "orders": 52
+        "revenue": 18925.16,
+        "orders": 53
       }
     },
     "aathnn.11": {
@@ -7700,6 +7704,124 @@
         "orders": 55
       }
     },
+    "yellowlalamon.f": {
+      "Jan26": {
+        "revenue": 2043.0,
+        "orders": 7,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 2043.0
+          }
+        ]
+      },
+      "Feb26": {
+        "revenue": 6334.32,
+        "orders": 19,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 2452.32
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 1921.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 683.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 683.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 595.0
+          }
+        ]
+      },
+      "Mar26": {
+        "revenue": 1004.59,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 529.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 475.59
+          }
+        ]
+      },
+      "Apr26": {
+        "revenue": 1258.94,
+        "orders": 5,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 959.94
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 3084.59,
+        "orders": 9,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 1602.59
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 549.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 399.0
+          },
+          {
+            "name": "[หนังสือ] ทุกความทรงจำคือของขวัญจากวันวาน",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 235.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 2553.8,
+        "orders": 6,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 1237.2
+          },
+          {
+            "name": "[หนังสือ] BOXSET เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
+            "revenue": 718.2
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 398.4
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 200.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 16279.24,
+        "orders": 49
+      }
+    },
     "itawsom2_0": {
       "Feb26": {
         "revenue": 15261.0,
@@ -7898,124 +8020,6 @@
         "orders": 49
       }
     },
-    "yellowlalamon.f": {
-      "Jan26": {
-        "revenue": 2043.0,
-        "orders": 7,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 2043.0
-          }
-        ]
-      },
-      "Feb26": {
-        "revenue": 6334.32,
-        "orders": 19,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 2452.32
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 1921.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 683.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 683.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 595.0
-          }
-        ]
-      },
-      "Mar26": {
-        "revenue": 1004.59,
-        "orders": 3,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 529.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 475.59
-          }
-        ]
-      },
-      "Apr26": {
-        "revenue": 1258.94,
-        "orders": 5,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 959.94
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 299.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 3084.59,
-        "orders": 9,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 1602.59
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 549.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 399.0
-          },
-          {
-            "name": "[หนังสือ] ทุกความทรงจำคือของขวัญจากวันวาน",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 235.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 2034.8,
-        "orders": 5,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 718.2
-          },
-          {
-            "name": "[หนังสือ] BOXSET เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
-            "revenue": 718.2
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 398.4
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 200.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 15760.24,
-        "orders": 48
-      }
-    },
     "marshiesweetpea": {
       "May26": {
         "revenue": 957.0,
@@ -8028,12 +8032,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 14466.96,
-        "orders": 46,
+        "revenue": 14785.96,
+        "orders": 47,
         "top_products": [
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 12919.76
+            "revenue": 13238.76
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
@@ -8042,8 +8046,8 @@
         ]
       },
       "__total": {
-        "revenue": 15423.96,
-        "orders": 49
+        "revenue": 15742.96,
+        "orders": 50
       }
     },
     "valentineisreading": {
@@ -8490,11 +8494,11 @@
         "orders": 3,
         "top_products": [
           {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 479.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
             "revenue": 479.2
           },
           {
@@ -8906,12 +8910,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 4750.98,
-        "orders": 17,
+        "revenue": 5049.98,
+        "orders": 18,
         "top_products": [
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 3887.58
+            "revenue": 4186.58
           },
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
@@ -8920,8 +8924,8 @@
         ]
       },
       "__total": {
-        "revenue": 12989.87,
-        "orders": 43
+        "revenue": 13288.87,
+        "orders": 44
       }
     },
     "mildyakpoodbang": {
@@ -8970,6 +8974,46 @@
       "__total": {
         "revenue": 12834.1,
         "orders": 34
+      }
+    },
+    "j.kung789": {
+      "Apr26": {
+        "revenue": 3196.0,
+        "orders": 10,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 3196.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 2474.0,
+        "orders": 8,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 1875.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 599.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 6470.36,
+        "orders": 24,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 6470.36
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 12140.36,
+        "orders": 42
       }
     },
     "chengtochange": {
@@ -9062,19 +9106,19 @@
         "orders": 5,
         "top_products": [
           {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
-            "revenue": 1039.2
-          },
-          {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
             "revenue": 1039.2
           },
           {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 590.0
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "revenue": 1039.2
           },
           {
             "name": "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา",
+            "revenue": 590.0
+          },
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
             "revenue": 590.0
           },
           {
@@ -9244,46 +9288,6 @@
       "__total": {
         "revenue": 11562.72,
         "orders": 48
-      }
-    },
-    "j.kung789": {
-      "Apr26": {
-        "revenue": 3196.0,
-        "orders": 10,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 3196.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 2474.0,
-        "orders": 8,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 1875.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 599.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 5832.36,
-        "orders": 22,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 5832.36
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 11502.36,
-        "orders": 40
       }
     },
     "plengsaya": {
@@ -10010,11 +10014,11 @@
             "revenue": 1293.6
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
             "revenue": 1093.6
           },
           {
-            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 1093.6
           }
         ]
@@ -10132,12 +10136,12 @@
         ]
       },
       "Jun26": {
-        "revenue": 1619.0,
-        "orders": 8,
+        "revenue": 1779.0,
+        "orders": 9,
         "top_products": [
           {
             "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 800.0
+            "revenue": 960.0
           },
           {
             "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
@@ -10150,8 +10154,8 @@
         ]
       },
       "__total": {
-        "revenue": 8716.78,
-        "orders": 30
+        "revenue": 8876.78,
+        "orders": 31
       }
     },
     "sheyada": {
@@ -10804,6 +10808,74 @@
         "orders": 26
       }
     },
+    "kkristenxx": {
+      "Feb26": {
+        "revenue": 339.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 339.0
+          }
+        ]
+      },
+      "Mar26": {
+        "revenue": 2095.0,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
+            "revenue": 1412.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 683.0
+          }
+        ]
+      },
+      "Apr26": {
+        "revenue": 2603.0,
+        "orders": 8,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 2603.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 1171.09,
+        "orders": 4,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 591.09
+          },
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 580.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 1760.0,
+        "orders": 4,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 1170.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 590.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 7968.09,
+        "orders": 20
+      }
+    },
     "madam_punchy": {
       "May26": {
         "revenue": 580.0,
@@ -11266,70 +11338,6 @@
       "__total": {
         "revenue": 6829.58,
         "orders": 26
-      }
-    },
-    "kkristenxx": {
-      "Feb26": {
-        "revenue": 339.0,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 339.0
-          }
-        ]
-      },
-      "Mar26": {
-        "revenue": 2095.0,
-        "orders": 3,
-        "top_products": [
-          {
-            "name": "[หนังสือ] เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
-            "revenue": 1412.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 683.0
-          }
-        ]
-      },
-      "Apr26": {
-        "revenue": 2603.0,
-        "orders": 8,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 2603.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 1171.09,
-        "orders": 4,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 591.09
-          },
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 580.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 580.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 580.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 6788.09,
-        "orders": 18
       }
     },
     "hatangsenom": {
@@ -11928,6 +11936,30 @@
         "orders": 19
       }
     },
+    "leejunschh": {
+      "Jun26": {
+        "revenue": 5702.2,
+        "orders": 14,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 3697.8
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
+            "revenue": 1501.2
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 503.2
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 5702.2,
+        "orders": 14
+      }
+    },
     "4flavorzhouse": {
       "Jan26": {
         "revenue": 1565.0,
@@ -12022,6 +12054,86 @@
       "__total": {
         "revenue": 5555.0,
         "orders": 25
+      }
+    },
+    "lovejudyo": {
+      "Apr26": {
+        "revenue": 1575.0,
+        "orders": 5,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 519.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
+            "revenue": 159.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 1750.0,
+        "orders": 6,
+        "top_products": [
+          {
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "revenue": 598.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 563.0
+          },
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
+            "revenue": 290.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 2215.2,
+        "orders": 8,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 819.2
+          },
+          {
+            "name": "[หนังสือ] ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (THE MILLIONAIRE'S TOP SECRET)",
+            "revenue": 456.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 400.0
+          },
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 320.0
+          },
+          {
+            "name": "[หนังสือ] ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ",
+            "revenue": 220.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 5540.2,
+        "orders": 19
       }
     },
     "stewardtimechobreview": {
@@ -12442,86 +12554,6 @@
         "orders": 15
       }
     },
-    "lovejudyo": {
-      "Apr26": {
-        "revenue": 1575.0,
-        "orders": 5,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 519.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
-            "revenue": 159.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 1750.0,
-        "orders": 6,
-        "top_products": [
-          {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
-            "revenue": 598.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 563.0
-          },
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
-            "revenue": 290.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 1925.2,
-        "orders": 7,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 529.2
-          },
-          {
-            "name": "[หนังสือ] ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (THE MILLIONAIRE'S TOP SECRET)",
-            "revenue": 456.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 400.0
-          },
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 320.0
-          },
-          {
-            "name": "[หนังสือ] ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ",
-            "revenue": 220.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 5250.2,
-        "orders": 18
-      }
-    },
     "btwstk": {
       "Mar26": {
         "revenue": 299.0,
@@ -12912,6 +12944,52 @@
       "__total": {
         "revenue": 5013.0,
         "orders": 13
+      }
+    },
+    "misssssbahhh": {
+      "Apr26": {
+        "revenue": 3937.0,
+        "orders": 7,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
+            "revenue": 1791.0
+          },
+          {
+            "name": "[หนังสือ] สวนของหัวใจ BLOSSOMS OF THE SOUL’S GARDEN",
+            "revenue": 999.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 698.0
+          },
+          {
+            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
+            "revenue": 449.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 1053.2,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 399.2
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 327.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 327.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 4990.2,
+        "orders": 10
       }
     },
     "iiitimmmmmmmmmm": {
@@ -13908,44 +13986,6 @@
         "orders": 10
       }
     },
-    "misssssbahhh": {
-      "Apr26": {
-        "revenue": 3937.0,
-        "orders": 7,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)",
-            "revenue": 1791.0
-          },
-          {
-            "name": "[หนังสือ] สวนของหัวใจ BLOSSOMS OF THE SOUL’S GARDEN",
-            "revenue": 999.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 698.0
-          },
-          {
-            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
-            "revenue": 449.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 399.2,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 399.2
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 4336.2,
-        "orders": 8
-      }
-    },
     "jademarsx": {
       "May26": {
         "revenue": 4044.0,
@@ -14694,30 +14734,6 @@
       "__total": {
         "revenue": 3709.79,
         "orders": 16
-      }
-    },
-    "leejunschh": {
-      "Jun26": {
-        "revenue": 3706.2,
-        "orders": 12,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 2699.8
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย",
-            "revenue": 503.2
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 503.2
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 3706.2,
-        "orders": 12
       }
     },
     "_jw1998_": {
@@ -15782,15 +15798,15 @@
         "orders": 5,
         "top_products": [
           {
+            "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
+            "revenue": 718.4
+          },
+          {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 718.4
           },
           {
             "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 718.4
-          },
-          {
-            "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
             "revenue": 718.4
           },
           {
@@ -15866,6 +15882,38 @@
       "__total": {
         "revenue": 3105.2,
         "orders": 10
+      }
+    },
+    "user3219238503201": {
+      "Jun26": {
+        "revenue": 3086.2,
+        "orders": 6,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 723.0
+          },
+          {
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "revenue": 723.0
+          },
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 723.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 319.2
+          },
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 3086.2,
+        "orders": 6
       }
     },
     "poupe975": {
@@ -16104,6 +16152,38 @@
       "__total": {
         "revenue": 3000.0,
         "orders": 8
+      }
+    },
+    "iflyad_40_th_dsp": {
+      "Jun26": {
+        "revenue": 2988.0,
+        "orders": 9,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 679.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 638.4
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 399.2
+          },
+          {
+            "name": "[หนังสือ] OHM LUCKY ME เซียมซีชี้ชะตา",
+            "revenue": 389.0
+          },
+          {
+            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
+            "revenue": 319.2
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 2988.0,
+        "orders": 9
       }
     },
     "b.anc__": {
@@ -16406,6 +16486,64 @@
         "orders": 6
       }
     },
+    "littlemoon.review": {
+      "Mar26": {
+        "revenue": 279.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
+            "revenue": 279.0
+          }
+        ]
+      },
+      "Apr26": {
+        "revenue": 290.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
+            "revenue": 290.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 1577.0,
+        "orders": 4,
+        "top_products": [
+          {
+            "name": "[หนังสือ] BOXSET เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
+            "revenue": 1038.0
+          },
+          {
+            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
+            "revenue": 290.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 249.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 619.0,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 320.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 2765.0,
+        "orders": 9
+      }
+    },
     "thanchanok.z": {
       "Feb26": {
         "revenue": 2732.0,
@@ -16464,38 +16602,6 @@
       "__total": {
         "revenue": 2705.0,
         "orders": 14
-      }
-    },
-    "iflyad_40_th_dsp": {
-      "Jun26": {
-        "revenue": 2698.0,
-        "orders": 8,
-        "top_products": [
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 638.4
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 399.2
-          },
-          {
-            "name": "[หนังสือ] OHM LUCKY ME เซียมซีชี้ชะตา",
-            "revenue": 389.0
-          },
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 389.0
-          },
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 319.2
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 2698.0,
-        "orders": 8
       }
     },
     "krujacream": {
@@ -16870,11 +16976,11 @@
             "revenue": 400.0
           },
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
             "revenue": 163.0
           },
           {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 163.0
           }
         ]
@@ -16970,60 +17076,6 @@
         "orders": 7
       }
     },
-    "littlemoon.review": {
-      "Mar26": {
-        "revenue": 279.0,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)",
-            "revenue": 279.0
-          }
-        ]
-      },
-      "Apr26": {
-        "revenue": 290.0,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
-            "revenue": 290.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 1577.0,
-        "orders": 4,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้",
-            "revenue": 1038.0
-          },
-          {
-            "name": "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)",
-            "revenue": 290.0
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 320.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 320.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 2466.0,
-        "orders": 8
-      }
-    },
     "fairy5122542": {
       "May26": {
         "revenue": 2464.6,
@@ -17068,6 +17120,46 @@
         "orders": 3
       }
     },
+    "sirinakaaa_13": {
+      "Apr26": {
+        "revenue": 498.0,
+        "orders": 2,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 498.0
+          }
+        ]
+      },
+      "May26": {
+        "revenue": 249.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 249.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 1707.0,
+        "orders": 9,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 1408.0
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 2454.0,
+        "orders": 12
+      }
+    },
     "dye5h66jlb9b": {
       "Apr26": {
         "revenue": 2452.24,
@@ -17094,6 +17186,48 @@
       "__total": {
         "revenue": 2452.24,
         "orders": 4
+      }
+    },
+    "yanakit021527": {
+      "Apr26": {
+        "revenue": 1558.5,
+        "orders": 6,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 825.5
+          },
+          {
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "revenue": 484.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 249.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 888.28,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
+            "revenue": 359.28
+          },
+          {
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "revenue": 329.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 200.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 2446.78,
+        "orders": 9
       }
     },
     "hello.ohbest": {
@@ -17606,11 +17740,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
             "revenue": 699.0
           },
           {
-            "name": "[หนังสือ] BOXSET ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
             "revenue": 699.0
           }
         ]
@@ -17862,44 +17996,6 @@
       "__total": {
         "revenue": 2129.5,
         "orders": 4
-      }
-    },
-    "yanakit021527": {
-      "Apr26": {
-        "revenue": 1558.5,
-        "orders": 6,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 825.5
-          },
-          {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
-            "revenue": 484.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 559.28,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 359.28
-          },
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 200.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 2117.78,
-        "orders": 8
       }
     },
     "twinlek024": {
@@ -18346,42 +18442,6 @@
       "__total": {
         "revenue": 1995.0,
         "orders": 7
-      }
-    },
-    "sirinakaaa_13": {
-      "Apr26": {
-        "revenue": 498.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 498.0
-          }
-        ]
-      },
-      "May26": {
-        "revenue": 249.0,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "Jun26": {
-        "revenue": 1248.0,
-        "orders": 7,
-        "top_products": [
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 1248.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 1995.0,
-        "orders": 10
       }
     },
     "joyinjail": {
@@ -21304,11 +21364,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
             "revenue": 678.4
           },
           {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "name": "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN",
             "revenue": 678.4
           }
         ]
@@ -21742,11 +21802,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 237.2
           },
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 237.2
           }
         ]
@@ -21856,6 +21916,38 @@
       "__total": {
         "revenue": 1287.0,
         "orders": 3
+      }
+    },
+    "anee_040761": {
+      "Jun26": {
+        "revenue": 1275.6,
+        "orders": 5,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
+            "revenue": 299.0
+          },
+          {
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "revenue": 239.2
+          },
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 239.2
+          },
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 199.2
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 1275.6,
+        "orders": 5
       }
     },
     "iflytex": {
@@ -22742,11 +22834,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
             "revenue": 595.56
           },
           {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
             "revenue": 595.56
           }
         ]
@@ -23000,11 +23092,11 @@
         "orders": 3,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
             "revenue": 360.0
           },
           {
-            "name": "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
             "revenue": 360.0
           },
           {
@@ -23378,6 +23470,32 @@
           {
             "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 1109.59,
+        "orders": 4
+      }
+    },
+    "deeekrubb": {
+      "Apr26": {
+        "revenue": 824.59,
+        "orders": 3,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 824.59
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 285.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 285.0
           }
         ]
       },
@@ -23854,6 +23972,36 @@
         "orders": 2
       }
     },
+    "ppeakkaboo": {
+      "May26": {
+        "revenue": 716.0,
+        "orders": 2,
+        "top_products": [
+          {
+            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "revenue": 358.0
+          },
+          {
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "revenue": 358.0
+          }
+        ]
+      },
+      "Jun26": {
+        "revenue": 329.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "revenue": 329.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 1045.0,
+        "orders": 3
+      }
+    },
     "imminimustory": {
       "Jan26": {
         "revenue": 251.0,
@@ -24056,34 +24204,6 @@
       "__total": {
         "revenue": 978.3,
         "orders": 2
-      }
-    },
-    "anee_040761": {
-      "Jun26": {
-        "revenue": 976.6,
-        "orders": 4,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
-            "revenue": 239.2
-          },
-          {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
-            "revenue": 239.2
-          },
-          {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
-            "revenue": 199.2
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 976.6,
-        "orders": 4
       }
     },
     "bentenjung": {
@@ -24308,11 +24428,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
             "revenue": 479.2
           },
           {
-            "name": "[หนังสือ] ฉันจะมีชีวิตที่ดี",
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
             "revenue": 479.2
           }
         ]
@@ -24616,11 +24736,11 @@
         "orders": 4,
         "top_products": [
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 464.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 464.2
           }
         ]
@@ -24716,30 +24836,6 @@
       "__total": {
         "revenue": 917.28,
         "orders": 2
-      }
-    },
-    "user3219238503201": {
-      "Jun26": {
-        "revenue": 917.2,
-        "orders": 3,
-        "top_products": [
-          {
-            "name": "[หนังสือ] BOXSET THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต",
-            "revenue": 319.2
-          },
-          {
-            "name": "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)",
-            "revenue": 299.0
-          },
-          {
-            "name": "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART",
-            "revenue": 299.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 917.2,
-        "orders": 3
       }
     },
     "naipaporn_3": {
@@ -25072,11 +25168,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 439.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
             "revenue": 439.2
           }
         ]
@@ -25092,11 +25188,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
             "revenue": 439.2
           },
           {
-            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
             "revenue": 439.2
           }
         ]
@@ -25478,11 +25574,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
             "revenue": 424.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 424.2
           }
         ]
@@ -25831,22 +25927,6 @@
       },
       "__total": {
         "revenue": 827.0,
-        "orders": 3
-      }
-    },
-    "deeekrubb": {
-      "Apr26": {
-        "revenue": 824.59,
-        "orders": 3,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 824.59
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 824.59,
         "orders": 3
       }
     },
@@ -26752,26 +26832,6 @@
         "orders": 2
       }
     },
-    "ppeakkaboo": {
-      "May26": {
-        "revenue": 716.0,
-        "orders": 2,
-        "top_products": [
-          {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
-            "revenue": 358.0
-          },
-          {
-            "name": "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ",
-            "revenue": 358.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 716.0,
-        "orders": 2
-      }
-    },
     "top_dowlai": {
       "Apr26": {
         "revenue": 708.0,
@@ -26988,11 +27048,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
             "revenue": 344.28
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 344.28
           }
         ]
@@ -29788,6 +29848,22 @@
         "orders": 2
       }
     },
+    "bieih05": {
+      "Jun26": {
+        "revenue": 548.0,
+        "orders": 2,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 548.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 548.0,
+        "orders": 2
+      }
+    },
     "17_empathy": {
       "May26": {
         "revenue": 545.59,
@@ -31330,11 +31406,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 237.2
           },
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 237.2
           }
         ]
@@ -32134,11 +32210,11 @@
         "orders": 2,
         "top_products": [
           {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "name": "*ค่าจัดส่ง (หนังสือ)",
             "revenue": 208.2
           },
           {
-            "name": "*ค่าจัดส่ง (หนังสือ)",
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
             "revenue": 208.2
           }
         ]
@@ -35185,6 +35261,70 @@
       }
     },
     "krataii_159": {
+      "Jun26": {
+        "revenue": 319.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 319.0,
+        "orders": 1
+      }
+    },
+    "suchanuch_2544": {
+      "Jun26": {
+        "revenue": 319.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 319.0,
+        "orders": 1
+      }
+    },
+    "d.dew888": {
+      "Jun26": {
+        "revenue": 319.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 319.0,
+        "orders": 1
+      }
+    },
+    "nanchutimakeansuntia": {
+      "Jun26": {
+        "revenue": 319.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] กับดักความรู้สึกผิด",
+            "revenue": 319.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 319.0,
+        "orders": 1
+      }
+    },
+    "queen_30023": {
       "Jun26": {
         "revenue": 319.0,
         "orders": 1,
@@ -38992,6 +39132,86 @@
         "orders": 1
       }
     },
+    "sai..rung": {
+      "Jun26": {
+        "revenue": 299.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 299.0,
+        "orders": 1
+      }
+    },
+    "dadeditor": {
+      "Jun26": {
+        "revenue": 299.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 299.0,
+        "orders": 1
+      }
+    },
+    "gaem_gaem333": {
+      "Jun26": {
+        "revenue": 299.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 299.0,
+        "orders": 1
+      }
+    },
+    "preamm.zz": {
+      "Jun26": {
+        "revenue": 299.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 299.0,
+        "orders": 1
+      }
+    },
+    "story_102625": {
+      "Jun26": {
+        "revenue": 299.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 299.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 299.0,
+        "orders": 1
+      }
+    },
     "onpri__ya": {
       "Feb26": {
         "revenue": 298.0,
@@ -42381,6 +42601,22 @@
       },
       "__total": {
         "revenue": 283.9,
+        "orders": 1
+      }
+    },
+    "pariyakon_5": {
+      "Jun26": {
+        "revenue": 283.0,
+        "orders": 1,
+        "top_products": [
+          {
+            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
+            "revenue": 283.0
+          }
+        ]
+      },
+      "__total": {
+        "revenue": 283.0,
         "orders": 1
       }
     },
@@ -48293,22 +48529,6 @@
       }
     },
     "nirinya_habee": {
-      "Jun26": {
-        "revenue": 249.0,
-        "orders": 1,
-        "top_products": [
-          {
-            "name": "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHTING THE DEMONS IN MY HEART",
-            "revenue": 249.0
-          }
-        ]
-      },
-      "__total": {
-        "revenue": 249.0,
-        "orders": 1
-      }
-    },
-    "bieih05": {
       "Jun26": {
         "revenue": 249.0,
         "orders": 1,
@@ -54972,146 +55192,146 @@
     },
     "Jun26": {
       "[หนังสือ] ฉันจะมีชีวิตที่ดี": {
-        "ads_cost": 3586.64,
-        "ads_tiktok_ads": 182.19,
-        "ads_tiktok_aff": 3404.45,
-        "sale_total": 14468.5,
-        "sale_tiktok": 3912.5,
-        "roas_tiktok_aff": 1.1492
+        "ads_cost": 4297.83,
+        "ads_tiktok_ads": 221.4,
+        "ads_tiktok_aff": 4076.43,
+        "sale_total": 18822.5,
+        "sale_tiktok": 7217.5,
+        "roas_tiktok_aff": 1.7705
       },
       "[หนังสือ] ออฟฟิศนี้เฮงซวย (สัตว์)": {
-        "ads_cost": 53980.45,
-        "ads_tiktok_ads": 6872.5,
-        "ads_tiktok_aff": 8540.63,
-        "sale_total": 178097.29,
-        "sale_tiktok": 34388.26,
-        "roas_tiktok_aff": 4.0264
+        "ads_cost": 65384.04,
+        "ads_tiktok_ads": 8172.62,
+        "ads_tiktok_aff": 8955.15,
+        "sale_total": 212740.79,
+        "sale_tiktok": 43119.76,
+        "roas_tiktok_aff": 4.8151
       },
       "[หนังสือ] วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน THE ENCHANTED GARDEN": {
-        "ads_cost": 6423.68,
-        "ads_tiktok_ads": 1158.94,
-        "ads_tiktok_aff": 5264.74,
-        "sale_total": 28578.18,
-        "sale_tiktok": 8410.18,
-        "roas_tiktok_aff": 1.5975
+        "ads_cost": 7203.28,
+        "ads_tiktok_ads": 1314.97,
+        "ads_tiktok_aff": 5888.31,
+        "sale_total": 33123.18,
+        "sale_tiktok": 10028.18,
+        "roas_tiktok_aff": 1.7031
       },
       "[หนังสือ] ยินดีต้อนรับและขอบคุณที่กลับมา": {
-        "ads_cost": 8257.54,
-        "ads_tiktok_ads": 4258.64,
-        "ads_tiktok_aff": 3998.9,
-        "sale_total": 15635.81,
-        "sale_tiktok": 11237.81,
-        "roas_tiktok_aff": 2.8102
+        "ads_cost": 8555.83,
+        "ads_tiktok_ads": 4434.71,
+        "ads_tiktok_aff": 4121.12,
+        "sale_total": 17128.81,
+        "sale_tiktok": 12072.81,
+        "roas_tiktok_aff": 2.9295
       },
       "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง A GUIDE TO FIGHT THE DEMONS IN MY HEART": {
-        "ads_cost": 124355.34,
-        "ads_tiktok_ads": 16017.39,
-        "ads_tiktok_aff": 107421.33,
-        "sale_total": 513466.71,
-        "sale_tiktok": 185795.81,
-        "roas_tiktok_aff": 1.7296
+        "ads_cost": 130455.05,
+        "ads_tiktok_ads": 16846.64,
+        "ads_tiktok_aff": 111496.79,
+        "sale_total": 549693.21,
+        "sale_tiktok": 200496.31,
+        "roas_tiktok_aff": 1.7982
       },
       "[หนังสือ] ปีศาจตัวนั้น คือฉันเอง 2 A GUIDE TO OVERCOMING THE RETURN OF THE DEMONS": {
-        "ads_cost": 30693.68,
-        "ads_tiktok_ads": 14142.48,
-        "ads_tiktok_aff": 16531.72,
-        "sale_total": 169667.39,
-        "sale_tiktok": 86368.15,
-        "roas_tiktok_aff": 5.2244
+        "ads_cost": 33124.64,
+        "ads_tiktok_ads": 15285.69,
+        "ads_tiktok_aff": 17819.47,
+        "sale_total": 183127.6,
+        "sale_tiktok": 95410.36,
+        "roas_tiktok_aff": 5.3543
       },
       "[หนังสือ] ปีศาจความรักมักเลือกฉันเป็นเหยื่อ HOW TO FIGHT THE LOVE DEMON IN MY HEART": {
-        "ads_cost": 4197.07,
-        "ads_tiktok_ads": 350.58,
-        "ads_tiktok_aff": 3786.07,
-        "sale_total": 15556.66,
-        "sale_tiktok": 3889.84,
-        "roas_tiktok_aff": 1.0274
+        "ads_cost": 4762.21,
+        "ads_tiktok_ads": 414.98,
+        "ads_tiktok_aff": 4286.81,
+        "sale_total": 19639.66,
+        "sale_tiktok": 5556.84,
+        "roas_tiktok_aff": 1.2963
       },
       "[หนังสือ] ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า THINK LIKE A HAPPYBARA": {
-        "ads_cost": 14512.92,
-        "ads_tiktok_ads": 3361.48,
-        "ads_tiktok_aff": 11136.23,
-        "sale_total": 45888.4,
-        "sale_tiktok": 16684.69,
-        "roas_tiktok_aff": 1.4982
+        "ads_cost": 15328.61,
+        "ads_tiktok_ads": 3559.67,
+        "ads_tiktok_aff": 11753.73,
+        "sale_total": 48828.4,
+        "sale_tiktok": 17552.69,
+        "roas_tiktok_aff": 1.4934
       },
       "[หนังสือ] เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (HELMET GIRL)": {
         "ads_cost": 0.0,
         "ads_tiktok_ads": 0.0,
         "ads_tiktok_aff": 0.0,
-        "sale_total": 5682.27,
+        "sale_total": 7635.27,
         "sale_tiktok": 3815.27,
         "roas_tiktok_aff": 0
       },
       "[หนังสือ] เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้": {
-        "ads_cost": 2505.17,
-        "ads_tiktok_ads": 1809.6,
+        "ads_cost": 2906.16,
+        "ads_tiktok_ads": 2210.59,
         "ads_tiktok_aff": 0.0,
-        "sale_total": 12598.66,
-        "sale_tiktok": 4747.26,
+        "sale_total": 16847.66,
+        "sale_tiktok": 5197.26,
         "roas_tiktok_aff": 0
       },
       "[หนังสือ] ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ": {
-        "ads_cost": 21133.12,
-        "ads_tiktok_ads": 571.19,
-        "ads_tiktok_aff": 17675.76,
-        "sale_total": 83392.25,
-        "sale_tiktok": 6467.16,
-        "roas_tiktok_aff": 0.3659
+        "ads_cost": 23567.66,
+        "ads_tiktok_ads": 664.51,
+        "ads_tiktok_aff": 19578.28,
+        "sale_total": 91616.91,
+        "sale_tiktok": 8293.82,
+        "roas_tiktok_aff": 0.4236
       },
       "[หนังสือ] กับดักความรู้สึกผิด": {
-        "ads_cost": 171611.79,
-        "ads_tiktok_ads": 17029.31,
-        "ads_tiktok_aff": 15984.02,
-        "sale_total": 506859.16,
-        "sale_tiktok": 75602.07,
-        "roas_tiktok_aff": 4.7299
+        "ads_cost": 215819.53,
+        "ads_tiktok_ads": 18932.36,
+        "ads_tiktok_aff": 17479.76,
+        "sale_total": 629683.1,
+        "sale_tiktok": 82492.01,
+        "roas_tiktok_aff": 4.7193
       },
       "[หนังสือ] กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (IT IS NEVER TOO LATE TO LOVE YOURSELF)": {
-        "ads_cost": 24684.78,
-        "ads_tiktok_ads": 1545.18,
-        "ads_tiktok_aff": 23139.6,
-        "sale_total": 53865.92,
-        "sale_tiktok": 15010.83,
-        "roas_tiktok_aff": 0.6487
+        "ads_cost": 25878.63,
+        "ads_tiktok_ads": 1627.93,
+        "ads_tiktok_aff": 24250.7,
+        "sale_total": 57517.63,
+        "sale_tiktok": 16178.54,
+        "roas_tiktok_aff": 0.6671
       },
       "[หนังสือ] THE WITCHES' CLUB ชมรมลับเปลี่ยนชีวิต": {
-        "ads_cost": 17736.92,
-        "ads_tiktok_ads": 4612.84,
-        "ads_tiktok_aff": 10789.01,
-        "sale_total": 79623.81,
-        "sale_tiktok": 44509.93,
-        "roas_tiktok_aff": 4.1255
+        "ads_cost": 20402.39,
+        "ads_tiktok_ads": 5189.72,
+        "ads_tiktok_aff": 12088.1,
+        "sale_total": 91478.81,
+        "sale_tiktok": 48815.93,
+        "roas_tiktok_aff": 4.0383
       },
       "[หนังสือ] MY LAST BOOK (A GENTLE GUIDE AND PREPARATION FOR LIFE’S FINAL CHAPTER)": {
         "ads_cost": 0.0,
         "ads_tiktok_ads": 0.0,
         "ads_tiktok_aff": 0.0,
-        "sale_total": 5807.0,
+        "sale_total": 7007.0,
         "sale_tiktok": 0.0,
         "roas_tiktok_aff": 0
       },
       "[หนังสือ] GHOSTLY REMAINS ปลดพันธนาการดวงวิญญาณหลังความตาย": {
-        "ads_cost": 9674.3,
-        "ads_tiktok_ads": 4045.92,
-        "ads_tiktok_aff": 5436.6,
-        "sale_total": 57854.85,
-        "sale_tiktok": 35807.97,
-        "roas_tiktok_aff": 6.5865
+        "ads_cost": 10947.8,
+        "ads_tiktok_ads": 4301.08,
+        "ads_tiktok_aff": 6065.31,
+        "sale_total": 65656.35,
+        "sale_tiktok": 38900.47,
+        "roas_tiktok_aff": 6.4136
       },
       "[หนังสือ] GHOSTLY BREWS ยินดีบริการดวงวิญญาณหลังเที่ยงคืน": {
-        "ads_cost": 44754.36,
-        "ads_tiktok_ads": 12583.38,
-        "ads_tiktok_aff": 30025.48,
-        "sale_total": 175468.2,
-        "sale_tiktok": 73833.37,
-        "roas_tiktok_aff": 2.459
+        "ads_cost": 48413.58,
+        "ads_tiktok_ads": 13071.92,
+        "ads_tiktok_aff": 33195.5,
+        "sale_total": 190855.53,
+        "sale_tiktok": 77974.7,
+        "roas_tiktok_aff": 2.349
       },
       "[หนังสือ] ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (THE MILLIONAIRE'S TOP SECRET)": {
-        "ads_cost": 4724.23,
-        "ads_tiktok_ads": 237.78,
+        "ads_cost": 4724.34,
+        "ads_tiktok_ads": 237.89,
         "ads_tiktok_aff": 4486.45,
-        "sale_total": 20350.59,
+        "sale_total": 20529.59,
         "sale_tiktok": 7007.6,
         "roas_tiktok_aff": 1.5619
       },
@@ -55119,16 +55339,16 @@
         "ads_cost": 0.0,
         "ads_tiktok_ads": 0.0,
         "ads_tiktok_aff": 0.0,
-        "sale_total": 3404.94,
-        "sale_tiktok": 2765.74,
+        "sale_total": 4323.94,
+        "sale_tiktok": 3684.74,
         "roas_tiktok_aff": 0
       },
       "[หนังสือ] ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ": {
         "ads_cost": 0.0,
         "ads_tiktok_ads": 0.0,
         "ads_tiktok_aff": 0.0,
-        "sale_total": 1930.81,
-        "sale_tiktok": 1710.81,
+        "sale_total": 2480.81,
+        "sale_tiktok": 2260.81,
         "roas_tiktok_aff": 0
       },
       "[หนังสือ] โอบกอดความไม่สมบูรณ์แบบของเธอ (EMBRACE YOUR FLAWS)": {
@@ -87309,8 +87529,8 @@
         "orders": 1
       },
       "bowsudarat21": {
-        "revenue": 498.0,
-        "orders": 2
+        "revenue": 747.0,
+        "orders": 3
       },
       "donut428956": {
         "revenue": 290.0,
@@ -89184,13 +89404,13 @@
         "revenue": 1935.6,
         "orders": 6
       },
-      "kotchxa": {
-        "revenue": 1440.0,
-        "orders": 8
-      },
       "viewpatarasaya": {
         "revenue": 320.0,
         "orders": 1
+      },
+      "kotchxa": {
+        "revenue": 1440.0,
+        "orders": 8
       },
       "frdisssss": {
         "revenue": 480.0,
@@ -89324,13 +89544,13 @@
         "revenue": 160.0,
         "orders": 1
       },
-      "duangkamon98": {
-        "revenue": 1276.8,
-        "orders": 2
-      },
       "doctorbookk": {
         "revenue": 638.4,
         "orders": 1
+      },
+      "duangkamon98": {
+        "revenue": 1276.8,
+        "orders": 2
       },
       "icemuseum": {
         "revenue": 480.0,
@@ -89385,8 +89605,8 @@
         "orders": 1
       },
       "unsexnn": {
-        "revenue": 1709.4,
-        "orders": 8
+        "revenue": 1510.2,
+        "orders": 7
       },
       "marshiesweetpea": {
         "revenue": 1116.8,
@@ -89746,10 +89966,6 @@
         "revenue": 5235.96,
         "orders": 15
       },
-      "b.babe.ee.eee": {
-        "revenue": 4754.32,
-        "orders": 19
-      },
       "timeismoney_42": {
         "revenue": 903.56,
         "orders": 2
@@ -89757,6 +89973,10 @@
       "lllmmm6179": {
         "revenue": 1470.36,
         "orders": 5
+      },
+      "b.babe.ee.eee": {
+        "revenue": 4754.32,
+        "orders": 19
       },
       "anss_1407": {
         "revenue": 184.2,
@@ -89794,13 +90014,13 @@
         "revenue": 5694.8,
         "orders": 20
       },
-      "babykbrnb1p": {
-        "revenue": 38737.04,
-        "orders": 141
-      },
       "jnh.rw": {
         "revenue": 3891.76,
         "orders": 12
+      },
+      "babykbrnb1p": {
+        "revenue": 39217.04,
+        "orders": 143
       },
       "inuiparichat": {
         "revenue": 79.2,
@@ -89859,8 +90079,8 @@
         "orders": 5
       },
       "anda_dq34": {
-        "revenue": 4670.28,
-        "orders": 25
+        "revenue": 4990.28,
+        "orders": 26
       },
       "kotchxa": {
         "revenue": 1429.0,
@@ -89871,8 +90091,8 @@
         "orders": 9
       },
       "sirinakaaa_13": {
-        "revenue": 928.0,
-        "orders": 5
+        "revenue": 1088.0,
+        "orders": 6
       },
       "jenjung5": {
         "revenue": 640.0,
@@ -90047,8 +90267,8 @@
         "orders": 11
       },
       "zanierty": {
-        "revenue": 1634.4,
-        "orders": 8
+        "revenue": 1794.4,
+        "orders": 9
       },
       "yositahan": {
         "revenue": 398.4,
@@ -90366,6 +90586,10 @@
         "revenue": 599.0,
         "orders": 2
       },
+      "rossaton_": {
+        "revenue": 320.0,
+        "orders": 2
+      },
       "hfqd24830pw": {
         "revenue": 719.2,
         "orders": 1
@@ -90377,10 +90601,6 @@
       "bennae.q": {
         "revenue": 1180.0,
         "orders": 2
-      },
-      "rossaton_": {
-        "revenue": 160.0,
-        "orders": 1
       },
       "fangsasipim1999": {
         "revenue": 199.2,
@@ -90620,13 +90840,13 @@
         "revenue": 1993.4,
         "orders": 8
       },
-      "melxozy": {
-        "revenue": 1278.4,
-        "orders": 5
-      },
       "neemmyone": {
         "revenue": 399.2,
         "orders": 1
+      },
+      "melxozy": {
+        "revenue": 1278.4,
+        "orders": 5
       },
       "ff_fern.fern": {
         "revenue": 160.0,
@@ -91232,7 +91452,251 @@
         "revenue": 1366.0,
         "orders": 2
       }
+    },
+    "2026-06-10": {
+      "parichatdeethip": {
+        "revenue": 658.0,
+        "orders": 2
+      },
+      "babykbrnb1p": {
+        "revenue": 4169.0,
+        "orders": 11
+      },
+      "ggcrazyaboutbooks": {
+        "revenue": 2437.0,
+        "orders": 8
+      },
+      "bbpw141": {
+        "revenue": 575.0,
+        "orders": 2
+      },
+      "bieih05": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "pravitaa456": {
+        "revenue": 2818.0,
+        "orders": 5
+      },
+      "anda_dq34": {
+        "revenue": 2331.0,
+        "orders": 5
+      },
+      "sai..rung": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "l7.24": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "sirinakaaa_13": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "sukanyatoey5": {
+        "revenue": 6703.0,
+        "orders": 14
+      },
+      "dadeditor": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "lovejudyo": {
+        "revenue": 290.0,
+        "orders": 1
+      },
+      "marshiesweetpea": {
+        "revenue": 319.0,
+        "orders": 1
+      },
+      "b.babe.ee.eee": {
+        "revenue": 1976.0,
+        "orders": 4
+      },
+      "ranrarinnn": {
+        "revenue": 1251.0,
+        "orders": 4
+      },
+      "daily.noom.now": {
+        "revenue": 658.0,
+        "orders": 2
+      },
+      "user3219238503201": {
+        "revenue": 2169.0,
+        "orders": 3
+      },
+      "gaem_gaem333": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "kidmaiaok12345": {
+        "revenue": 2901.0,
+        "orders": 5
+      },
+      "anee_040761": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "iflyad_40_th_dsp": {
+        "revenue": 290.0,
+        "orders": 1
+      },
+      "yanakit021527": {
+        "revenue": 329.0,
+        "orders": 1
+      },
+      "khemlada": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "lekreading": {
+        "revenue": 290.0,
+        "orders": 1
+      },
+      "nunjungreview": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "suchanuch_2544": {
+        "revenue": 319.0,
+        "orders": 1
+      },
+      "melxozy": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "kkristenxx": {
+        "revenue": 1180.0,
+        "orders": 2
+      },
+      "j.kung789": {
+        "revenue": 638.0,
+        "orders": 2
+      },
+      "zanierty": {
+        "revenue": 654.0,
+        "orders": 2
+      },
+      "leejunschh": {
+        "revenue": 1996.0,
+        "orders": 2
+      },
+      "d.dew888": {
+        "revenue": 319.0,
+        "orders": 1
+      },
+      "sry.saranya": {
+        "revenue": 285.0,
+        "orders": 1
+      },
+      "fonny290": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "callmemyart": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "pariyakon_5": {
+        "revenue": 283.0,
+        "orders": 1
+      },
+      "rosrssukhnth": {
+        "revenue": 284.0,
+        "orders": 1
+      },
+      "nanchutimakeansuntia": {
+        "revenue": 319.0,
+        "orders": 1
+      },
+      "deeekrubb": {
+        "revenue": 285.0,
+        "orders": 1
+      },
+      "tiktokshop_affiliate_th": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "misssssbahhh": {
+        "revenue": 654.0,
+        "orders": 2
+      },
+      "yellowlalamon.f": {
+        "revenue": 519.0,
+        "orders": 1
+      },
+      "pearpmk": {
+        "revenue": 319.0,
+        "orders": 1
+      }
+    },
+    "2026-06-11": {
+      "wasanac24.wts": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "ranrarinnn": {
+        "revenue": 897.0,
+        "orders": 3
+      },
+      "ggcrazyaboutbooks": {
+        "revenue": 2504.0,
+        "orders": 7
+      },
+      "bbpw141": {
+        "revenue": 2198.0,
+        "orders": 5
+      },
+      "parichatdeethip": {
+        "revenue": 987.0,
+        "orders": 3
+      },
+      "preamm.zz": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "_yamnarak": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "ppeakkaboo": {
+        "revenue": 329.0,
+        "orders": 1
+      },
+      "babykbrnb1p": {
+        "revenue": 3055.0,
+        "orders": 7
+      },
+      "daily.noom.now": {
+        "revenue": 329.0,
+        "orders": 1
+      },
+      "queen_30023": {
+        "revenue": 319.0,
+        "orders": 1
+      },
+      "peanut.bttt": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "jajaaaajj": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "sukanyatoey5": {
+        "revenue": 1398.0,
+        "orders": 2
+      },
+      "littlemoon.review": {
+        "revenue": 299.0,
+        "orders": 1
+      },
+      "story_102625": {
+        "revenue": 299.0,
+        "orders": 1
+      }
     }
   },
-  "updated_at": "2026-06-10 11:31"
+  "updated_at": "2026-06-12 14:04"
 }

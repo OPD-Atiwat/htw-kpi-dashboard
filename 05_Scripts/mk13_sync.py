@@ -191,6 +191,7 @@ def read_mk13():
 
     by_date    = {}   # OPD_DAILY: {date: {channel: amt}}
     prod_data  = {}   # OPD_PROD_DATA: {product: {date: {channel: amt}}}
+    prod_qty   = {}
     ch_set     = set()
 
     # ── Phase 1: process main CSV rows ──────────────────────────
@@ -226,6 +227,7 @@ def read_mk13():
         if d not in by_date:
             by_date[d] = {"d": d}
         by_date[d][channel] = by_date[d].get(channel, 0) + amt
+        by_date[d][channel+'_q'] = by_date[d].get(channel+'_q',0) + 1
 
         # ── OPD_PROD_DATA aggregation ──
         if product_col >= 0 and product_col < len(row):
@@ -237,6 +239,7 @@ def read_mk13():
                 if d not in prod_data[prod]:
                     prod_data[prod][d] = {}
                 prod_data[prod][d][channel] = prod_data[prod][d].get(channel, 0) + amt
+                prod_qty.setdefault(prod,{}).setdefault(d,{})[channel]=prod_qty.setdefault(prod,{}).setdefault(d,{}).get(channel,0)+1
 
     # ── Phase 2: เสริม gviz rows สำหรับเดือนปัจจุบัน (แก้ CSV truncation) ──
     today = datetime.today()
@@ -276,6 +279,7 @@ def read_mk13():
             if d not in by_date:
                 by_date[d] = {"d": d}
             by_date[d][channel] = by_date[d].get(channel, 0) + amt
+            by_date[d][channel+'_q'] = by_date[d].get(channel+'_q',0) + 1
             added += 1
             if product_col >= 0 and product_col < len(row):
                 prod = row[product_col].strip()
@@ -285,6 +289,7 @@ def read_mk13():
                     if d not in prod_data[prod]:
                         prod_data[prod][d] = {}
                     prod_data[prod][d][channel] = prod_data[prod][d].get(channel, 0) + amt
+                    prod_qty.setdefault(prod,{}).setdefault(d,{})[channel]=prod_qty.setdefault(prod,{}).setdefault(d,{}).get(channel,0)+1
         new_dates = sorted(set(by_date.keys()) - covered_dates)
         print(f"   ✅ gviz เพิ่ม {added} rows | วันใหม่: {new_dates} | skip (already covered): {sorted(skipped_dates)}")
     else:
@@ -293,7 +298,7 @@ def read_mk13():
     channels  = sorted(ch_set)
     data_rows = sorted(by_date.values(), key=lambda r: r["d"])
     print(f"   ✅ {len(data_rows)} วัน | {len(prod_data)} สินค้า | channels: {channels}")
-    return {"channels": channels, "data": data_rows}, prod_data
+    return {"channels": channels, "data": data_rows}, prod_data, prod_qty
 
 
 # ─── ADSM44 ─────────────────────────────────────────────────
@@ -780,7 +785,7 @@ def replace_var(html, var_name, new_value):
 
 # ─── Update HTML ────────────────────────────────────────────
 
-def update_html(opd_data, prod_data, adsm44_data, html_path=DASHBOARD_PATH):
+def update_html(opd_data, prod_data, adsm44_data, html_path=DASHBOARD_PATH, prod_qty=None):
     print(f"\n💾 อัปเดต {html_path}...")
     with open(html_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -794,6 +799,7 @@ def update_html(opd_data, prod_data, adsm44_data, html_path=DASHBOARD_PATH):
 
     content = replace_var(content, "OPD_DAILY",      opd_json)
     content = replace_var(content, "OPD_PROD_DATA",  prod_json)
+    content = replace_var(content, "OPD_PROD_QTY",   json.dumps(prod_qty or {}, ensure_ascii=False, separators=(",",":")))
     content = replace_var(content, "ADSM44_PCTADS",  adsm44_json)
 
     # อัปเดต timestamp การ sync ล่าสุด
@@ -815,9 +821,9 @@ def sync(html_path=DASHBOARD_PATH):
     print("=" * 60)
     print("  MK13 + ADSM44 Sync — OpenDurian How-to")
     print("=" * 60)
-    opd_data, prod_data = read_mk13()
+    opd_data, prod_data, prod_qty = read_mk13()
     adsm44_data = read_adsm44()
-    update_html(opd_data, prod_data, adsm44_data, html_path)
+    update_html(opd_data, prod_data, adsm44_data, html_path, prod_qty)
     print("\n✅ mk13_sync เสร็จสิ้น")
 
 
