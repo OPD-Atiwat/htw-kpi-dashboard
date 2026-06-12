@@ -1700,12 +1700,12 @@ function getOpdProdActual(mk13Name, startDate, endDate) {
 
 function getOpdProdUnits(mk13Name,startDate,endDate){
  if(typeof OPD_PROD_QTY==='undefined')return null;
- var total=0,channels={},seen={};
- function _sk(key){if(seen[key]||!OPD_PROD_QTY[key])return;seen[key]=1;var d=OPD_PROD_QTY[key];Object.keys(d).forEach(function(dt){if(dt>=startDate&&dt<=endDate){Object.keys(d[dt]).forEach(function(ch){total+=d[dt][ch];channels[ch]=(channels[ch]||0)+d[dt][ch];});}});}
+ var total=0,channels={},seen={},lastDate=null;
+ function _sk(key){if(seen[key]||!OPD_PROD_QTY[key])return;seen[key]=1;var d=OPD_PROD_QTY[key];Object.keys(d).forEach(function(dt){if(dt>=startDate&&dt<=endDate){var _dt=0;Object.keys(d[dt]).forEach(function(ch){total+=d[dt][ch];_dt+=d[dt][ch];channels[ch]=(channels[ch]||0)+d[dt][ch];});if(_dt>0&&(lastDate===null||dt>lastDate))lastDate=dt;}});}
  _sk(mk13Name);
  var _a=(typeof OPD_PROD_NAME_MAP!=='undefined')?OPD_PROD_NAME_MAP[mk13Name]:null; if(_a)_sk(_a);
  if(typeof BOXSET_PARENT!=='undefined')Object.keys(BOXSET_PARENT).forEach(function(bk){if(BOXSET_PARENT[bk]===mk13Name)_sk(bk);});
- return total>0?{units:Math.round(total),channels:channels}:null;
+ return total>0?{units:Math.round(total),channels:channels,lastDate:lastDate}:null;
 }
 
 /* ========== MARGIN ENGINE (ไม่หักเงินเดือน · BEP logic) ========== */
@@ -7335,7 +7335,7 @@ function renderForecastCard(month, actualToDate, goalAmount, overrideFcTotal){
    +'</div>';
   var _chs=Object.keys(_chU).filter(function(c){return _chU[c]>0;}).sort(function(a,b){return _chU[b]-_chU[a];});
   if(_chs.length){
-   s+='<div style="overflow-x:auto"><table><thead><tr><th>ช่องทาง</th><th class="num">เล่ม (สะสม)</th><th class="num">เล่ม/วัน</th><th class="num">คาดปลายเดือน</th><th class="num">%สัดส่วน</th></tr></thead><tbody>';
+   s+='<div style="overflow-x:auto;max-width:720px;border:1px solid var(--border);border-radius:10px"><table style="width:100%"><thead><tr><th style="width:auto">ช่องทาง</th><th class="num" style="width:120px">เล่ม (สะสม)</th><th class="num" style="width:90px">เล่ม/วัน</th><th class="num" style="width:120px">คาดปลายเดือน</th><th class="num" style="width:90px">%สัดส่วน</th></tr></thead><tbody>';
    _chs.forEach(function(c){
     var _u=_chU[c], _r=_u/_maxDay, _fc=Math.round(_r*_dim), _pct=_u/_tot*100, _col=_C[c]||'#64748B';
     s+='<tr><td><span class="plat-badge" style="background:'+_col+';color:#fff">'+c+'</span></td>'
@@ -7344,7 +7344,13 @@ function renderForecastCard(month, actualToDate, goalAmount, overrideFcTotal){
      +'<td class="num" style="color:#16A34A;font-weight:700">'+_n(_fc)+'</td>'
      +'<td class="num">'+_pct.toFixed(1)+'%</td></tr>';
    });
-   s+='</tbody></table></div>';
+   s+='</tbody><tfoot><tr style="border-top:2px solid var(--border);font-weight:800;background:var(--surface2)">'
+    +'<td>รวม</td>'
+    +'<td class="num"><b>'+_n(_tot)+'</b></td>'
+    +'<td class="num" style="color:#2563EB">'+_rate.toFixed(1)+'</td>'
+    +'<td class="num" style="color:#16A34A">'+_n(_fcU)+'</td>'
+    +'<td class="num">100%</td>'
+    +'</tr></tfoot></table></div>';
   }
   s+='<div style="margin-top:8px;font-size:10px;color:var(--text3);line-height:1.6">อัตรา = เล่มสะสม ÷ วันที่ผ่านไป · คาดปลายเดือน = อัตรา × '+_dim+' วัน (ทั้งเดือน)</div>';
   s+='</div>';
@@ -11774,10 +11780,13 @@ function showProductDetail(pname){
  var _mgCol=mgColor(_mgGM); var _mgU=getOpdProdUnits(pname,_popFrom,_popTo);
  // ── Units (จำนวนเล่ม) + Run Rate ──────────────────────────────────────────
  var _uCh=(_mgU&&_mgU.channels)||{}; var _uTot=(_mgU&&_mgU.units)||0;
- var _rrDaysElapsed=0,_rrDaysInMonth=0;
+ var _rrDaysElapsed=0,_rrDaysInMonth=0,_rrEffTo=_popTo;
  (function(){
   if(!_popFrom||!_popTo)return;
-  var _pf=new Date(_popFrom+'T00:00:00'),_pt=new Date(_popTo+'T00:00:00');
+  /* cap วันสุดท้ายที่วันที่มีข้อมูลจริง (กันหารด้วยวันที่ยังไม่มียอด เช่น วันนี้ที่ sync ยังไม่มา) */
+  var _ld=(_mgU&&_mgU.lastDate)||null;
+  if(_ld&&_ld<_popTo)_rrEffTo=_ld;
+  var _pf=new Date(_popFrom+'T00:00:00'),_pt=new Date(_rrEffTo+'T00:00:00');
   _rrDaysElapsed=Math.round((_pt-_pf)/86400000)+1;
   if(_rrDaysElapsed<1)_rrDaysElapsed=1;
   _rrDaysInMonth=new Date(_pt.getFullYear(),_pt.getMonth()+1,0).getDate();
@@ -11845,8 +11854,8 @@ function showProductDetail(pname){
   // per-channel table
   var _chs=Object.keys(_uCh).filter(function(c){return (_uCh[c]||0)>0;}).sort(function(a,b){return _uCh[b]-_uCh[a];});
   if(_chs.length){
-   h+='<div style="overflow-x:auto"><table><thead><tr>'
-    +'<th>ช่องทาง</th><th class="num">เล่ม (สะสม)</th><th class="num">เล่ม/วัน</th><th class="num">คาดปลายเดือน</th><th class="num">%สัดส่วน</th>'
+   h+='<div style="overflow-x:auto;max-width:720px;border:1px solid var(--border);border-radius:10px;margin-top:4px"><table style="width:100%"><thead><tr>'
+    +'<th style="width:auto">ช่องทาง</th><th class="num" style="width:120px">เล่ม (สะสม)</th><th class="num" style="width:90px">เล่ม/วัน</th><th class="num" style="width:120px">คาดปลายเดือน</th><th class="num" style="width:90px">%สัดส่วน</th>'
     +'</tr></thead><tbody>';
    _chs.forEach(function(c){
     var _u=Math.round(_uCh[c]||0);
@@ -11862,7 +11871,13 @@ function showProductDetail(pname){
      +'<td class="num">'+_pct.toFixed(1)+'%</td>'
      +'</tr>';
    });
-   h+='</tbody></table></div>';
+   h+='</tbody><tfoot><tr style="border-top:2px solid var(--border);font-weight:800;background:var(--surface2)">'
+    +'<td>รวม</td>'
+    +'<td class="num"><b>'+fmtNum(_uTot)+'</b></td>'
+    +'<td class="num" style="color:#2563EB">'+_uRate.toFixed(1)+'</td>'
+    +'<td class="num" style="color:#16A34A">'+fmtNum(_uFcst)+'</td>'
+    +'<td class="num">100%</td>'
+    +'</tr></tfoot></table></div>';
   }
   h+='<div style="margin-top:8px;font-size:10px;color:var(--text3);line-height:1.6">อัตรา = เล่มสะสม ÷ วันที่ผ่านไป · คาดปลายเดือน = อัตรา × '+_rrDaysInMonth+' วัน · เทียบเดือนก่อนใช้ช่วงวันเดียวกัน (1-'+_nd+')</div>';
   h+='</div>';
@@ -12026,7 +12041,8 @@ function showProductDetail(pname){
   });
   var _ay=_H-_pad-(_avg/_mx*(_H-_pad*2));
   var _avgLine='<line x1="'+_pad+'" y1="'+_ay.toFixed(1)+'" x2="'+(_W-_pad)+'" y2="'+_ay.toFixed(1)+'" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.85"/>'
-   +'<text x="'+(_W-_pad)+'" y="'+(_ay-4).toFixed(1)+'" text-anchor="end" font-size="9" font-weight="800" fill="#DC2626" font-family="inherit">เฉลี่ย '+_avg.toFixed(1)+'</text>';
+   +'<rect x="'+_pad+'" y="6" width="84" height="15" rx="7" fill="#DC2626" opacity="0.12"/>'
+   +'<text x="'+(_pad+8)+'" y="16.5" font-size="9.5" font-weight="800" fill="#DC2626" font-family="inherit">เฉลี่ย '+_avg.toFixed(1)+'/วัน</text>';
   h+='<div style="padding:0 20px 18px">';
   h+='<div style="font-weight:700;font-size:13px;color:var(--text1);margin-bottom:8px">📈 จำนวนเล่มรายวัน <span style="font-size:10px;font-weight:500;color:var(--text2)">· แท่งเข้ม = สูงกว่าค่าเฉลี่ย · เส้นแดง = '+_avg.toFixed(1)+' เล่ม/วัน</span></div>';
   h+='<div style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px">';
