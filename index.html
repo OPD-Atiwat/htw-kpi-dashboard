@@ -6827,9 +6827,12 @@ function showContentDetail(cname){
   for(var _mk in KMS_CAL_DATA){var _its=KMS_CAL_DATA[_mk].items||[];for(var _ii=0;_ii<_its.length;_ii++){var _it=_its[_ii];if(!_it.fb)continue;var _ka=_kStrip(_it.ads),_kk=_kStrip(_it.key_msg);if(_ka===_kTarget||_kk===_kTarget||(_ka&&_kTarget.indexOf(_ka)>=0)||(_kk&&_kTarget.indexOf(_kk)>=0)){_kFb=_it.fb;break;}}if(_kFb)break;}
   if(_kFb){
    var _u=_kFb.indexOf('http')===0?_kFb:'https://www.facebook.com/opendurianhowto/posts/'+_kFb;
-   _thumbHtml='<div style="width:100%;max-width:400px;margin:0 auto 12px">'
-    +'<iframe src="https://www.facebook.com/plugins/post.php?href='+encodeURIComponent(_u)+'&show_text=true&width=380" style="width:100%;height:560px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share"></iframe>'
+   var _kid='ct-kfb-'+Math.random().toString(36).slice(2);
+   /* ใช้ FB SDK fb-post (data-width=auto) → ปรับขนาดเองตามเนื้อหา responsive จริง */
+   _thumbHtml='<div style="width:100%;max-width:500px;margin:0 auto 8px">'
+    +'<div id="'+_kid+'" style="min-height:300px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px">กำลังโหลดโพสต์…</div>'
     +'<div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:right"><a href="'+_u+'" target="_blank" style="color:var(--text3)">เปิดใน Facebook ↗</a></div></div>';
+   window._ctPendingEmbed={id:_kid, fbUrl:_u, kind:'post'};
   }
  })();
  if(!_thumbHtml && typeof AO_DATA!=='undefined'&&AO_DATA.ads){
@@ -6853,19 +6856,21 @@ function showContentDetail(cname){
    var _fbPostUrl=_aoAd.fb_post_url||'';
    var _mediaId='ct-media-'+(_aoAd.ad_id||Math.random().toString(36).slice(2));
 
-   /* ── Media container — auto-embed หลัง innerHTML set ── */
-   var _hasPlayable = !!(_prevUrl||_fbPostUrl);
-   var _mediaHtml = '<div id="'+_mediaId+'" style="width:100%;height:100%">'
-    +(_thumb?'<img src="'+_thumb+'" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">':'')
-    +'</div>';
-   _thumbHtml='<div style="width:100%;max-width:480px;margin:0 auto 12px">'
-    +'<div style="position:relative;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:4/5;max-height:500px">'+_mediaHtml+'</div>'
-    +'<div style="display:flex;justify-content:flex-end;align-items:center;margin-top:5px">'
-    +'<a href="'+_amUrl+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">Ads Manager ↗</a>'
-    +'</div>'
-    +'</div>';
-   /* callback เพื่อ embed หลัง html render */
-   window._ctPendingEmbed = _hasPlayable ? {id:_mediaId, purl:_prevUrl, fbUrl:_fbPostUrl} : null;
+   /* มี fb_post_url → embed โพสต์จริง (SDK); ไม่งั้นโชว์ thumbnail สะอาดๆ (ไม่ฝัง preview iframe ที่มัก Story Unavailable) */
+   if(_fbPostUrl){
+    _thumbHtml='<div style="width:100%;max-width:500px;margin:0 auto 8px">'
+     +'<div id="'+_mediaId+'" style="min-height:300px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px">กำลังโหลดโพสต์…</div>'
+     +'<div style="display:flex;justify-content:flex-end;margin-top:4px"><a href="'+_amUrl+'" target="_blank" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">Ads Manager ↗</a></div></div>';
+    window._ctPendingEmbed={id:_mediaId, fbUrl:_fbPostUrl, kind:'post'};
+   } else {
+    _thumbHtml='<div style="width:100%;max-width:380px;margin:0 auto 8px">'
+     +'<div style="position:relative;border-radius:12px;overflow:hidden;background:var(--surface2);border:1px solid var(--border);aspect-ratio:4/5;max-height:480px;display:flex;align-items:center;justify-content:center">'
+     +(_thumb?'<img src="'+_thumb+'" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">':'<div style="text-align:center;color:var(--text3);padding:20px"><div style="font-size:34px">🖼️</div><div style="font-size:11px;margin-top:6px">ไม่มีตัวอย่างให้ดูในหน้านี้</div></div>')
+     +'</div>'
+     +'<div style="display:flex;justify-content:flex-end;margin-top:5px"><a href="'+_amUrl+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">เปิดใน Ads Manager ↗</a></div>'
+     +'</div>';
+    window._ctPendingEmbed=null;
+   }
   }
  }
 
@@ -6977,7 +6982,12 @@ function showContentDetail(cname){
       wrap.innerHTML='<iframe src="'+_pe.purl+'" width="100%" height="100%" style="border:none;display:block" scrolling="no" allowfullscreen></iframe>';
      }
     } else if(_pe.fbUrl){
-     wrap.innerHTML='<div class="fb-video" data-href="'+_pe.fbUrl+'" data-width="auto" data-autoplay="true" data-show-text="false" style="width:100%"></div>';
+     wrap.style.minHeight='';
+     if(_pe.kind==='post'){
+      wrap.innerHTML='<div class="fb-post" data-href="'+_pe.fbUrl+'" data-width="auto" data-show-text="true" style="width:100%"></div>';
+     } else {
+      wrap.innerHTML='<div class="fb-video" data-href="'+_pe.fbUrl+'" data-width="auto" data-autoplay="true" data-show-text="false" style="width:100%"></div>';
+     }
      if(window.FB){FB.XFBML.parse(wrap);}
      else{
       window.fbAsyncInit=(function(p){return function(){FB.init({version:'v18.0',xfbml:false});if(p)p();FB.XFBML.parse(wrap);};})(window.fbAsyncInit);
