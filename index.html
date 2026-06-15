@@ -6855,6 +6855,27 @@ function showContentDetail(cname){
   }
  }
 
+ /* ── Fallback: ถ้าไม่มี media จาก AO_DATA → ดึง "Link FB Post" จาก KMS_CAL_DATA มา embed (plugin, ขึ้นชัวร์) ── */
+ if(!_thumbHtml && typeof KMS_CAL_DATA!=='undefined'){
+  var _kStrip=function(s){return (s||'').replace(/^\[\d{2}\.\d{2}\.\d{2}\]/,'').replace(/\[[^\]]*\]/g,'').replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').trim().toLowerCase();};
+  var _kTarget=_kStrip(cname), _kFb='';
+  outer: for(var _mk in KMS_CAL_DATA){
+   var _its=KMS_CAL_DATA[_mk].items||[];
+   for(var _ii=0;_ii<_its.length;_ii++){
+    var _it=_its[_ii]; if(!_it.fb) continue;
+    var _ka=_kStrip(_it.ads), _kk=_kStrip(_it.key_msg);
+    if(_kTarget && (_ka===_kTarget || _kk===_kTarget || (_ka&&_kTarget.indexOf(_ka)>=0) || (_kk&&_kTarget.indexOf(_kk)>=0))){ _kFb=_it.fb; break outer; }
+   }
+  }
+  if(_kFb){
+   var _kFbu=encodeURIComponent(_kFb.indexOf('http')===0?_kFb:'https://www.facebook.com/opendurianhowto/posts/'+_kFb);
+   _thumbHtml='<div style="width:100%;max-width:400px;margin:0 auto 12px">'
+    +'<iframe src="https://www.facebook.com/plugins/post.php?href='+_kFbu+'&show_text=true&width=380" style="width:100%;height:560px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share"></iframe>'
+    +'<div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:right"><a href="'+(_kFb.indexOf('http')===0?_kFb:'https://www.facebook.com/opendurianhowto/posts/'+_kFb)+'" target="_blank" style="color:var(--text3)">เปิดใน Facebook ↗</a></div>'
+    +'</div>';
+  }
+ }
+
  var html='<div class="modal-header">'
  +'<div class="modal-title-wrap"><div class="modal-title">'+escH(cname)+'</div>'
  +'<div class="modal-subtitle">'+escH(first.creator)+' · '+escH(platforms)+' · '+escH(months)+'</div></div>'
@@ -13588,14 +13609,6 @@ function openCalDetail(itemIdx){
  var links='';
  if(item.fb) links+='<a href="'+item.fb+'" target="_blank" class="cal-det-link" style="background:#1877F2;color:#fff">Facebook</a>';
  if(item.tt) links+='<a href="'+item.tt+'" target="_blank" class="cal-det-link" style="background:'+platColor('TikTok')+';color:#fff">TikTok</a>';
- // ── ตัวอย่างคอนเทนต์ (embed โชว์ในหน้าเลย) ──
- var embed='';
- if(item.fb){
-  var _fbu=encodeURIComponent(item.fb);
-  embed+='<div style="margin-top:12px"><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">📺 ตัวอย่างคอนเทนต์ (FB Post)</div>'
-   +'<iframe src="https://www.facebook.com/plugins/post.php?href='+_fbu+'&show_text=true&width=380" style="width:100%;max-width:400px;height:560px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:block" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share"></iframe>'
-   +'<div style="font-size:10px;color:var(--text3);margin-top:4px">โหลดไม่ขึ้น = โพสต์ไม่เปิดสาธารณะ → กดปุ่ม Facebook ด้านบนเปิดดูได้</div></div>';
- }
  var monthLabels={'0':'มกราคม','1':'กุมภาพันธ์','2':'มีนาคม','3':'เมษายน','4':'พฤษภาคม','5':'มิถุนายน','6':'กรกฎาคม','7':'สิงหาคม','8':'กันยายน','9':'ตุลาคม','10':'พฤศจิกายน','11':'ธันวาคม'};
  var kdata=null; var ks=Object.keys(KMS_CAL_DATA); for(var ki=0;ki<ks.length;ki++){var kd=KMS_CAL_DATA[ks[ki]]; if(kd.items&&kd.items.indexOf&&kd.items.some&&kd.items.some(function(x){return x===item;})){kdata=kd;break;}}
  var mLabel=monthLabels[String(kdata?kdata.month:2)]||'';
@@ -13604,7 +13617,7 @@ function openCalDetail(itemIdx){
  +'<div class="cal-det-title" style="color:#fff;font-size:14px;font-weight:700;line-height:1.4">'+escH(item.key_msg||item.product)+'</div>'
  +'<div class="cal-det-sub" style="color:rgba(255,255,255,.8);font-size:11px;margin-top:3px">'+escH(item.creator)+' · วันที่ '+item.day+' '+mLabel+' 2026</div>'
  +'</div>'
- +'<div class="cal-det-body">'+rows+(links?'<div class="cal-det-row"><span class="cal-det-label">ดูคลิป</span><span class="cal-det-val">'+links+'</span></div>':'')+embed+'</div>';
+ +'<div class="cal-det-body">'+rows+(links?'<div class="cal-det-row"><span class="cal-det-label">ดูคลิป</span><span class="cal-det-val">'+links+'</span></div>':'')+'</div>';
  var panel=document.getElementById('cal-detail-panel');
  var body=document.getElementById('cal-detail-body');
  if(panel&&body){body.innerHTML=h;panel.classList.add('open');}
