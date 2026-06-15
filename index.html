@@ -6414,6 +6414,7 @@ function renderTop3Days(data){
  var dates=Array.from(new Set(rows.map(function(r){return r.ad_date;}))).sort();
  var latest=dates[dates.length-1];
  var last3=dates.slice(-3);
+ var last7=dates.slice(-7);
  var curMonth=latest.slice(0,7);
  var _f=function(v){return v>=1000?'฿'+(v/1000).toFixed(1)+'K':'฿'+Math.round(v);};
  var _rc=function(r){return r>=2?'#16A34A':r>=1?'#EA580C':'#DC2626';};
@@ -6436,9 +6437,15 @@ function renderTop3Days(data){
  }
  var colToday=_agg([latest],1);
  var col3=_agg(last3,last3.length);
+ var col7=_agg(last7,last7.length);
  function _rowsHtml(list,unitSuffix){
   return list.map(function(c,i){
    var nm=(c.name||'').replace(/^\[\d{2}\.\d{2}\.\d{2}\]\[[^\]]*\]\s*/,'');
+   /* ดึงชื่อใน bracket ที่ 2 (อินฟลู/ครีเอเตอร์) — Influ ใช้ชื่อนี้แยกแทนคำว่า Influ */
+   var _tag=(c.name.match(/^\[\d{2}\.\d{2}\.\d{2}\]\[([^\]]+)\]/)||[])[1]||'';
+   var who=(c.creator==='Influ'&&_tag)?_tag:c.creator;
+   /* Influ: ใส่ชื่ออินฟลูนำหน้าชื่อหลักให้เด่น (ชื่อ content เหมือนกันหมด) */
+   if(c.creator==='Influ'&&_tag) nm=_tag+' — '+nm;
    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
    var tag=c.newMonth
      ?'<span style="font-size:8.5px;font-weight:800;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px">🆕 เดือนนี้</span>'
@@ -6446,7 +6453,7 @@ function renderTop3Days(data){
    return '<div onclick="showContentDetail('+JSON.stringify(c.name).replace(/"/g,'&quot;')+')" style="cursor:pointer;display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-bottom:7px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
     +'<span style="font-size:13px;flex-shrink:0;width:18px;text-align:center">'+medal+'</span>'
     +'<div style="flex:1;min-width:0">'
-     +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">'+tag+'<span style="font-size:9.5px;font-weight:700;color:var(--text3)">'+escH(c.creator)+'</span></div>'
+     +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">'+tag+'<span style="font-size:9.5px;font-weight:700;color:var(--text3)">'+escH(who)+'</span></div>'
      +'<div style="font-size:11.5px;font-weight:700;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(nm)+'</div>'
     +'</div>'
     +'<div style="text-align:right;flex-shrink:0"><div style="font-size:15px;font-weight:900;color:#2563EB;line-height:1.1">'+_f(c.disp)+'<span style="font-size:9px;font-weight:600;color:var(--text3)">'+(unitSuffix||'')+'</span></div>'
@@ -6461,9 +6468,10 @@ function renderTop3Days(data){
  }
  var h='<div style="background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(245,158,11,.02));border:1px solid rgba(245,158,11,.35);border-radius:14px;padding:14px 16px">'
   +'<div style="font-size:14px;font-weight:800;color:var(--text1);margin-bottom:12px">🚀 แอดที่วิ่งดี <span style="font-size:10px;font-weight:500;color:var(--text3)">· 🆕 = แอดใหม่เดือนนี้</span></div>'
-  +'<div style="display:flex;gap:18px;flex-wrap:wrap">'
+  +'<div style="display:flex;gap:16px;flex-wrap:wrap">'
   +_col('📅 ล่าสุดวันนี้','('+latest.slice(5)+')',colToday,'')
   +_col('📊 เฉลี่ย 3 วัน','('+last3[0].slice(5)+'–'+last3[last3.length-1].slice(5)+' · บาท/วัน)',col3,'/วัน')
+  +_col('🗓️ เฉลี่ย 7 วัน','('+last7[0].slice(5)+'–'+last7[last7.length-1].slice(5)+' · บาท/วัน)',col7,'/วัน')
   +'</div></div>';
  el.innerHTML=h;
 }
