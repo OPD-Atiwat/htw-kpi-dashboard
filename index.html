@@ -6619,12 +6619,15 @@ function renderContent(data){
  // Store for click
  _CONTENT_CACHE = arr;
 
- /* แสดงแค่ 15 รายการแรก — ไม่มี pagination */
+ /* pagination 15 ต่อหน้า */
  var _CONTENT_LIMIT=15;
  var total=arr.length;
+ var _cPage=(STATE&&STATE.contentPage)||0;
+ if(_cPage*_CONTENT_LIMIT>=total) _cPage=0;            /* clamp เมื่อ filter/sort เปลี่ยน */
+ var _cStart=_cPage*_CONTENT_LIMIT;
  var html='';
- arr.slice(0,_CONTENT_LIMIT).forEach(function(c,localIdx){
- var realIdx=localIdx;
+ arr.slice(_cStart,_cStart+_CONTENT_LIMIT).forEach(function(c,localIdx){
+ var realIdx=_cStart+localIdx;
  var roas=c.spend>0?c.rev/c.spend:0;
  var passRate=c.totalCount>0?Math.round(c.passCount/c.totalCount*100):null;
  var _accumulating=c._accumulating||false; /* true = in META_AD_PERF per-day with < MIN_DAYS */
@@ -6663,7 +6666,19 @@ function renderContent(data){
  var tb=document.getElementById('content-body');
  if(tb)tb.innerHTML=html||'<tr><td colspan="11" class="empty-cell">ไม่มีข้อมูล</td></tr>';
  var pg=document.getElementById('content-pagination');
- if(pg) pg.innerHTML=total>_CONTENT_LIMIT?'<span style="font-size:11px;color:var(--text3)">แสดง '+_CONTENT_LIMIT+' จาก '+total+' รายการ (เรียงตาม Revenue)</span>':'';
+ if(pg){
+  if(total>_CONTENT_LIMIT){
+   var _pages=Math.ceil(total/_CONTENT_LIMIT), _cur=_cPage+1;
+   var _bs='font-family:inherit;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text1);cursor:pointer';
+   var _bd='font-family:inherit;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:not-allowed';
+   pg.innerHTML='<div style="display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:6px 2px">'
+     +'<span style="font-size:11px;color:var(--text3)">'+(_cStart+1)+'–'+Math.min(_cStart+_CONTENT_LIMIT,total)+' จาก '+total+' รายการ</span>'
+     +'<button '+(_cPage<=0?'disabled style="'+_bd+'"':'onclick="goContentPage('+(_cPage-1)+')" style="'+_bs+'"')+'>‹ ก่อนหน้า</button>'
+     +'<span style="font-size:12px;font-weight:800;color:var(--text2)">หน้า '+_cur+'/'+_pages+'</span>'
+     +'<button '+(_cur>=_pages?'disabled style="'+_bd+'"':'onclick="goContentPage('+(_cPage+1)+')" style="'+_bs+'"')+'>ถัดไป ›</button>'
+     +'</div>';
+  } else pg.innerHTML='';
+ }
  renderCreatorTop5(arr);
  renderCbAdGallery();
 }
@@ -6903,10 +6918,26 @@ function showContentDetail(cname){
      +_kc('📅','Days Run',rows.length+' วัน','var(--text1)','')
      +'</div>';
    var _chartBox='<div style="margin-top:14px"><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">📊 เทรนด์รายวัน</div>'
-     +'<div style="position:relative;height:260px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:10px"><canvas id="ct-modal-chart"></canvas></div></div>';
+     +'<div style="position:relative;height:240px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:10px"><canvas id="ct-modal-chart"></canvas></div></div>';
+   /* ── Quick Insights (เติมที่ว่าง + มีประโยชน์) ── */
+   var _cpa=totalPur>0?totalSpend/totalPur:0;
+   var _avgDay=rows.length>0?totalRev/rows.length:0;
+   var _passN=rows.filter(function(r){return r.hit_roas==='ผ่าน';}).length;
+   var _passPct=rows.length>0?(_passN/rows.length*100):0;
+   var _best=rows.slice().sort(function(a,b){return b.revenue_thb-a.revenue_thb;})[0];
+   var _bestTxt=_best?(fmtFull(_best.revenue_thb)+' ('+(_best.ad_date||'').slice(5)+')'):'–';
+   var _pc=_passPct>=60?'#16A34A':_passPct>=40?'#EA580C':'#DC2626';
+   function _ic(label,val,col){return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 13px"><div style="font-size:10px;font-weight:700;color:var(--text3)">'+label+'</div><div style="font-size:16px;font-weight:900;color:'+(col||'var(--text1)')+';margin-top:2px">'+val+'</div></div>';}
+   var _insight='<div style="margin-top:14px"><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">💡 Quick Insights</div>'
+     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">'
+     +_ic('CPA เฉลี่ย/ออเดอร์','฿'+Math.round(_cpa).toLocaleString(),'')
+     +_ic('รายได้เฉลี่ย/วัน','฿'+Math.round(_avgDay).toLocaleString(),'#2563EB')
+     +_ic('วันที่ผ่าน ROAS',_passN+'/'+rows.length+' ('+_passPct.toFixed(0)+'%)',_pc)
+     +_ic('วันที่ขายดีสุด',_bestTxt,'#16A34A')
+     +'</div></div>';
    return '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:stretch;padding:16px 20px 6px">'
      +(_thumbHtml?'<div style="flex:0 1 340px;min-width:240px;margin:0 auto">'+_thumbHtml+'</div>':'')
-     +'<div style="flex:1 1 320px;min-width:280px;display:flex;flex-direction:column">'+_cards+_chartBox+'</div>'
+     +'<div style="flex:1 1 320px;min-width:280px;display:flex;flex-direction:column">'+_cards+_chartBox+_insight+'</div>'
      +'</div>';
  })()
  +'<div style="overflow-x:auto;padding:0 20px 20px">'
@@ -16719,10 +16750,11 @@ function aoRenderInfluencers(){
     +'</tr></thead>';
 
   /* mode='accordion' (Ads Optimize) | 'clips' (Content Board) */
-  function buildRows(mode){
+  function buildRows(mode, items, opts){
+    opts=opts||{};
     var isClips=(mode==='clips'), hb='';
-    list.forEach(function(m,i){
-      var rk = i<3 ? medal[i] : (i+1);
+    (items||list).forEach(function(m,i){
+      var rk = (opts.medal!==false && i<3) ? medal[i] : (i+1);
       var affBadge = (m.affRev!=null)
         ? '<span style="font-size:9.5px;font-weight:700;background:#E6F4EA;color:#1E6E2E;border-radius:5px;padding:1px 6px">Affi ✓ '+fmtB(m.affRev)+'</span>'
         : '<span title="ไม่อยู่ในระบบ Affiliate" style="font-size:10px;color:var(--text3)">–</span>';
@@ -16736,7 +16768,7 @@ function aoRenderInfluencers(){
       var onclickAttr = isClips
         ? 'onclick="aoShowInfluClips(\''+encodeURIComponent(m.inf)+'\')" title="กดดูคลิป"'
         : 'onclick="aoToggleInflu(this)" title="กดกางดู Ad Set"';
-      hb += '<tr style="border-bottom:1px solid var(--border);cursor:pointer'+(m.allOff?';opacity:.5':'')+'" '+onclickAttr+' onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'
+      hb += '<tr class="'+(opts.cls||'')+'" style="'+(opts.hidden?'display:none;':'')+'border-bottom:1px solid var(--border);cursor:pointer'+(m.allOff?';opacity:.5':'')+'" '+onclickAttr+' onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'
         +'<td style="padding:7px 10px;font-weight:800;color:var(--text2)">'+rk+'</td>'
         +'<td style="padding:7px 10px;font-weight:700;color:var(--text1);white-space:nowrap">'+lead+escH(m.inf)+statusBadge+'</td>'
         +'<td style="padding:7px 10px;max-width:240px">'+tags+'</td>'
@@ -16772,9 +16804,28 @@ function aoRenderInfluencers(){
     return hb;
   }
 
-  var _wrap=function(body){ return h+'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">'+theadHtml+'<tbody>'+body+'</tbody></table></div>'; };
-  var _aoEl=document.getElementById('ao-influ-section'); if(_aoEl) _aoEl.innerHTML=_wrap(buildRows('accordion'));
-  var _cbEl=document.getElementById('cb-influ-section'); if(_cbEl) _cbEl.innerHTML=_wrap(buildRows('clips'));
+  var _activeList=list.filter(function(m){return !m.allOff;});
+  var _offList=list.filter(function(m){return m.allOff;});
+  var _wrap=function(mode){
+    var body=buildRows(mode,_activeList,{});
+    if(_offList.length){
+      body+='<tr class="ao-off-bar" data-open="0" onclick="aoToggleOff(this)" style="cursor:pointer;background:var(--surface2);border-top:2px solid var(--border)" onmouseover="this.style.background=\'var(--border)\'" onmouseout="this.style.background=\'var(--surface2)\'">'
+        +'<td colspan="11" style="padding:10px 12px;font-size:11.5px;font-weight:800;color:var(--text2)"><span class="ao-off-caret" style="display:inline-block;width:12px;color:var(--text3)">▶</span> ⏸ ปิด AD แล้ว ('+_offList.length+' คน) — กดดู</td></tr>';
+      body+=buildRows(mode,_offList,{cls:'ao-off-row',hidden:true,medal:false});
+    }
+    return h+'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px">'+theadHtml+'<tbody>'+body+'</tbody></table></div>';
+  };
+  var _aoEl=document.getElementById('ao-influ-section'); if(_aoEl) _aoEl.innerHTML=_wrap('accordion');
+  var _cbEl=document.getElementById('cb-influ-section'); if(_cbEl) _cbEl.innerHTML=_wrap('clips');
+}
+/* toggle กลุ่ม "ปิด AD แล้ว" */
+function aoToggleOff(barEl){
+  var tb=barEl.parentNode;
+  var rows=tb.querySelectorAll('.ao-off-row');
+  var open=barEl.getAttribute('data-open')==='1';
+  for(var i=0;i<rows.length;i++){ rows[i].style.display=open?'none':'table-row'; }
+  barEl.setAttribute('data-open',open?'0':'1');
+  var c=barEl.querySelector('.ao-off-caret'); if(c) c.textContent=open?'▶':'▼';
 }
 /* accordion toggle (Ads Optimize) — ใช้ sibling กัน id ซ้ำ */
 function aoToggleInflu(rowEl){
