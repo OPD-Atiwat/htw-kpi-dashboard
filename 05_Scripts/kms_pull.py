@@ -38,26 +38,47 @@ DASHBOARD_PATH = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI
 # ============================================================
 
 SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/{sid}/export?format=csv&gid={gid}"
-# gviz: ดึงแท็บตาม "ชื่อ" ได้โดยไม่ต้องรู้ GID (headers=0 = คืนทุกแถวเป็น data ตรงกับ COL index)
-GVIZ_CSV_URL  = "https://docs.google.com/spreadsheets/d/{sid}/gviz/tq?tqx=out:csv&headers=0&sheet={tab}"
+# โหลดทั้ง workbook (.xlsx) → ได้ทุกแท็บ คอลัมน์ตรง grid เป๊ะ (ไม่เหมือน gviz ที่ตัดคอลัมน์ว่าง)
+SHEET_XLSX_URL = "https://docs.google.com/spreadsheets/d/{sid}/export?format=xlsx"
 
-# auto-discover: เริ่มเก็บข้อมูลจากเดือนไหน (label แท็บ = MonYY เช่น Feb26)
-KMS_START_YEAR = 2026
-KMS_START_MON  = 2   # Feb
+# auto-discover: แท็บชื่อรูปแบบเดือน รองรับทั้ง "Feb26" และ "Feb 26" (มีเว้นวรรค)
+TAB_MONTH_RE = re.compile(r'^[A-Za-z]{3}\s*\d{2}$')
 
-def discover_month_tabs(start_year=KMS_START_YEAR, start_mon=KMS_START_MON):
-    """สร้าง label เดือนจาก start → เดือนปัจจุบัน (เช่น Feb26, Mar26, ... ถึงเดือนนี้)
-       → แท็บใหม่ที่สร้างทุกเดือนถูกดึงอัตโนมัติ ไม่ต้องใส่ GID มือ"""
-    mon_abbr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    now = datetime.now()
-    labels = []
-    y, m = start_year, start_mon
-    while (y < now.year) or (y == now.year and m <= now.month):
-        labels.append(f"{mon_abbr[m-1]}{str(y)[2:]}")
-        m += 1
-        if m > 12:
-            m = 1; y += 1
-    return labels
+def discover_tabs_xlsx():
+    """โหลด workbook ทั้งไฟล์ → คืน {tab_label: rows(list[list[str]])}
+       เฉพาะแท็บที่ชื่อเป็นเดือน (MonYY) → ครอบคลุมชีตเก่า+ใหม่อัตโนมัติ ไม่ต้องใส่ GID"""
+    try:
+        import openpyxl
+    except ImportError:
+        print("  ⚠️  ไม่มี openpyxl — ติดตั้ง: pip3 install openpyxl --break-system-packages")
+        return {}
+    url = SHEET_XLSX_URL.format(sid=KMS_SHEET_ID)
+    try:
+        r = requests.get(url, timeout=60); r.raise_for_status()
+        wb = openpyxl.load_workbook(io.BytesIO(r.content), read_only=True, data_only=True)
+    except Exception as e:
+        print(f"  ⚠️  โหลด workbook ไม่ได้: {e}")
+        return {}
+    out = {}
+    for name in wb.sheetnames:
+        nm = (name or "").strip()
+        if not TAB_MONTH_RE.match(nm):
+            continue
+        label = nm.replace(" ", "")        # "Feb 26" → "Feb26" (canonical ให้ downstream)
+        ws = wb[nm]; rows = []
+        for row in ws.iter_rows(values_only=True):
+            cells = []
+            for c in row:
+                if c is None:
+                    cells.append("")
+                elif hasattr(c, "strftime"):          # datetime → ISO (parse_date รองรับ)
+                    cells.append(c.strftime("%Y-%m-%d"))
+                else:
+                    cells.append(str(c))
+            rows.append(cells)
+        if rows:
+            out[label] = rows
+    return out
 
 CREATOR_NAMES = {"ริว", "มิ้น", "หมิว"}
 
@@ -140,8 +161,11 @@ def parse_date(raw, year=None):
     if year is None:
         from datetime import datetime as _dt
         year = _dt.now().year
-    """แปลง 'Wed,  1, Apr' → '2026-04-01'"""
+    """แปลง 'Wed,  1, Apr' → '2026-04-01' (รองรับ ISO จาก xlsx ด้วย)"""
     raw = re.sub(r'\s+', ' ', raw.strip().strip('"'))
+    _iso = re.match(r'(\d{4})-(\d{2})-(\d{2})', raw)
+    if _iso:
+        return f"{_iso.group(1)}-{_iso.group(2)}-{_iso.group(3)}"
     parts = raw.split(",")
     if len(parts) >= 3:
         day_s  = parts[1].strip()
@@ -537,18 +561,19 @@ def main():
     cal_data     = {}           # { "Apr 26": {...} }
     downloaded   = {}          # cache rows เพื่อไม่ต้อง download ซ้ำ
 
-    # auto-discover ทุกแท็บเดือน (Feb26 → เดือนปัจจุบัน) — ไม่ต้องใส่ GID มือ
-    tab_labels = discover_month_tabs()
-    print(f"\nAuto-discover แท็บ: {', '.join(tab_labels)}")
+    # auto-discover ทุกแท็บเดือนจาก workbook (xlsx) — ไม่ต้องใส่ GID มือ
+    xlsx_tabs = discover_tabs_xlsx()
+    tab_labels = sorted(set(list(xlsx_tabs.keys()) + [k for k, v in KMS_TAB_GIDS.items() if v]))
+    print(f"\nAuto-discover แท็บ: {', '.join(tab_labels) if tab_labels else '(ไม่พบ)'}")
 
     for tab_label in tab_labels:
         gid = KMS_TAB_GIDS.get(tab_label, "")
         if gid:
-            url = SHEET_CSV_URL.format(sid=KMS_SHEET_ID, gid=gid)   # มี GID → export csv (แม่นสุด)
+            print(f"\n[{tab_label}] ดาวน์โหลด (GID/export csv)...")
+            rows = download_csv(SHEET_CSV_URL.format(sid=KMS_SHEET_ID, gid=gid))
         else:
-            url = GVIZ_CSV_URL.format(sid=KMS_SHEET_ID, tab=tab_label)  # ไม่มี GID → ดึงตามชื่อแท็บ
-        print(f"\n[{tab_label}] กำลังดาวน์โหลด...")
-        rows = download_csv(url)
+            print(f"\n[{tab_label}] อ่านจาก workbook (xlsx)...")
+            rows = xlsx_tabs.get(tab_label, [])
         if not rows or len(rows) < 2:
             print(f"  ข้าม (ไม่มีข้อมูล/ยังไม่สร้างแท็บ)")
             continue
