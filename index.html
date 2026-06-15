@@ -6498,10 +6498,11 @@ function renderContent(data){
  var cmap={};
  filtered.forEach(function(r){
  var key=(r.content_name||r.product||'Unknown')+'||'+(r.creator||'')+'||'+(r.platform||'');
- if(!cmap[key])cmap[key]={content_name:r.content_name||r.product||'Unknown',creator:r.creator||'',platform:r.platform||'',product:r.product||'',content_type:'',rev:0,spend:0,pur:0,passCount:0,totalCount:0,dates:new Set(),passDates:new Set(),isNew:false,rows:[]};
+ if(!cmap[key])cmap[key]={content_name:r.content_name||r.product||'Unknown',creator:r.creator||'',platform:r.platform||'',product:r.product||'',content_type:'',rev:0,spend:0,pur:0,passCount:0,totalCount:0,dates:new Set(),passDates:new Set(),isNew:false,launch:'',rows:[]};
  var c=cmap[key];
  c.rev+=r.revenue_thb;c.spend+=r.spend_thb;c.pur+=r.purchases;c.totalCount++;
  if(r.is_new)c.isNew=true;
+ if(r.launch_date && (!c.launch||r.launch_date>c.launch)) c.launch=r.launch_date;
  if(r.content_type&&!c.content_type)c.content_type=r.content_type;
  if(r.ad_date){
  c.dates.add(r.ad_date);
@@ -6512,6 +6513,7 @@ function renderContent(data){
  c.rows.push(r);
  });
  var arr=objVals(cmap);
+ var _curMo='';filtered.forEach(function(r){if(r.ad_date&&r.ad_date.slice(0,7)>_curMo)_curMo=r.ad_date.slice(0,7);});
  console.log('[Content] data='+data.length+' filtered='+filtered.length+' arr='+arr.length);
  // Compute daysRun from unique ad_dates; fix passCount to be date-based
  arr.forEach(function(c){
@@ -6712,8 +6714,13 @@ function renderContent(data){
  var successBadge = c.isSuccess ? '<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:#16A34A;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle"></span>' : '';
  var aiBadge = _isAIContent(c.content_name,c.creator) ? '<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:'+AI_CLR.bg+';color:'+AI_CLR.text+';border:1px solid '+AI_CLR.border+';border-radius:4px;padding:1px 5px;vertical-align:middle">AI</span>' : '';
  var _dispName=(c.content_name||'').replace(/^\[\d{2}\.\d{2}\.\d{2}\]\[[^\]]*\]\s*/,'');
- html+='<td class="td-content"><b>'+escH(_dispName)+'</b>'+(c.isNew?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle">NEW</span>':'')+successBadge+aiBadge+'</td>';
- html+='<td>'+escH(c.creator)+'</td>';
+ var _cTag=(c.content_name.match(/^\[\d{2}\.\d{2}\.\d{2}\]\[([^\]]+)\]/)||[])[1]||'';
+ var _cWho=(c.creator==='Influ'&&_cTag)?_cTag:c.creator;
+ if(c.creator==='Influ'&&_cTag) _dispName=_cTag+' — '+_dispName;   /* Influ: นำชื่ออินฟลู */
+ var _newMo=c.launch&&_curMo&&c.launch.slice(0,7)===_curMo;       /* แอดใหม่เดือนนี้ */
+ var _newTag=_newMo?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:800;background:#10B981;color:#fff;border-radius:4px;padding:1px 6px;vertical-align:middle">🆕 เดือนนี้</span>':(c.isNew?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle">NEW</span>':'');
+ html+='<td class="td-content"><b>'+escH(_dispName)+'</b>'+_newTag+successBadge+aiBadge+'</td>';
+ html+='<td>'+escH(_cWho)+'</td>';
  html+='<td>'+escH(c.product)+'</td>';
  /* Type: text-only, สีต่างจาก Platform (ไม่มี background เพื่อไม่ซ้ำ badge Platform) */
  var ctColor=CT_CLR[c.content_type]||'#94A3B8';
