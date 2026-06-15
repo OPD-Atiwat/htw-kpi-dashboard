@@ -918,6 +918,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <th onclick="setContentSort('product')">Product</th>
  <th>Type</th>
  <th>Platform</th>
+ <th class="num">ใหม่</th>
  <th onclick="setContentSort('totalCount')" class="num">Days Run</th>
  <th onclick="setContentSort('revenue_thb')" class="sort-desc num">Revenue</th>
  <th onclick="setContentSort('spend_thb')" class="num">Spend</th>
@@ -6447,9 +6448,7 @@ function renderTop3Days(data){
    /* Influ: ใส่ชื่ออินฟลูนำหน้าชื่อหลักให้เด่น (ชื่อ content เหมือนกันหมด) */
    if(c.creator==='Influ'&&_tag) nm=_tag+' — '+nm;
    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
-   var tag=c.newMonth
-     ?'<span style="font-size:8.5px;font-weight:800;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px">🆕 เดือนนี้</span>'
-     :'<span style="font-size:8.5px;font-weight:700;background:var(--surface2);color:var(--text3);border:1px solid var(--border);border-radius:4px;padding:1px 5px">เดือนก่อน</span>';
+   var tag=c.newMonth?'<span style="font-size:8.5px;font-weight:800;letter-spacing:.3px;background:#10B981;color:#fff;border-radius:4px;padding:1px 6px">NEW</span>':'';
    return '<div onclick="showContentDetail('+JSON.stringify(c.name).replace(/"/g,'&quot;')+')" style="cursor:pointer;display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-bottom:7px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
     +'<span style="font-size:13px;flex-shrink:0;width:18px;text-align:center">'+medal+'</span>'
     +'<div style="flex:1;min-width:0">'
@@ -6718,8 +6717,8 @@ function renderContent(data){
  var _cWho=(c.creator==='Influ'&&_cTag)?_cTag:c.creator;
  if(c.creator==='Influ'&&_cTag) _dispName=_cTag+' — '+_dispName;   /* Influ: นำชื่ออินฟลู */
  var _newMo=c.launch&&_curMo&&c.launch.slice(0,7)===_curMo;       /* แอดใหม่เดือนนี้ */
- var _newTag=_newMo?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:800;background:#10B981;color:#fff;border-radius:4px;padding:1px 6px;vertical-align:middle">🆕 เดือนนี้</span>':(c.isNew?'<span style="display:inline-block;margin-left:5px;font-size:10px;font-weight:700;background:#10B981;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle">NEW</span>':'');
- html+='<td class="td-content"><b>'+escH(_dispName)+'</b>'+_newTag+successBadge+aiBadge+'</td>';
+ var _newCell=(_newMo||c.isNew)?'<span style="font-size:9.5px;font-weight:800;letter-spacing:.3px;background:#10B981;color:#fff;border-radius:5px;padding:2px 8px">NEW</span>':'';
+ html+='<td class="td-content"><b>'+escH(_dispName)+'</b>'+successBadge+aiBadge+'</td>';
  html+='<td>'+escH(_cWho)+'</td>';
  html+='<td>'+escH(c.product)+'</td>';
  /* Type: text-only, สีต่างจาก Platform (ไม่มี background เพื่อไม่ซ้ำ badge Platform) */
@@ -6727,6 +6726,7 @@ function renderContent(data){
  var ctTag=c.content_type?'<span style="font-size:11px;font-weight:700;color:'+ctColor+'">'+escH(c.content_type)+'</span>':'<span style="color:var(--text2)">–</span>';
  html+='<td>'+ctTag+'</td>';
  html+='<td><span class="plat-badge '+platCls+'">'+escH(c.platform)+'</span></td>';
+ html+='<td class="num">'+_newCell+'</td>';
  html+='<td class="num">'+c.daysRun+' วัน</td>';
  html+='<td class="num"><b>'+fmtFull(c.rev)+'</b></td>';
  html+='<td class="num">'+fmtFull(c.spend)+'</td>';
@@ -6745,7 +6745,7 @@ function renderContent(data){
  html+='</tr>';
  });
  var tb=document.getElementById('content-body');
- if(tb)tb.innerHTML=html||'<tr><td colspan="11" class="empty-cell">ไม่มีข้อมูล</td></tr>';
+ if(tb)tb.innerHTML=html||'<tr><td colspan="12" class="empty-cell">ไม่มีข้อมูล</td></tr>';
  var pg=document.getElementById('content-pagination');
  if(pg){
   if(total>_CONTENT_LIMIT){
