@@ -874,6 +874,9 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <!-- Influencer Ranking (Meta Ads) — แสดงบน Content Board ด้วย -->
  <div id="cb-influ-section" style="background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm)"></div>
 
+ <!-- ดาวรุ่ง 3 วันล่าสุด -->
+ <div id="top3d-section" style="margin-bottom:14px"></div>
+
  <!-- ╔══════════════════════════════════════════════════════╗ -->
  <!-- ║  CONTENT TABLE SECTION                              ║ -->
  <!-- ╚══════════════════════════════════════════════════════╝ -->
@@ -6402,7 +6405,56 @@ function cbAdGalOpen(idx){
  modal.style.display = 'flex';
 }
 
+/* ── ดาวรุ่ง 3 วันล่าสุด — content ที่ perform ดีสุด + ติด TAG ใหม่ ── */
+function renderTop3Days(data){
+ var el=document.getElementById('top3d-section'); if(!el) return;
+ var today=new Date().toISOString().slice(0,10);
+ var rows=(data||[]).filter(function(r){return r.ad_date && r.ad_date<=today && r.creator!=='Central';});
+ if(!rows.length){el.innerHTML='';return;}
+ var dates=Array.from(new Set(rows.map(function(r){return r.ad_date;}))).sort();
+ var last3=dates.slice(-3); if(!last3.length){el.innerHTML='';return;}
+ var winStart=last3[0];
+ var cm={};
+ rows.forEach(function(r){
+  if(r.ad_date<winStart) return;
+  var k=r.content_name||r.product||'–';
+  var c=cm[k]||(cm[k]={name:k,creator:r.creator||'',product:r.product||'',rev:0,spend:0,pur:0,launch:r.launch_date||'',is_new:false,plat:r.platform||''});
+  c.rev+=r.revenue_thb||0; c.spend+=r.spend_thb||0; c.pur+=r.purchases||0;
+  if(r.is_new) c.is_new=true;
+  if(r.launch_date && (!c.launch||r.launch_date>c.launch)) c.launch=r.launch_date;
+ });
+ var arr=Object.keys(cm).map(function(k){var c=cm[k];c.roas=c.spend>0?c.rev/c.spend:0;
+   /* NEW = เพิ่งลงในช่วง 3 วันนี้ หรือ flag is_new */
+   c.isNew=c.is_new||(c.launch&&c.launch>=winStart);
+   return c;}).filter(function(c){return c.rev>0;});
+ if(!arr.length){el.innerHTML='';return;}
+ arr.sort(function(a,b){return b.rev-a.rev;});
+ var top=arr.slice(0,6);
+ var _f=function(v){return v>=1000?'฿'+(v/1000).toFixed(1)+'K':'฿'+Math.round(v);};
+ var _rc=function(r){return r>=2?'#16A34A':r>=1?'#EA580C':'#DC2626';};
+ var _d0=last3[0].slice(5), _d1=last3[last3.length-1].slice(5);
+ var h='<div style="background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(245,158,11,.02));border:1px solid rgba(245,158,11,.35);border-radius:14px;padding:14px 16px">'
+  +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="font-size:14px;font-weight:800;color:var(--text1)">🚀 ดาวรุ่ง 3 วันล่าสุด</span><span style="font-size:10px;color:var(--text3)">'+_d0+' – '+_d1+' · Performance ดีสุด</span></div>'
+  +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px">';
+ top.forEach(function(c,i){
+  var nm=(c.name||'').replace(/^\[\d{2}\.\d{2}\.\d{2}\]\[[^\]]*\]\s*/,'');
+  var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+  h+='<div onclick="showContentDetail('+JSON.stringify(c.name).replace(/"/g,'&quot;')+')" style="cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 13px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+   +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="font-size:13px">'+medal+'</span>'
+   +(c.isNew?'<span style="font-size:9px;font-weight:800;background:#10B981;color:#fff;border-radius:4px;padding:1px 6px">NEW</span>':'')
+   +'<span style="font-size:10px;font-weight:700;color:var(--text3)">'+escH(c.creator)+'</span></div>'
+   +'<div style="font-size:12px;font-weight:700;color:var(--text1);line-height:1.35;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px">'+escH(nm)+'</div>'
+   +'<div style="display:flex;gap:10px;align-items:baseline">'
+    +'<span style="font-size:18px;font-weight:900;color:#2563EB">'+_f(c.rev)+'</span>'
+    +'<span style="font-size:12px;font-weight:800;color:'+_rc(c.roas)+'">'+c.roas.toFixed(2)+'x</span>'
+    +'<span style="font-size:10px;color:var(--text3)">'+fmtNum(c.pur)+' ออเดอร์</span>'
+   +'</div></div>';
+ });
+ h+='</div></div>';
+ el.innerHTML=h;
+}
 function renderContent(data){
+ try{renderTop3Days(data);}catch(e){}
  var filtered=data.slice();
  /* ซ่อน Central creator */
  filtered=filtered.filter(function(r){return r.creator!=='Central';});
