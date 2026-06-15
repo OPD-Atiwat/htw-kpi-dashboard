@@ -6874,16 +6874,31 @@ function showContentDetail(cname){
  +'<div class="modal-title-wrap"><div class="modal-title">'+escH(cname)+'</div>'
  +'<div class="modal-subtitle">'+escH(first.creator)+' · '+escH(platforms)+' · '+escH(months)+'</div></div>'
  +'<div class="modal-header-right">'+vbtn+'<button class="modal-x" onclick="closeModal()">×</button></div></div>'
- +(_thumbHtml?'<div style="padding:16px 20px 0">'+_thumbHtml+'</div>':'')
- +'<div class="modal-kpis">'
- +'<div class="m-kpi"><div class="m-kpi-l">Revenue</div><div class="m-kpi-v accent">'+fmtFull(totalRev)+'</div></div>'
- +'<div class="m-kpi"><div class="m-kpi-l">Spend</div><div class="m-kpi-v">'+fmtFull(totalSpend)+'</div></div>'
- +'<div class="m-kpi"><div class="m-kpi-l">ROAS</div><div class="m-kpi-v success">'+roas.toFixed(2)+'x</div></div>'
- +'<div class="m-kpi"><div class="m-kpi-l">Purchases</div><div class="m-kpi-v">'+fmtNum(totalPur)+'</div></div>'
- +'<div class="m-kpi"><div class="m-kpi-l">Days Run</div><div class="m-kpi-v">'+rows.length+' วัน</div></div>'
- +'</div>'
- /* Daily chart canvas */
- +'<div style="padding:14px 20px 4px;position:relative"><canvas id="ct-modal-chart" height="220"></canvas></div>'
+ /* ── friendly KPI cards ── */
+ +(function(){
+   var _rc=roas>=2?'#16A34A':roas>=1?'#EA580C':'#DC2626';
+   var _rl=roas>=2?'ปังมาก 🚀':roas>=1?'พอไหว 👍':'ต้องแก้ ⚠️';
+   function _kc(emoji,label,val,col,sub){
+     return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:13px 15px">'
+       +'<div style="font-size:11px;font-weight:700;color:var(--text3)">'+emoji+' '+label+'</div>'
+       +'<div style="font-size:23px;font-weight:900;color:'+col+';line-height:1.1;margin-top:3px">'+val+'</div>'
+       +(sub?'<div style="font-size:10px;font-weight:700;color:'+col+';margin-top:1px">'+sub+'</div>':'')
+       +'</div>';
+   }
+   var _cards='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">'
+     +_kc('💰','Revenue',fmtFull(totalRev),'#2563EB','')
+     +_kc('📈','ROAS',roas.toFixed(2)+'x',_rc,_rl)
+     +_kc('🔥','Spend',fmtFull(totalSpend),'var(--text1)','')
+     +_kc('🛒','Purchases',fmtNum(totalPur),'var(--text1)','')
+     +_kc('📅','Days Run',rows.length+' วัน','var(--text1)','')
+     +'</div>';
+   var _chartBox='<div style="margin-top:14px"><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">📊 เทรนด์รายวัน</div>'
+     +'<div style="position:relative;height:260px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:10px"><canvas id="ct-modal-chart"></canvas></div></div>';
+   return '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:stretch;padding:16px 20px 6px">'
+     +(_thumbHtml?'<div style="flex:0 1 340px;min-width:240px;margin:0 auto">'+_thumbHtml+'</div>':'')
+     +'<div style="flex:1 1 320px;min-width:280px;display:flex;flex-direction:column">'+_cards+_chartBox+'</div>'
+     +'</div>';
+ })()
  +'<div style="overflow-x:auto;padding:0 20px 20px">'
  +'<table><thead><tr><th>วันที่</th><th>Platform</th><th>Revenue</th><th>Spend</th><th>ROAS</th><th>Purchases</th><th>CPA</th><th>Hit ROAS</th></tr></thead>'
  +'<tbody>'+trows+'</tbody></table></div>';
