@@ -38,6 +38,26 @@ DASHBOARD_PATH = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI
 # ============================================================
 
 SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/{sid}/export?format=csv&gid={gid}"
+# gviz: ดึงแท็บตาม "ชื่อ" ได้โดยไม่ต้องรู้ GID (headers=0 = คืนทุกแถวเป็น data ตรงกับ COL index)
+GVIZ_CSV_URL  = "https://docs.google.com/spreadsheets/d/{sid}/gviz/tq?tqx=out:csv&headers=0&sheet={tab}"
+
+# auto-discover: เริ่มเก็บข้อมูลจากเดือนไหน (label แท็บ = MonYY เช่น Feb26)
+KMS_START_YEAR = 2026
+KMS_START_MON  = 2   # Feb
+
+def discover_month_tabs(start_year=KMS_START_YEAR, start_mon=KMS_START_MON):
+    """สร้าง label เดือนจาก start → เดือนปัจจุบัน (เช่น Feb26, Mar26, ... ถึงเดือนนี้)
+       → แท็บใหม่ที่สร้างทุกเดือนถูกดึงอัตโนมัติ ไม่ต้องใส่ GID มือ"""
+    mon_abbr = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    now = datetime.now()
+    labels = []
+    y, m = start_year, start_mon
+    while (y < now.year) or (y == now.year and m <= now.month):
+        labels.append(f"{mon_abbr[m-1]}{str(y)[2:]}")
+        m += 1
+        if m > 12:
+            m = 1; y += 1
+    return labels
 
 CREATOR_NAMES = {"ริว", "มิ้น", "หมิว"}
 
@@ -517,16 +537,20 @@ def main():
     cal_data     = {}           # { "Apr 26": {...} }
     downloaded   = {}          # cache rows เพื่อไม่ต้อง download ซ้ำ
 
-    # ดาวน์โหลดทุก tab ที่มี GID
-    for tab_label, gid in KMS_TAB_GIDS.items():
-        if not gid:
-            print(f"\n[{tab_label}] ข้าม (ยังไม่มี GID)")
-            continue
+    # auto-discover ทุกแท็บเดือน (Feb26 → เดือนปัจจุบัน) — ไม่ต้องใส่ GID มือ
+    tab_labels = discover_month_tabs()
+    print(f"\nAuto-discover แท็บ: {', '.join(tab_labels)}")
 
-        url  = SHEET_CSV_URL.format(sid=KMS_SHEET_ID, gid=gid)
+    for tab_label in tab_labels:
+        gid = KMS_TAB_GIDS.get(tab_label, "")
+        if gid:
+            url = SHEET_CSV_URL.format(sid=KMS_SHEET_ID, gid=gid)   # มี GID → export csv (แม่นสุด)
+        else:
+            url = GVIZ_CSV_URL.format(sid=KMS_SHEET_ID, tab=tab_label)  # ไม่มี GID → ดึงตามชื่อแท็บ
         print(f"\n[{tab_label}] กำลังดาวน์โหลด...")
         rows = download_csv(url)
-        if not rows:
+        if not rows or len(rows) < 2:
+            print(f"  ข้าม (ไม่มีข้อมูล/ยังไม่สร้างแท็บ)")
             continue
         downloaded[tab_label] = rows
 
