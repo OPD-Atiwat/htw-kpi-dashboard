@@ -272,6 +272,28 @@ def resolve_creator_by_product(creator, product):
     return creator
 
 
+# ครีเอเตอร์ทีมเรา (เฉพาะกลุ่มนี้ที่แชร์ยอด 50/50 ได้)
+TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม"]
+
+def guess_creators(ad_name):
+    """คืน list ครีเอเตอร์ทีมเราที่เจอใน bracket [Date][Creator1][Creator2]...
+       ถ้าเจอหลายคน → แชร์ยอดเท่ากัน (เช่น [มิ้น][ริว] → ['มิ้น','ริว'] = 50/50)
+       ถ้าไม่เจอครีทีมเราเลย → fallback เป็น [guess_creator()] (เดี่ยว เช่น Central/Influ)"""
+    tags = re.findall(r'\[([^\]]+)\]', ad_name)
+    found = []
+    for b in tags[1:]:               # ข้าม tag แรก (วันที่)
+        b = b.strip()
+        m = None
+        if "ริว" in b: m = "ริว"
+        elif "หมิว" in b or "mew" in b.lower(): m = "หมิว"
+        elif "มิ้น" in b or "min" in b.lower(): m = "มิ้น"
+        elif "แนน" in b: m = "แนน"
+        elif "แก้ม" in b: m = "แก้ม"
+        if m and m not in found:
+            found.append(m)
+    return found if found else [guess_creator(ad_name)]
+
+
 def guess_format(ad_name):
     """ดึง content format: VDO หรือ IMG"""
     for b in re.findall(r'\[([^\]]+)\]', ad_name):
@@ -387,15 +409,21 @@ def transform_rows(raw_rows):
         cpa = spend / purchases if purchases > 0 else 0.0
         cvr = purchases / clicks * 100 if clicks > 0 else 0.0
 
-        creator = guess_creator(ad_name)
         fmt     = guess_format(ad_name)
         product = guess_product(ad_name)
         launch  = guess_launch_date(ad_name)
-        creator = resolve_creator_by_product(creator, product)
+        # creators list (รองรับแชร์ 50/50 เมื่อมีหลายครีในชื่อแอด)
+        creators = guess_creators(ad_name)
+        if product == "Cross Page":
+            creators = ["Cross Page"]          # Cross Page ทับเสมอ ไม่แชร์
+        creator = creators[0]                  # primary (tag แรก) — backward compat
+        share   = round(1.0 / len(creators), 6)
 
         rows.append({
             "month":        month_key(date_str),
             "creator":      creator,
+            "creators":     creators,
+            "share":        share,
             "ad_date":      date_str,
             "content_name": ad_name,
             "product":      product,
@@ -586,8 +614,15 @@ def update_creator_summary(rows, html_path):
     cur_month  = current_month_key()
     var_name   = f"CREATOR_META_{cur_month.upper()}"
     creators   = ["หมิว", "ริว", "มิ้น"]
+    def _crs(r):
+        return r.get("creators") or [r["creator"]]
+    def _w(r, cr):
+        """น้ำหนักยอดของ row นี้ที่ปันให้ cr (0 ถ้าไม่เกี่ยว, share ถ้าเกี่ยว)"""
+        c = _crs(r)
+        return r.get("share", 1.0) if cr in c else 0.0
+    # รวมทุก row ที่มีครีหลักอย่างน้อย 1 คน (รองรับแอดที่แชร์หลายคน)
     month_rows = [r for r in rows
-                  if r["month"] == cur_month and r["creator"] in creators]
+                  if r["month"] == cur_month and any(c in creators for c in _crs(r))]
 
     if not month_rows:
         print(f"   ⚠️  ไม่มีข้อมูล Creator หลักใน {cur_month} — ข้าม {var_name}")
@@ -596,64 +631,64 @@ def update_creator_summary(rows, html_path):
     # Summary per creator
     summary = {}
     for cr in creators:
-        cr_rows = [r for r in month_rows if r["creator"] == cr]
+        cr_rows = [(r, _w(r, cr)) for r in month_rows if _w(r, cr) > 0]
         if not cr_rows:
             continue
-        sp  = sum(r["spend_thb"]   for r in cr_rows)
-        rv  = sum(r["revenue_thb"] for r in cr_rows)
-        pur = sum(r["purchases"]   for r in cr_rows)
-        imp = sum(r["impressions"] for r in cr_rows)
-        rch = sum(r["reach"]       for r in cr_rows)
-        msg = sum(r["messages"]    for r in cr_rows)
-        clk = sum(r["clicks"]      for r in cr_rows)
+        sp  = sum(r["spend_thb"]   * w for r, w in cr_rows)
+        rv  = sum(r["revenue_thb"] * w for r, w in cr_rows)
+        pur = sum(r["purchases"]   * w for r, w in cr_rows)
+        imp = sum(r["impressions"] * w for r, w in cr_rows)
+        rch = sum(r["reach"]       * w for r, w in cr_rows)
+        msg = sum(r["messages"]    * w for r, w in cr_rows)
+        clk = sum(r["clicks"]      * w for r, w in cr_rows)
         summary[cr] = {
             "spend":       round(sp, 2),
             "revenue":     round(rv, 2),
             "roas":        round(rv/sp, 4) if sp > 0 else 0,
-            "purchases":   pur,
-            "impressions": imp,
-            "reach":       rch,
+            "purchases":   round(pur),
+            "impressions": round(imp),
+            "reach":       round(rch),
             "ctr":         round(clk/imp*100, 4) if imp > 0 else 0,
             "cpm":         round(sp/imp*1000, 4) if imp > 0 else 0,
-            "messages":    msg,
-            "link_clicks": clk,
+            "messages":    round(msg),
+            "link_clicks": round(clk),
             "cpa":         round(sp/pur, 2) if pur > 0 else 0,
         }
 
-    # Daily per creator
+    # Daily per creator (แชร์ตาม weight)
     daily = {}
     for cr in creators:
-        cr_rows = [r for r in month_rows if r["creator"] == cr]
+        cr_rows = [(r, _w(r, cr)) for r in month_rows if _w(r, cr) > 0]
         by_date = defaultdict(lambda: {"s":0,"r":0,"p":0,"i":0,"m":0})
-        for r in cr_rows:
+        for r, w in cr_rows:
             d = r["ad_date"]
-            by_date[d]["s"] += r["spend_thb"]
-            by_date[d]["r"] += r["revenue_thb"]
-            by_date[d]["p"] += r["purchases"]
-            by_date[d]["i"] += r["impressions"]
-            by_date[d]["m"] += r["messages"]
+            by_date[d]["s"] += r["spend_thb"]   * w
+            by_date[d]["r"] += r["revenue_thb"] * w
+            by_date[d]["p"] += r["purchases"]   * w
+            by_date[d]["i"] += r["impressions"] * w
+            by_date[d]["m"] += r["messages"]    * w
         daily[cr] = [
             {"d":d,"s":round(v["s"],2),"r":round(v["r"],2),
-             "p":v["p"],"i":v["i"],"m":v["m"]}
+             "p":round(v["p"]),"i":round(v["i"]),"m":round(v["m"])}
             for d, v in sorted(by_date.items())
         ]
 
-    # Products per creator
+    # Products per creator (แชร์ตาม weight)
     products = {}
     for cr in creators:
-        cr_rows = [r for r in month_rows if r["creator"] == cr]
+        cr_rows = [(r, _w(r, cr)) for r in month_rows if _w(r, cr) > 0]
         by_prod = defaultdict(lambda: {"spend":0,"revenue":0,"purchases":0})
-        for r in cr_rows:
+        for r, w in cr_rows:
             prod = r.get("product") or "Unknown"
-            by_prod[prod]["spend"]     += r["spend_thb"]
-            by_prod[prod]["revenue"]   += r["revenue_thb"]
-            by_prod[prod]["purchases"] += r["purchases"]
+            by_prod[prod]["spend"]     += r["spend_thb"]   * w
+            by_prod[prod]["revenue"]   += r["revenue_thb"] * w
+            by_prod[prod]["purchases"] += r["purchases"]   * w
         products[cr] = sorted([
             {"name": p,
              "spend": round(v["spend"], 2),
              "revenue": round(v["revenue"], 2),
              "roas": round(v["revenue"]/v["spend"], 4) if v["spend"]>0 else 0,
-             "purchases": v["purchases"]}
+             "purchases": round(v["purchases"])}
             for p, v in by_prod.items()
         ], key=lambda x: x["spend"], reverse=True)
 
