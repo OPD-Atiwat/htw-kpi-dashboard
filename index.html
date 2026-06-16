@@ -8816,6 +8816,8 @@ function renderOvMarginCards(o){
   /* กรองเฉพาะเดือนที่เลือก (ถ้าเลือกเดือนเดียว) — ทั้งหมด/กำหนดเอง = โชว์ทุกวัน */
   try{var _ym=(typeof FORECAST_ENGINE!=='undefined')?FORECAST_ENGINE._ym(o.month):null;
    if(_ym){var _pfxM=_ym[0]+'-'+(_ym[1]<10?'0':'')+_ym[1];_dts=_dts.filter(function(d){return d.indexOf(_pfxM)===0;});}}catch(e){}
+  /* ตัดวันปัจจุบัน (ยอดครึ่งวัน → % บิดเบือน เช่น Fix พุ่ง) ออกจากกราฟ+sparkline */
+  try{var _tdISO=new Date().toISOString().slice(0,10);_dts=_dts.filter(function(d){return d!==_tdISO;});}catch(e){}
   if(_dts.length>=2){
    var _vals=_dts.map(function(d){return M07_DAILY[d].m||0;});
    var _last=_vals[_vals.length-1], _prev=_vals[_vals.length-2];
@@ -8854,7 +8856,7 @@ function renderOvMarginCards(o){
     var pts=a.map(function(v,i){return ((a.length>1?i/(a.length-1):0)*w).toFixed(1)+','+(hh-3-(v-mn)/rg*(hh-6)).toFixed(1);}).join(' ');
     return '<div style="flex:1;min-width:170px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 11px">'
      +'<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">'+label+'</span>'
-     +'<span style="font-size:13px;font-weight:900;color:'+color+'">'+lv.toFixed(1)+'% <span style="font-size:9px;font-weight:700;color:'+(dd<=0?'var(--success)':'var(--danger)')+'">'+(dd<=0?'▼':'▲')+Math.abs(dd).toFixed(1)+'</span></span></div>'
+     +'<span style="font-size:13px;font-weight:900;color:'+color+'">'+lv.toFixed(1)+'% <span style="font-size:9px;font-weight:700;color:'+(dd<=0?'var(--success)':'var(--danger)')+'">'+(dd<=0?'▼':'▲')+Math.abs(dd).toFixed(1)+' จุด vs เมื่อวาน</span></span></div>'
      +'<svg viewBox="0 0 '+w+' '+hh+'" preserveAspectRatio="none" width="100%" height="'+hh+'" style="display:block;margin-top:4px"><polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.6"/></svg></div>';
    }
    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'
