@@ -8792,11 +8792,11 @@ function renderOvMarginCards(o){
   var _plbl=M07_MARGIN.cost.prev_label||'เดือนก่อน';
   /* ▲▼ จุด% เทียบเดือนก่อน — ต้นทุนลดลง = ดี = เขียว */
   function _dlt(cur,prev){
-   if(prev==null||prev===undefined) return '';
-   var d=cur-prev; if(Math.abs(d)<0.05) d=0;
-   var col=d<0?'var(--success)':(d>0?'var(--danger)':'var(--text3)');
-   var ar=d<0?'▼':(d>0?'▲':'–');
-   return '<div style="font-size:9px;font-weight:700;color:'+col+';margin-top:1px">'+ar+Math.abs(d).toFixed(1)+' จุด <span style="color:var(--text3);font-weight:500">vs '+escH(_plbl)+'</span></div>';
+   if(prev==null||prev===undefined||prev===0) return '';
+   var pc=(cur-prev)/prev*100; if(Math.abs(pc)<0.05) pc=0;
+   var col=pc<0?'var(--success)':(pc>0?'var(--danger)':'var(--text3)');
+   var ar=pc<0?'▼':(pc>0?'▲':'–');
+   return '<div style="font-size:9px;font-weight:700;color:'+col+';margin-top:1px">'+ar+Math.abs(pc).toFixed(1)+'% <span style="color:var(--text3);font-weight:500">vs '+escH(_plbl)+'</span></div>';
   }
   function _cc(lbl,val,pct,col,ppct){return '<div style="flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 12px"><div style="font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">'+lbl+'</div><div style="font-size:15px;font-weight:900;color:'+col+';line-height:1.1;margin-top:2px">'+pct.toFixed(1)+'% <span style="font-size:10px;font-weight:600;color:var(--text3)">'+fmtCard(val)+'</span></div>'+(ppct!=null?_dlt(pct,ppct):'')+'</div>';}
   /* ปุ่ม toggle */
@@ -8813,6 +8813,9 @@ function renderOvMarginCards(o){
  /* ── M07 Margin รายวัน (ไม่หักเงินเดือน) — กราฟแท่ง ขึ้นเขียว/ลงแดง ── */
  if(typeof M07_DAILY!=='undefined'){
   var _dts=Object.keys(M07_DAILY).sort();
+  /* กรองเฉพาะเดือนที่เลือก (ถ้าเลือกเดือนเดียว) — ทั้งหมด/กำหนดเอง = โชว์ทุกวัน */
+  try{var _ym=(typeof FORECAST_ENGINE!=='undefined')?FORECAST_ENGINE._ym(o.month):null;
+   if(_ym){var _pfxM=_ym[0]+'-'+(_ym[1]<10?'0':'')+_ym[1];_dts=_dts.filter(function(d){return d.indexOf(_pfxM)===0;});}}catch(e){}
   if(_dts.length>=2){
    var _vals=_dts.map(function(d){return M07_DAILY[d].m||0;});
    var _last=_vals[_vals.length-1], _prev=_vals[_vals.length-2];
