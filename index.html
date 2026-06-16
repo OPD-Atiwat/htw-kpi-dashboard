@@ -4763,8 +4763,24 @@ STATE.lbProduct=_lbProdForMult;
    var _mk13Prev=opdRows.map(function(r){var d=parseInt(r.d.split('-')[2],10);return _mk13PrevMap[d]||null;});
    /* 7-day MA */
    var _mk13MA=_mk13Total.map(function(v,i){var sl=_mk13Total.slice(Math.max(0,i-6),i+1);return Math.round(sl.reduce(function(a,b){return a+b;},0)/sl.length);});
+   /* วันหยุด/นักขัตฤกษ์ ไทย 2026 (วันคงที่ — แก้/เพิ่มได้) */
+   var _TH_HOLIDAYS={'2026-01-01':1,'2026-04-06':1,'2026-04-13':1,'2026-04-14':1,'2026-04-15':1,'2026-05-01':1,'2026-05-04':1,'2026-06-03':1,'2026-07-28':1,'2026-08-12':1,'2026-10-13':1,'2026-10-23':1,'2026-12-05':1,'2026-12-10':1,'2026-12-31':1};
+   var _mk13DayInfo=opdRows.map(function(r){var _dt=new Date(r.d+'T00:00:00');var _wd=_dt.getDay();return {weekend:(_wd===0||_wd===6),holiday:!!_TH_HOLIDAYS[r.d]};});
+   /* plugin: แรเงาเสาร์-อาทิตย์ (เทา) + นักขัตฤกษ์ (แดงอ่อน) */
+   var _mk13Bands={id:'mk13bands',beforeDatasetsDraw:function(ch){
+     var xs=ch.scales.x,a=ch.chartArea,ctx=ch.ctx; if(!xs||!a)return;
+     var step=xs.width/Math.max(1,_mk13DayInfo.length);
+     ctx.save();
+     _mk13DayInfo.forEach(function(di,i){ if(!di.weekend&&!di.holiday)return;
+       var cx=xs.getPixelForValue(i), x0=cx-step/2, w=step;
+       ctx.fillStyle=di.holiday?'rgba(220,38,38,0.10)':'rgba(100,116,139,0.09)';
+       ctx.fillRect(x0,a.top,w,a.bottom-a.top);
+     });
+     ctx.restore();
+   }};
    var _datasets=[
-    {label:'ยอดรวม ('+month+')',data:_mk13Total,borderColor:'#4aeabc',backgroundColor:'rgba(74,234,188,0.08)',fill:true,tension:0.4,pointRadius:0,pointHoverRadius:4,borderWidth:2.5},
+    {label:'ยอดรวม ('+month+')',data:_mk13Total,borderColor:'#16A34A',backgroundColor:'rgba(74,234,188,0.07)',fill:true,tension:0.35,pointRadius:0,pointHoverRadius:4,borderWidth:2.6,
+     segment:{borderColor:function(ctx){return (ctx.p1.parsed.y>=ctx.p0.parsed.y)?'#16A34A':'#DC2626';}}},
     {label:'7d MA',data:_mk13MA,borderColor:'#f5a623',backgroundColor:'transparent',fill:false,tension:0.4,pointRadius:0,borderWidth:1.5,borderDash:[5,3]}
    ];
    if(_mk13PrevPfx){
@@ -4776,6 +4792,7 @@ STATE.lbProduct=_lbProdForMult;
    STATE.charts.ovMk13Total=new Chart(_mk13Cvs.getContext('2d'),{
     type:'line',
     data:{labels:_mk13Labels,datasets:_datasets},
+    plugins:[_mk13Bands],
     options:{responsive:true,maintainAspectRatio:false,
      interaction:{mode:'index',intersect:false},
      plugins:{
