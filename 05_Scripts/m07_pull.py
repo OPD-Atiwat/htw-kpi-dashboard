@@ -27,7 +27,32 @@ def fetch_margin(is_consign_group, start, end):
         "actual": round(d.get("margin_fix_cost_production", 0)),       # Profit ก่อน Fix Cost ผลิต
         "fc":     round(d.get("margin_not_del_fix_cost_production", 0)),  # ประเมินทั้งเดือน
         "sale":   round(d.get("sale_total", 0)),
+        # ต้นทุน (ขอเพิ่ม): MKT / VAR / FIX + %
+        "mkt":     round(d.get("mkt_cost_total", 0)),
+        "mkt_pct": round(d.get("mkt_cost_percentage", 0), 2),
+        "var":     round(d.get("var_cost_total", 0)),
+        "var_pct": round(d.get("var_cost_total_percentage", 0), 2),
+        "fix":     round(d.get("fixed_cost_total_not_production", 0)),
+        "fix_pct": round(d.get("fix_cost_total_percentage_not_production", 0), 2),
     }
+
+DAILY_START = datetime.date(2026, 3, 1)   # backfill ตั้งแต่ 1 มี.ค. 26
+
+def read_var(html, name):
+    m = re.search(r"var %s = (\{.*?\});" % name, html)
+    return json.loads(m.group(1)) if m else None
+
+def write_var(html, name, obj):
+    new = "var %s = %s;" % (name, json.dumps(obj, ensure_ascii=False, separators=(",", ":")))
+    return re.subn(r"var %s = \{.*?\};" % name, new, html, count=1)
+
+def daily_entry(day):
+    """margin (ไม่หักเงินเดือน) + ต้นทุนของวันเดียว — view ไม่รวม Consignment (online)"""
+    d = fetch_margin(1, day, day)
+    return {"m": d["actual"], "sale": d["sale"],
+            "mkt": d["mkt"], "mkt_pct": d["mkt_pct"],
+            "var": d["var"], "var_pct": d["var_pct"],
+            "fix": d["fix"], "fix_pct": d["fix_pct"]}
 
 def main():
     today = datetime.date.today()
@@ -35,34 +60,68 @@ def main():
     end   = today.strftime("%Y-%m-%d")
     print(f"M07 pull {start} → {end}")
 
+    # prev month ช่วงเดียวกัน (1 → วันเดียวกัน)
+    import calendar
+    pmy, pmm = (today.year, today.month-1) if today.month > 1 else (today.year-1, 12)
+    pnd = min(today.day, calendar.monthrange(pmy, pmm)[1])
+    pstart = f"{pmy}-{pmm:02d}-01"; pend = f"{pmy}-{pmm:02d}-{pnd:02d}"
+    _THm = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."]
+
+    # ── 1) M07_MARGIN (MTD + ต้นทุน 2 view + เทียบเดือนก่อน) ──
     online = fetch_margin(1, start, end)
     total  = fetch_margin(2, start, end)
-    consign = {"actual": total["actual"] - online["actual"],
-               "fc":     total["fc"]     - online["fc"]}
-
+    online_p = fetch_margin(1, pstart, pend)
+    total_p  = fetch_margin(2, pstart, pend)
+    def costobj(d):
+        return {"mkt": d["mkt"], "mkt_pct": d["mkt_pct"], "var": d["var"],
+                "var_pct": d["var_pct"], "fix": d["fix"], "fix_pct": d["fix_pct"]}
     M = {
-        "online":  {"goal": GOALS["online"],  "actual": online["actual"],  "fc": online["fc"]},
-        "consign": {"goal": GOALS["consign"], "actual": consign["actual"], "fc": consign["fc"]},
-        "total":   {"goal": GOALS["total"],   "actual": total["actual"],   "fc": total["fc"]},
+        "online":  {"goal": GOALS["online"],  "actual": online["actual"], "fc": online["fc"]},
+        "consign": {"goal": GOALS["consign"], "actual": total["actual"]-online["actual"], "fc": total["fc"]-online["fc"]},
+        "total":   {"goal": GOALS["total"],   "actual": total["actual"],  "fc": total["fc"]},
+        # ต้นทุน 2 view (ไม่รวม/รวม Consignment) + เดือนก่อนช่วงเดียวกัน
+        "cost": {"excl": costobj(online), "incl": costobj(total),
+                 "prev_excl": costobj(online_p), "prev_incl": costobj(total_p),
+                 "prev_label": _THm[pmm-1] + " 1-" + str(pnd)},
         "updated": end,
     }
-    print("  Online :", M["online"])
-    print("  Consign:", M["consign"])
-    print("  Total  :", M["total"])
+    print("  MTD Total:", M["total"])
+    print("  cost excl:", M["cost"]["excl"], "| incl:", M["cost"]["incl"])
 
-    new_var = "var M07_MARGIN = " + json.dumps(M, ensure_ascii=False, separators=(",", ":")) + ";"
     with open(HTML, encoding="utf-8") as f:
         html = f.read()
-    new_html, n = re.subn(r"var M07_MARGIN = \{.*?\};", new_var, html, count=1)
+
+    new_html, n = write_var(html, "M07_MARGIN", M)
     if n != 1:
-        print("  ⚠️  ไม่พบ var M07_MARGIN ใน index.html — ข้าม")
-        return
-    if new_html != html:
-        with open(HTML, "w", encoding="utf-8") as f:
-            f.write(new_html)
-        print("  ✅ อัปเดต M07_MARGIN ใน index.html แล้ว")
+        print("  ⚠️  ไม่พบ var M07_MARGIN — ข้าม"); return
+    html = new_html
+
+    # ── 2) M07_DAILY (รายวัน — self-backfill ตั้งแต่ 1 มี.ค.) ──
+    daily = read_var(html, "M07_DAILY") or {}
+    want = []
+    d = DAILY_START
+    while d <= today:
+        ds = d.strftime("%Y-%m-%d")
+        # เติมวันที่ขาด + refresh 2 วันล่าสุดเสมอ (ยอดวันนี้/เมื่อวานยังขยับ)
+        if ds not in daily or (today - d).days <= 1:
+            want.append(ds)
+        d += datetime.timedelta(days=1)
+    print(f"  M07_DAILY: ต้องดึง {len(want)} วัน (มีแล้ว {len(daily)})")
+    for ds in want:
+        try:
+            daily[ds] = daily_entry(ds)
+        except Exception as e:
+            print(f"    {ds} fail: {e}")
+    new_html2, n2 = write_var(html, "M07_DAILY", daily)
+    if n2 == 1:
+        html = new_html2
+        print(f"  ✅ M07_DAILY {len(daily)} วัน")
     else:
-        print("  (ไม่มีการเปลี่ยนแปลง)")
+        print("  ⚠️  ไม่พบ var M07_DAILY — ข้าม (เพิ่ม var M07_DAILY = {}; ใน index.html)")
+
+    with open(HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+    print("  ✅ อัปเดต index.html แล้ว")
 
 if __name__ == "__main__":
     try:
