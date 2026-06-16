@@ -4460,9 +4460,13 @@ function renderOverview(data){
    }
   };
 
+  /* แรเงาเสาร์-อาทิตย์/นักขัตฤกษ์ (เหมือนกราฟ MK13) */
+  var _TH_HOL2={'2026-01-01':1,'2026-04-06':1,'2026-04-13':1,'2026-04-14':1,'2026-04-15':1,'2026-05-01':1,'2026-05-04':1,'2026-06-03':1,'2026-07-28':1,'2026-08-12':1,'2026-10-13':1,'2026-10-23':1,'2026-12-05':1,'2026-12-10':1,'2026-12-31':1};
+  var _chBandInfo=cLabels.map(function(l){var p=(l||'').split('/');var ds='2026-'+p[1]+'-'+p[0];var dt=new Date(ds+'T00:00:00');var wd=dt.getDay();return {weekend:(wd===0||wd===6),holiday:!!_TH_HOL2[ds]};});
+  var _chBands={id:'chbands',beforeDatasetsDraw:function(ch){var xs=ch.scales.x,a=ch.chartArea,ctx=ch.ctx;if(!xs||!a)return;var step=xs.width/Math.max(1,_chBandInfo.length);ctx.save();_chBandInfo.forEach(function(di,i){if(!di.weekend&&!di.holiday)return;var cx=xs.getPixelForValue(i);ctx.fillStyle=di.holiday?'rgba(220,38,38,0.10)':'rgba(100,116,139,0.09)';ctx.fillRect(cx-step/2,a.top,step,a.bottom-a.top);});ctx.restore();}};
   STATE.charts.ovChTrend=new Chart(chTrendCvs.getContext('2d'),{
    type:'line',
-   plugins:[_ovTrendPlugin],
+   plugins:[_ovTrendPlugin,_chBands],
    data:{labels:cLabels,datasets:[
     {label:'Meta',  data:_metaD,borderColor:'#1877F2',backgroundColor:'rgba(24,119,242,0.07)',fill:'origin',tension:0.4,pointRadius:0,borderWidth:2.5},
     {label:'TikTok (รวม Affi)',data:_ttD,  borderColor:'#1a1a1a',backgroundColor:'rgba(0,0,0,0.04)',  fill:'origin',tension:0.4,pointRadius:0,borderWidth:2.5},
@@ -6424,8 +6428,10 @@ function cbAdGalOpen(idx){
 }
 
 /* ── ดาวรุ่ง 3 วันล่าสุด — content ที่ perform ดีสุด + ติด TAG ใหม่ ── */
+function toggleTop3New(){ window._top3NewOnly=!window._top3NewOnly; if(window._top3LastData) renderTop3Days(window._top3LastData); }
 function renderTop3Days(data){
  var el=document.getElementById('top3d-section'); if(!el) return;
+ window._top3LastData=data;
  var today=new Date().toISOString().slice(0,10);
  var rows=(data||[]).filter(function(r){return r.ad_date && r.ad_date<=today && r.creator!=='Central';});
  if(!rows.length){el.innerHTML='';return;}
@@ -6450,7 +6456,7 @@ function renderTop3Days(data){
     c.roas=c.spend>0?c.rev/c.spend:0;
     c.disp=avgDays>1?c.rev/avgDays:c.rev;            /* เฉลี่ย/วัน ถ้า 3 วัน */
     c.newMonth=c.launch&&c.launch.slice(0,7)===curMonth;
-    return c;}).filter(function(c){return c.rev>0;})
+    return c;}).filter(function(c){return c.rev>0 && (!window._top3NewOnly || c.newMonth);})
     .sort(function(a,b){return b.disp-a.disp;}).slice(0,5);
  }
  var colToday=_agg([latest],1);
@@ -6483,7 +6489,9 @@ function renderTop3Days(data){
    +_rowsHtml(list,unit)+'</div>';
  }
  var h='<div style="background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(245,158,11,.02));border:1px solid rgba(245,158,11,.35);border-radius:14px;padding:14px 16px">'
-  +'<div style="font-size:14px;font-weight:800;color:var(--text1);margin-bottom:12px">🚀 แอดที่วิ่งดี <span style="font-size:10px;font-weight:500;color:var(--text3)">· 🆕 = แอดใหม่เดือนนี้</span></div>'
+  +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:14px;font-weight:800;color:var(--text1)">🚀 แอดที่วิ่งดี</span>'
+  +'<button onclick="toggleTop3New()" style="font-family:inherit;font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;cursor:pointer;border:1px solid '+(window._top3NewOnly?'#10B981':'var(--border)')+';background:'+(window._top3NewOnly?'#10B981':'var(--surface)')+';color:'+(window._top3NewOnly?'#fff':'var(--text2)')+'">🆕 เฉพาะใหม่'+(window._top3NewOnly?' ✓':'')+'</button>'
+  +'<span style="font-size:10px;font-weight:500;color:var(--text3)">· 🆕 = แอดใหม่เดือนนี้</span></div>'
   +'<div style="display:flex;gap:16px;flex-wrap:wrap">'
   +_col('📅 ล่าสุดวันนี้','('+latest.slice(5)+')',colToday,'')
   +_col('📊 เฉลี่ย 3 วัน','('+last3[0].slice(5)+'–'+last3[last3.length-1].slice(5)+' · บาท/วัน)',col3,'/วัน')
@@ -6501,7 +6509,8 @@ function renderContent(data){
  filtered=filtered.filter(function(r){return hasVid(r.content_name||r.product||'');});
  }
  if(STATE.newOnly){
- filtered=filtered.filter(function(r){return r.is_new===true;});
+ var _nmMo='';data.forEach(function(r){if(r.ad_date&&r.ad_date.slice(0,7)>_nmMo)_nmMo=r.ad_date.slice(0,7);});
+ filtered=filtered.filter(function(r){return r.is_new===true||(r.launch_date&&r.launch_date.slice(0,7)===_nmMo);});
  }
  if(STATE.tiktokOnly){
  filtered=filtered.filter(function(r){return r.platform==='TikTok';});
