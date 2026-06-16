@@ -6496,8 +6496,11 @@ function renderTop3Days(data){
    var daysBadge='<span style="font-size:8.5px;font-weight:700;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px">วิ่ง '+dRun+' วัน</span>';
    /* เทรนด์รายได้ vs ช่วงก่อน (อยู่ฝั่งขวาคู่กับยอด) */
    var trH='';
-   if(c.trend==='new'||dRun<=1){
+   if(dRun<=1){
     trH='<span style="font-size:8.5px;font-weight:700;color:#0EA5E9">วันแรก</span>';
+   }else if(c.trend==='new'){
+    /* วิ่งหลายวันแล้วแต่ยังไม่มีช่วงก่อนหน้าให้เทียบ → ไม่โชว์ลูกศร (ไม่ใช่วันแรก) */
+    trH='';
    }else if(typeof c.trend==='number'){
     var up=c.trend>=0;var tc=up?'#16A34A':'#DC2626';
     trH='<span style="font-size:9px;font-weight:800;color:'+tc+'">'+(up?'▲':'▼')+Math.abs(c.trend).toFixed(0)+'%</span> <span style="font-size:8px;font-weight:500;color:var(--text3)">รายได้ '+(trendLabel||'')+'</span>';
