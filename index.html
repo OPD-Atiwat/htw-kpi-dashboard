@@ -6441,10 +6441,11 @@ function renderTop3Days(data){
  var last3=dates.slice(-3);
  var last7=dates.slice(-7);
  var curMonth=latest.slice(0,7);
- /* per-content รายวัน (ทุกวันที่มี) → ใช้คำนวณ จำนวนวันที่วิ่ง + เทรนด์เทียบช่วงก่อน */
+ /* per-content รายวัน (ทุกวันที่มี) → ใช้คำนวณ วันที่วิ่ง + เทรนด์ + ROAS/Cost-per-MSG เทียบช่วงก่อน */
  var cDaily={};
- rows.forEach(function(r){var k=r.content_name||r.product||'–';(cDaily[k]||(cDaily[k]={}));cDaily[k][r.ad_date]=(cDaily[k][r.ad_date]||0)+(r.revenue_thb||0);});
- function _sumRev(k,ds){var s=0,n=0;ds.forEach(function(d){if(cDaily[k]&&cDaily[k][d]!=null){s+=cDaily[k][d];n++;}});return{sum:s,n:n};}
+ rows.forEach(function(r){var k=r.content_name||r.product||'–';var m=(cDaily[k]||(cDaily[k]={}));var e=m[r.ad_date]||(m[r.ad_date]={rev:0,spend:0,msg:0});
+  e.rev+=r.revenue_thb||0; e.spend+=r.spend_thb||0; e.msg+=r.messages||0;});
+ function _sumRev(k,ds){var rev=0,spend=0,msg=0,n=0;ds.forEach(function(d){if(cDaily[k]&&cDaily[k][d]){var e=cDaily[k][d];rev+=e.rev;spend+=e.spend;msg+=e.msg;n++;}});return{sum:rev,rev:rev,spend:spend,msg:msg,n:n};}
  var _f=function(v){return v>=1000?'฿'+(v/1000).toFixed(1)+'K':'฿'+Math.round(v);};
  var _rc=function(r){return r>=2?'#16A34A':r>=1?'#EA580C':'#DC2626';};
  /* aggregate content ใน subset วันที่ → list เรียงตาม revenue (avgDays= หารเฉลี่ย/วัน) */
@@ -6453,20 +6454,23 @@ function renderTop3Days(data){
   rows.forEach(function(r){
    if(dateSet.indexOf(r.ad_date)<0) return;
    var k=r.content_name||r.product||'–';
-   var c=cm[k]||(cm[k]={name:k,creator:r.creator||'',rev:0,spend:0,pur:0,launch:r.launch_date||''});
-   c.rev+=r.revenue_thb||0; c.spend+=r.spend_thb||0; c.pur+=r.purchases||0;
+   var c=cm[k]||(cm[k]={name:k,creator:r.creator||'',rev:0,spend:0,pur:0,msg:0,launch:r.launch_date||''});
+   c.rev+=r.revenue_thb||0; c.spend+=r.spend_thb||0; c.pur+=r.purchases||0; c.msg+=r.messages||0;
    if(r.launch_date && (!c.launch||r.launch_date>c.launch)) c.launch=r.launch_date;
   });
   return Object.keys(cm).map(function(k){var c=cm[k];
     c.roas=c.spend>0?c.rev/c.spend:0;
+    c.cpmsg=c.msg>0?c.spend/c.msg:null;              /* Cost per MSG */
     c.disp=avgDays>1?c.rev/avgDays:c.rev;            /* เฉลี่ย/วัน ถ้า 3 วัน */
     c.newMonth=c.launch&&c.launch.slice(0,7)===curMonth;
     c.daysRun=cDaily[k]?Object.keys(cDaily[k]).length:0;   /* จำนวนวันที่มียอด (วิ่งมากี่วัน) */
-    /* เทรนด์: ค่าเฉลี่ย/วัน ช่วงนี้ vs ช่วงก่อนหน้าความยาวเท่ากัน */
+    /* เทรนด์ revenue + ROAS change: ช่วงนี้ vs ช่วงก่อนหน้าความยาวเท่ากัน */
     var cur=avgDays>1?c.rev/avgDays:c.rev;
     if(prevSet&&prevSet.length){var pv=_sumRev(k,prevSet);
-     if(pv.n>0){var pAvg=pv.sum/prevSet.length;c.trend=pAvg>0?(cur-pAvg)/pAvg*100:null;}else c.trend='new';}
-    else c.trend='new';
+     if(pv.n>0){var pAvg=pv.sum/prevSet.length;c.trend=pAvg>0?(cur-pAvg)/pAvg*100:null;
+      var pRoas=pv.spend>0?pv.rev/pv.spend:null;c.roasChg=(pRoas!=null)?(c.roas-pRoas):null;}
+     else {c.trend='new';c.roasChg=null;}}
+    else {c.trend='new';c.roasChg=null;}
     return c;}).filter(function(c){return c.rev>0 && (!window._top3NewOnly || c.newMonth);})
     .sort(function(a,b){return b.disp-a.disp;}).slice(0,5);
  }
@@ -6497,15 +6501,20 @@ function renderTop3Days(data){
     var up=c.trend>=0;var tc=up?'#16A34A':'#DC2626';
     trH='<span style="font-size:9px;font-weight:800;color:'+tc+'">'+(up?'▲':'▼')+Math.abs(c.trend).toFixed(0)+'% <span style="font-weight:500;color:var(--text3)">'+(trendLabel||'')+'</span></span>';
    }
+   /* Cost per MSG */
+   var msgBadge=(c.cpmsg!=null)?'<span style="font-size:8.5px;font-weight:700;color:#7C3AED;background:rgba(124,58,237,.10);border-radius:4px;padding:1px 5px">MSG ฿'+(c.cpmsg>=100?Math.round(c.cpmsg):c.cpmsg.toFixed(1))+'</span>':'';
+   /* ROAS change vs ช่วงก่อน */
+   var roasChgH='';
+   if(typeof c.roasChg==='number'&&Math.abs(c.roasChg)>=0.01){var ru=c.roasChg>=0;roasChgH='<span style="font-size:8.5px;font-weight:800;color:'+(ru?'#16A34A':'#DC2626')+'">'+(ru?'▲':'▼')+Math.abs(c.roasChg).toFixed(2)+'</span>';}
    return '<div onclick="showContentDetail('+JSON.stringify(c.name).replace(/"/g,'&quot;')+')" style="cursor:pointer;display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-bottom:7px" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
     +'<span style="flex-shrink:0">'+medal+'</span>'
     +'<div style="flex:1;min-width:0">'
      +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">'+tag+'<span style="font-size:9.5px;font-weight:700;color:var(--text3)">'+escH(who)+'</span></div>'
      +'<div style="font-size:11.5px;font-weight:700;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(nm)+'</div>'
-     +'<div style="display:flex;align-items:center;gap:6px;margin-top:3px">'+daysBadge+trH+'</div>'
+     +'<div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">'+daysBadge+msgBadge+trH+'</div>'
     +'</div>'
     +'<div style="text-align:right;flex-shrink:0"><div style="font-size:15px;font-weight:900;color:#2563EB;line-height:1.1">'+_f(c.disp)+'<span style="font-size:9px;font-weight:600;color:var(--text3)">'+(unitSuffix||'')+'</span></div>'
-     +'<div style="font-size:10px;font-weight:800;color:'+_rc(c.roas)+'">'+c.roas.toFixed(2)+'x</div></div>'
+     +'<div style="display:flex;align-items:center;justify-content:flex-end;gap:4px"><span style="font-size:10px;font-weight:800;color:'+_rc(c.roas)+'">'+c.roas.toFixed(2)+'x</span>'+roasChgH+'</div></div>'
     +'</div>';
   }).join('')||'<div style="font-size:11px;color:var(--text3);padding:8px">ไม่มีข้อมูล</div>';
  }
