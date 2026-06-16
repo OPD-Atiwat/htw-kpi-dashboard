@@ -6855,6 +6855,8 @@ function renderCreatorTop5(arr){
     var short=dispName.length>42?dispName.substring(0,42)+'…':dispName;
     var platCls=c.platform==='Meta'?'badge-meta':'badge-tiktok';
     var roas=c.spend>0?(c.rev/c.spend).toFixed(1)+'x':'–';
+    var _cpm=(c.msg>0)?(c.spend/c.msg):null;
+    var cpmStr=(_cpm!=null)?('MSG ฿'+(_cpm>=100?fmtNum(Math.round(_cpm)):_cpm.toFixed(1))):'';
     var isLast=(i===items.length-1);
     var rankStr=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
     /* ใช้ openDetailFromContent(cacheIdx) — index ใน _CONTENT_CACHE ปลอดภัยกว่าส่ง string ใน onclick */
@@ -6868,6 +6870,7 @@ function renderCreatorTop5(arr){
       '<span class="plat-badge '+platCls+'" style="font-size:9px;padding:0 5px;line-height:15px">'+escH(c.platform)+'</span>'+
       '<span style="font-size:10px;font-weight:700;color:var(--text1)">'+fmtFull(c.rev)+'</span>'+
       '<span style="font-size:9.5px;color:var(--text3)">ROAS '+roas+'</span>'+
+      (cpmStr?'<span style="font-size:9px;font-weight:700;color:#7C3AED;background:rgba(124,58,237,.10);border-radius:4px;padding:0 5px">'+cpmStr+'</span>':'')+
      '</div>'+
     '</div>'+
     '</div>';
