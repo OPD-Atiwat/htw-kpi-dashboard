@@ -739,22 +739,6 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
 <div id="sticky-summary" style="display:none;margin-left:auto;gap:8px;align-items:center;flex-shrink:0;padding-right:2px"></div>
 </nav>
 
-<!-- STICKY MARGIN GOAL BAR (hardcoded) -->
-<div id="margin-sticky-bar" style="position:sticky;top:0;z-index:40;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-sm);padding:10px 16px;margin:10px 0 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center">
- <span style="font-size:12px;font-weight:800;color:var(--text1)">เป้า Margin</span>
- <div style="display:flex;flex-direction:column;border-left:3px solid #2563EB;padding-left:10px">
-  <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Online</span>
-  <span style="font-size:14px;font-weight:900;color:var(--text1)">฿525,664 <span style="font-size:11px;font-weight:700;color:#16A34A">/ ฿174,000 · 302%</span></span>
- </div>
- <div style="display:flex;flex-direction:column;border-left:3px solid #D97706;padding-left:10px">
-  <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Consignment</span>
-  <span style="font-size:14px;font-weight:900;color:var(--text1)">฿530,690 <span style="font-size:11px;font-weight:700;color:#16A34A">/ ฿560,000 · 95%</span></span>
- </div>
- <div style="display:flex;flex-direction:column;border-left:3px solid #16A34A;padding-left:10px;margin-left:auto">
-  <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">รวม (Online + Consign)</span>
-  <span style="font-size:16px;font-weight:900;color:#16A34A">฿1,056,354 <span style="font-size:11px;font-weight:700;color:var(--text2)">/ ฿734,000 · 144%</span></span>
- </div>
-</div>
 
 <!-- =================== TAB: OVERVIEW =================== -->
 <div class="tab-pane active" id="tab-overview">
@@ -781,8 +765,10 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <!-- -->
  <!-- SECTION 1B — GOAL MARGIN -->
  <!-- -->
- <div class="ov-sec"><span class="ov-sec-label">Goal Margin</span></div>
- <div id="ov-row-margin" style="margin-bottom:24px"></div>
+ <div id="goal-margin-sticky" style="position:sticky;top:0;z-index:30;background:var(--bg);padding:8px 0;margin-bottom:24px;box-shadow:0 4px 10px -8px rgba(0,0,0,.25)">
+  <div class="ov-sec" style="margin-bottom:6px"><span class="ov-sec-label">Goal Margin</span></div>
+  <div id="ov-row-margin"></div>
+ </div>
 
  <!-- SECTION 2 — REVENUE BY CATEGORY -->
  <!-- -->
@@ -8762,25 +8748,19 @@ function renderOvMarginCards(o){
  h+=mgCard({
   title:'Online', color:'var(--accent)',
   revGoal:onlineRevGoal, revActual:onlineRevAct, fc:o.onlineForecast,
-  profitGoal:o.onlineProfitGoal||0,
-  profit:o.onlineProfitActual,
-  profitFc:o.onlineProfitFc!=null?o.onlineProfitFc:null,
+  profitGoal:174000, profit:364935, profitFc:525664,   /* hardcode เป้า Margin */
   marginPct:null
  });
  h+=mgCard({
   title:'Consignment & Distrib.', color:'#9333EA',
   revGoal:consignRevGoal, revActual:consignRevAct, fc:o.consignForecast,
-  profitGoal:o.consignProfitGoal||0,
-  profit:o.consignProfitActual,
-  profitFc:o.consignProfitFc!=null?o.consignProfitFc:null,
+  profitGoal:560000, profit:266556, profitFc:530690,   /* hardcode เป้า Margin */
   marginPct:null
  });
  h+=mgCard({
   title:'Total Brand', color:'#0EA5E9',
   revGoal:totalRevGoal, revActual:totalRevAct, fc:o.totalForecast,
-  profitGoal:o.profitGoal||0,
-  profit:o.profitActual||0,
-  profitFc:o.profitFc!=null?o.profitFc:null,
+  profitGoal:734000, profit:631491, profitFc:1056354,   /* hardcode เป้า Margin */
   marginPct:null
  });
  h+='</div>';
