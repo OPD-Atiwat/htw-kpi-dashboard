@@ -8844,7 +8844,7 @@ function renderOvMarginCards(o){
    h+='<div style="margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px">'
     +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span style="font-size:12px;font-weight:800;color:var(--text1)">Margin รายวัน (ไม่หักเงินเดือน)</span>'
     +'<span style="font-size:10px;color:var(--text3)">'+_dts[0].slice(5)+' – '+_dts[_dts.length-1].slice(5)+'</span>'
-    +'<span style="margin-left:auto;font-size:13px;font-weight:900;color:'+(_last>=0?'var(--success)':'var(--danger)')+'">'+fmtCard(_last)+(_dc!=null?' <span style="font-size:10px">'+(_dc>=0?'▲':'▼')+Math.abs(_dc).toFixed(0)+'%</span>':'')+'</span></div>'
+    +'<span style="margin-left:auto;font-size:13px;font-weight:900;color:'+(_last>=0?'var(--success)':'var(--danger)')+'">'+fmtCard(_last)+'<span style="font-size:10px;font-weight:700;color:'+((_last-_prev)>=0?'var(--success)':'var(--danger)')+'"> '+((_last-_prev)>=0?'▲':'▼')+fmtCard(Math.abs(_last-_prev))+' vs เมื่อวาน</span></span></div>'
     +'<div style="overflow-x:auto"><svg viewBox="0 0 '+_W+' '+_H+'" width="'+_W+'" height="'+_H+'" style="display:block;max-width:none">'+_grid+_zero+_ticks+_bars+'</svg></div>'
     +'<div style="font-size:9px;color:var(--text3);margin-top:3px">เลื่อนซ้าย-ขวาเพื่อดูทุกวัน · ชี้แท่งดูยอดรายวัน</div>';
    /* ── ต้นทุนรายวัน: %MKT / %VAR / %Fix (sparkline) ── */
