@@ -8716,16 +8716,19 @@ function renderOvMarginCards(o){
  var hasPd=o.profitGoal>0||o.profitActual>0;
 
  function mgCard(cfg){
-  var goal=cfg.revGoal||0, actual=cfg.revActual||0;
-  var fc=cfg.fc;
-  var ach=goal>0?(actual/goal*100):null;
-  /* FC ≥ Goal (เดือนยังไม่จบ) → เขียว เหมือน card อื่น ไม่ยึด ach ที่ยังต่ำกลางเดือน */
-  var beat=(!o.isFinal && fc!=null && goal>0 && fc>=goal);
-  var achCol=beat?'var(--success)':getAchCol(ach);
-  var cardBg=fcCardBg(fc,goal,ach,o.isFinal||false);
-  var borderCol=beat?'var(--success)':getAchCol(ach);
-  var achStr=ach!==null?ach.toFixed(1)+'%':'–';
-  var barW=ach!==null?Math.min(ach,110).toFixed(0):'0';
+  /* การ์ดนี้คือ GOAL MARGIN → สี+headline ยึด "กำไร (margin)" FC vs Goal ไม่ใช่ยอดขาย */
+  var goal=cfg.profitGoal||0;
+  var pAct=cfg.profit, pFc=cfg.profitFc;
+  var pAch=(goal>0&&pAct!=null)?(pAct/goal*100):null;        /* actual ach */
+  var pFcAch=(goal>0&&pFc!=null)?(pFc/goal*100):null;        /* fc ach */
+  /* เดือนยังไม่จบ → ยึด FC margin; เดือนจบแล้ว → ยึด actual margin */
+  var beat=(!o.isFinal&&pFc!=null&&goal>0&&pFc>=goal)||(o.isFinal&&pAct!=null&&goal>0&&pAct>=goal);
+  var headAch=(!o.isFinal&&pFcAch!=null)?pFcAch:pAch;        /* headline % = FC ach กลางเดือน, actual ach เมื่อจบ */
+  var achCol=beat?'var(--success)':getAchCol(headAch);
+  var cardBg=fcCardBg(o.isFinal?pAct:pFc,goal,pAch,o.isFinal||false);
+  var borderCol=achCol;
+  var achStr=headAch!=null?headAch.toFixed(1)+'%':'–';
+  var barW=headAch!=null?Math.min(headAch,110).toFixed(0):'0';
   var diff=goal>0&&actual>0?(actual-goal):null;
   var diffCol=diff>=0?C_DIFF_POS:C_DIFF_NEG;
   var diffStr=diff!==null?((diff>=0?'+':'−')+fmtCard(Math.abs(diff))):'';
