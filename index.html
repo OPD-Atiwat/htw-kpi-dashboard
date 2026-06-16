@@ -9039,6 +9039,8 @@ function makeChannelCard(cfg){
 }
 
 /* Row 3: Channel Panel — no fixed header, inline labels, sub-cards */
+/* MK01 Margin (ไม่หักเงินเดือน) ราย channel — seed จาก MK01 1-15 มิ.ย. (auto-pull ภายหลัง) */
+var MK01_MARGIN_CH = {"Meta":{"m":-10951,"fc":49270},"TikTok":{"m":337840,"fc":798008},"Shopee":{"m":360983,"fc":773560},"อื่นๆ":{"m":-92,"fc":60},"updated":"2026-06-16"};
 function renderOvChannelCards(o){
  var el=document.getElementById('ov-row-channels');
  if(!el) return;
@@ -9203,6 +9205,15 @@ function renderOvChannelCards(o){
  h+='</div>';
  }
 
+ /* Margin ไม่หักเงินเดือน + FC (MK01) */
+ var _mk=(typeof MK01_MARGIN_CH!=='undefined')?MK01_MARGIN_CH[ch.title]:null;
+ if(_mk){
+  var _mc=_mk.m>=0?'var(--success)':'var(--danger)';
+  h+='<div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--border);margin-top:5px;padding-top:5px">'
+   +'<span style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Margin (ไม่หักเงินเดือน)</span>'
+   +'<span style="font-size:12px;font-weight:900;color:'+_mc+'">'+fmtCard(_mk.m)+' <span style="font-size:9px;font-weight:600;color:#7C3AED">· FC '+fmtCard(_mk.fc)+'</span></span>'
+   +'</div>';
+ }
  h+='</div>'; /* end card */
  });
 
