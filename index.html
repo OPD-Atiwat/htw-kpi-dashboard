@@ -8666,7 +8666,7 @@ function ovUpdateStickyBar(o){
   +_c('ของเป้า',ach!=null?ach.toFixed(1)+'%':'–',achCol)
   +'<span style="width:1px;height:24px;background:var(--border);margin:0 2px"></span>'
   +'<span style="font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase">Margin</span>'
-  +_mg('Online',364935,174000)+_mg('Consign',266556,560000)+_mg('รวม',631491,734000);
+  +_mg('Online',359212,174000)+_mg('Consign',266736,560000)+_mg('รวม',625948,734000);
 }
 
 /* Row 2: Category Cards — Online | Consign | Bookfair */
@@ -8762,19 +8762,19 @@ function renderOvMarginCards(o){
  h+=mgCard({
   title:'Online', color:'var(--accent)',
   revGoal:onlineRevGoal, revActual:onlineRevAct, fc:o.onlineForecast,
-  profitGoal:174000, profit:364935, profitFc:525664,   /* hardcode เป้า Margin */
+  profitGoal:174000, profit:359212, profitFc:557887,   /* M07 1-15 มิ.ย. (ไม่รวม Consign) */
   marginPct:null
  });
  h+=mgCard({
   title:'Consignment & Distrib.', color:'#9333EA',
   revGoal:consignRevGoal, revActual:consignRevAct, fc:o.consignForecast,
-  profitGoal:560000, profit:266556, profitFc:530690,   /* hardcode เป้า Margin */
+  profitGoal:560000, profit:266736, profitFc:488928,   /* M07 1-15 มิ.ย. (Consign = รวม − Online) */
   marginPct:null
  });
  h+=mgCard({
   title:'Total Brand', color:'#0EA5E9',
   revGoal:totalRevGoal, revActual:totalRevAct, fc:o.totalForecast,
-  profitGoal:734000, profit:631491, profitFc:1056354,   /* hardcode เป้า Margin */
+  profitGoal:734000, profit:625948, profitFc:1046815,   /* M07 1-15 มิ.ย. (รวม Consign) */
   marginPct:null
  });
  h+='</div>';
