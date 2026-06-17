@@ -95,9 +95,16 @@ def main():
         if ds not in by_date or (today - d).days <= 1:
             want.append(ds)
         d += datetime.timedelta(days=1)
-    print(f"  M44: ต้องดึง {len(want)} วัน (มีแล้ว {len(by_date)})")
 
-    prod_by = {k: {r["d"]: r for r in v} for k, v in prod.items()}
+    # run แรก (backfill ใหญ่) → replace ทั้งก้อนด้วย M44 ล้วน (กัน key ชื่อเก่าปน/ซ้ำ)
+    FULL = len(want) >= 60
+    if FULL:
+        by_date = {}
+        prod_by = {}
+        print(f"  M44: FULL backfill {len(want)} วัน (replace ADSM ทั้งหมดด้วย M44)")
+    else:
+        prod_by = {k: {r["d"]: r for r in v} for k, v in prod.items()}
+        print(f"  M44: incremental ดึง {len(want)} วัน (มีแล้ว {len(by_date)})")
     ok = 0
     for ds in want:
         try:
