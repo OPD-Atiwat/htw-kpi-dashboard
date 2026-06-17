@@ -26,6 +26,8 @@ w("========================================")
 
 w("[1/5] Meta Ads + MK13 Sync...")
 ok1 = run_py("meta_pull.py")
+w("[1.5] MK13 API top-up (เติมวันที่ Sheet ยังไม่มี)...")
+ok1b = run_py("mk13_pull.py")
 w("[2/5] OPD Pull (Affiliate + Goals)...")
 ok2 = run_py("opd_pull.py")
 w("[2.5] M07 Margin (Actual + FC)...")
@@ -58,6 +60,7 @@ except Exception as _e:
 
 w("--- สรุป ---")
 w(f"  {'OK' if ok1 else 'FAIL'} meta_pull.py")
+w(f"  {'OK' if ok1b else 'FAIL'} mk13_pull.py (top-up)")
 w(f"  {'OK' if ok2 else 'FAIL'} opd_pull.py")
 w(f"  {'OK' if ok2b else 'FAIL'} m07_pull.py")
 w(f"  {'OK' if ok3 else 'FAIL'} kms_pull.py")
