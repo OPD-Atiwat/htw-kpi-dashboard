@@ -10251,7 +10251,8 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   /* %Ads รวม — ใช้ _spend/_rev จาก ADSM44 MKT column (monthly, correct)
      ไม่ตั้งขั้นต่ำ spend — โชว์ทุกเล่มที่มี ad spend จริง (>0) และ rev>0
      (spend=0 → _adsT=0 → ซ่อนโดย guard ด้านล่าง; junk rev=0 ถูกกรอง) */
-  var _adsT=(_pa._spend>0&&_pa._rev>0)?_pa._spend/_pa._rev*100:0;
+  var _adsDenom=(p.actual||0)>0?p.actual:(_pa._rev||0);  /* %Ads รวม = ค่าแอดทั้งหมด ÷ ยอดเล่มทั้งหมด ตาม skill pct-ads-calc */
+  var _adsT=(_pa._spend>0&&_adsDenom>0)?_pa._spend/_adsDenom*100:0;
   var _tsp=_pa._spend||0;
   if(_adsT<=0){
    /* spend=0/ไม่มีข้อมูลแอด → chip เทา "ไม่ยิงแอด" (กันสับสนว่าข้อมูลหาย) คงความกว้าง column */
