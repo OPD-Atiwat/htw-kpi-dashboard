@@ -12510,6 +12510,38 @@ function showProductDetail(pname){
    }
   }catch(_fsErr){}
 
+  /* 📊 Margin รายวัน (ทุกช่อง) แยกเล่ม — วันไหน +/- */
+  try{
+   var _lc4=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
+   var _fk4=function(o){var best=null,bl=0,pl=(pname||'').toLowerCase();for(var k in o){var c=_lc4(k.toLowerCase(),pl);if(c>bl){bl=c;best=k;}}return bl>=12?best:null;};
+   var _o4=(typeof OPD_PROD_DATA!=='undefined')?_fk4(OPD_PROD_DATA):null;
+   var _a4=(typeof ADSM_PROD_DAILY!=='undefined')?_fk4(ADSM_PROD_DAILY):null;
+   var _MN4={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+   var _mk4=((typeof STATE!=='undefined'&&STATE.ovMonth)||'Jun 26').split(' ');
+   var _pfx4=(_mk4.length===2)?('20'+_mk4[1]+'-'+(_MN4[_mk4[0]]||'06')+'-'):'';
+   if(_o4&&_pfx4){
+    var _ac4={}; if(_a4)ADSM_PROD_DAILY[_a4].forEach(function(r){_ac4[r.d]=(_ac4[r.d]||0)+(r.ac||0);});
+    var _od4=OPD_PROD_DATA[_o4];
+    var _dys=Object.keys(_od4).filter(function(x){return x.indexOf(_pfx4)===0;}).sort();
+    if(_dys.length>=2){
+     var _mg=_dys.map(function(dt){var chs=_od4[dt],gp=0;for(var c in chs){gp+=(chs[c]||0)*(1-mgChannelVar(pname,c)/100);}return gp-(_ac4[dt]||0);});
+     var _neg=[]; _mg.forEach(function(v,i){if(v<0)_neg.push(i);});
+     var _hi=Math.max.apply(null,[0].concat(_mg)),_lo=Math.min.apply(null,[0].concat(_mg)),_rg=(_hi-_lo)||1;
+     var _W=900,_Ht=150,_pT=12,_pB=20,_pL=8,_pR=8,_pw=_W-_pL-_pR,_ph=_Ht-_pT-_pB,_st=_pw/_dys.length,_bw=Math.max(4,Math.min(20,_st*0.6));
+     var _yy=function(v){return _pT+(_hi-v)/_rg*_ph;},_z=_yy(0);
+     var _bars=''; _dys.forEach(function(dt,i){var cx=_pL+_st*(i+0.5),v=_mg[i],y=_yy(Math.max(0,v)),h=Math.abs(_yy(v)-_z);
+      _bars+='<rect x="'+(cx-_bw/2).toFixed(1)+'" y="'+(v>=0?y:_z).toFixed(1)+'" width="'+_bw.toFixed(1)+'" height="'+Math.max(0.8,h).toFixed(1)+'" rx="1.5" fill="'+(v>=0?'#16A34A':'#dc2626')+'" opacity=".9"><title>'+dt.slice(5)+' margin '+Math.round(v).toLocaleString()+'</title></rect>';});
+     var _xl=_dys.map(function(dt,i){return (i%Math.ceil(_dys.length/9)===0)?'<text x="'+(_pL+_st*(i+0.5)).toFixed(1)+'" y="'+(_Ht-5)+'" text-anchor="middle" font-size="8" fill="#94a3b8">'+(+dt.slice(8,10))+'</text>':'';}).join('');
+     var H4='<div style="margin-top:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden">';
+     H4+='<div style="background:#0f172a;color:#fff;padding:10px 16px;font-weight:800;font-size:13px">📊 Margin รายวันของเล่มนี้ <span style="font-weight:500;opacity:.7;font-size:11px">· ทุกช่องรวม − ค่าแอด · '+_dys[0].slice(5)+'–'+_dys[_dys.length-1].slice(5)+'</span></div>';
+     H4+='<div style="padding:10px 16px"><div style="font-size:12px;margin-bottom:6px">'+(_neg.length?('<b style="color:#dc2626">⚠️ '+_neg.length+' วันติดลบ</b>: '+_neg.map(function(i){return _dys[i].slice(5);}).join(', ')):'<b style="color:#16A34A">✅ ไม่มีวันติดลบ — ทุกวันกำไรบวก</b>')+'</div>'
+      +'<svg viewBox="0 0 '+_W+' '+_Ht+'" width="100%" height="'+_Ht+'" preserveAspectRatio="none" style="display:block"><line x1="'+_pL+'" y1="'+_z.toFixed(1)+'" x2="'+(_W-_pR)+'" y2="'+_z.toFixed(1)+'" stroke="#cbd5e1" stroke-width="1"/>'+_bars+_xl+'</svg>'
+      +'<div style="font-size:9.5px;color:#94a3b8;margin-top:3px">เขียว=กำไรบวกวันนั้น · แดง=ติดลบ · margin/วัน = รายได้ทุกช่อง×(1−%Var) − ค่าแอดวันนั้น (ADSM44)</div></div></div>';
+     H+=H4;
+    }
+   }
+  }catch(_dmErr){}
+
 /* ── 📈 Daily Margin — Meta (แดง) ต้องให้ Shopee (เขียว) กลบ รายวัน ── */
   try{
    var _dd=(typeof getOpdProdDaily==='function')?getOpdProdDaily(pname,_popFrom,_popTo):{};
