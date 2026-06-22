@@ -12392,15 +12392,30 @@ function showProductDetail(pname){
   var _MGdays=1; try{var _mgF=new Date(_popFrom+'T00:00:00'),_mgT=new Date(_popTo+'T00:00:00');_MGdays=Math.max(1,Math.round((_mgT-_mgF)/86400000)+1);}catch(e){}
   var _mfmt=function(v){var n=Math.round(v);return (n<0?'-฿':'฿')+Math.abs(n).toLocaleString('en-US');};
   var _G='#16A34A',_R='#dc2626',_CCOL={'TikTok':'#111827','TikTok Affi':'#7C3AED','TikTok Live':'#2563EB','Shopee':'#EE4D2D','Shopee Live':'#F97316','Facebook':'#1877F2','Instagram':'#E1306C','LINE':'#06C755','Lazada':'#0F0F7D','YouTube':'#FF0000','หน้าร้าน':'#92400E','Web':'#64748B'};
+  /* %ads ราย channel = อัตราจาก M44 (ad÷st แหล่งเดียวกัน · ไม่หารรายได้ OPD) · กลุ่ม: Meta=fb · TikTok Affi=affi · TikTok Shop/Live=tt · Shopee=sp */
+  var _adR={fb:null,tt:null,affi:null,sp:null};
+  (function(){try{ if(typeof ADSM_PROD_DAILY==='undefined')return;
+   var lc=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
+   var bk=null,bl=0,pl=(pname||'').toLowerCase();
+   for(var k in ADSM_PROD_DAILY){var c=lc(k.toLowerCase(),pl);if(c>bl){bl=c;bk=k;}}
+   if(bl<10)return;
+   var s={fa:0,fs:0,ta:0,ts:0,aa:0,as:0,pa2:0,ps:0};
+   ADSM_PROD_DAILY[bk].forEach(function(r){var dd=String(r.d);if(dd>=_popFrom&&dd<=_popTo){s.fa+=r.fb_ac||0;s.fs+=r.fb_st||0;s.ta+=r.tt_ac||0;s.ts+=r.tt_st||0;s.aa+=r.affi_ac||0;s.as+=r.affi_st||0;s.pa2+=r.sp_ac||0;s.ps+=r.sp_st||0;}});
+   _adR.fb=s.fs>0?s.fa/s.fs*100:null; _adR.tt=s.ts>0?s.ta/s.ts*100:null; _adR.affi=s.as>0?s.aa/s.as*100:null; _adR.sp=s.ps>0?s.pa2/s.ps*100:null;
+  }catch(_e){}})();
+  var _adRateOf=function(p){ if(p==='Facebook'||p==='Shopify')return _adR.fb; if(p==='TikTok Affi')return _adR.affi; if(p==='TikTok'||p==='TikTok Live'||p==='TikTok Shop')return _adR.tt; if(p==='Shopee'||p==='Shopee Live')return _adR.sp; return null; };
   var _rows=[],_metaRow=null,_shMpct=null,_shRev=0;
   platforms.forEach(function(p){var d=platCurrent[p]; if(!d||d.rev<=0) return;
-   var sp=d.spend||0, ads=d.rev>0?(sp/d.rev*100):0, varc=mgChannelVar(pname,p), mBaht=d.rev*(100-varc)/100-sp;
-   _rows.push({p:p,rev:d.rev,sp:sp,ads:ads,varc:varc,mPct:100-varc-ads,mBaht:mBaht});
+   var _rate=_adRateOf(p), ads, sp;
+   if(_rate!=null){ ads=_rate; sp=d.rev*_rate/100; }
+   else { sp=d.spend||0; ads=d.rev>0?(sp/d.rev*100):0; }
+   var varc=mgChannelVar(pname,p), mBaht=d.rev*(100-varc)/100-sp;
+   _rows.push({p:p,rev:d.rev,sp:sp,ads:ads,varc:varc,mPct:100-varc-ads,mBaht:mBaht,hasAd:_rate!=null});
    if(p==='Facebook')_metaRow={ads:ads,mBaht:mBaht,rev:d.rev,sp:sp};
    if(p==='Shopee'||p==='Shopee Live'){_shRev+=d.rev; if(p==='Shopee')_shMpct=100-varc-ads;}
   });
   _rows.sort(function(a,b){return b.mBaht-a.mBaht;});
-  var _off=(typeof _mgRes!=='undefined'&&_mgRes&&_mgRes.baht!=null)?_mgRes.baht:_rows.reduce(function(s,r){return s+r.mBaht;},0);
+  var _off=_rows.reduce(function(s,r){return s+r.mBaht;},0);
   var _perDay=_off/_MGdays, _ok=_perDay>=0, _sc=_ok?_G:_R;
   var _tot=_rows.reduce(function(s,r){return s+r.rev;},0)||1;
   var _mRev=(platCurrent['Facebook']||{}).rev||0, _mSp=(platCurrent['Facebook']||{}).spend||0;
@@ -12461,7 +12476,7 @@ function showProductDetail(pname){
    if(_subR.length){_mgGrp('SUB CHANNEL','#94a3b8'); _subR.forEach(_mgRow);}}
   else{_mgGrp('ราย CHANNEL','#0f172a'); _subR.forEach(_mgRow);}
   H+='</tbody></table>';
-  H+='<div style="padding:6px 16px;font-size:9.5px;color:#94a3b8">%Var ราย channel = ค่าจริงจาก MK01 (19 มิ.ย.69): Meta 23.2% · TikTok 43.5% · Shopee 43.7% (ระดับช่อง ไม่แยกเล่ม) · ช่องที่ MK01 ไม่ครอบคลุม (IG/หน้าร้าน/Web/LINE/YT) = ไม่มีข้อมูล Var แสดง – · %Ads/Ad Spend ในตาราง = <b>ค่าแอด Meta เท่านั้น</b> (TikTok GMV ad ยังไม่แยกราย channel) — ส่วน %Ads ภาพรวมเล่มด้านบนรวม TikTok แล้ว · ตารางนี้เป็น Contribution ราย channel (ยังไม่หักต้นทุนพิมพ์เล่ม)</div>';
+  H+='<div style="padding:6px 16px;font-size:9.5px;color:#94a3b8">%Var ราย channel = ค่าจริงจาก MK01 (19 มิ.ย.69): Meta 23.2% · TikTok 43.5% · Shopee 43.7% (ระดับช่อง ไม่แยกเล่ม) · ช่องที่ MK01 ไม่ครอบคลุม (IG/หน้าร้าน/Web/LINE/YT) = ไม่มีข้อมูล Var แสดง – · %Ads ราย channel = อัตราจริงจาก M44 (Meta=fb_ac÷fb_st · TikTok Affi=affi · TikTok Shop/Live=tt · Shopee=sp) · ช่องไม่มีใน M44 (IG/หน้าร้าน/Web/LINE/YT)=ไม่มีค่าแอด · ตารางนี้เป็น Contribution (var MK01 + ค่าแอด M44 · ยังไม่หักต้นทุนพิมพ์เล่ม)</div>';
 
   /* 🎯 ควรขายช่องไหนเท่าไหร่ — อิงเดือนที่เล่มนี้ทำ margin สูงสุดจริง (ราย book) */
   try{
