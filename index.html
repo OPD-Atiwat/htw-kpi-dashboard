@@ -12349,7 +12349,7 @@ function showProductDetail(pname){
   +'<div style="flex:1.4;min-width:170px;background:linear-gradient(135deg,'+_mgCol+'24,'+_mgCol+'0a);border:1px solid '+_mgCol+'55;border-radius:16px;padding:14px 18px">'
    +'<div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">\ud83d\udcb0 Margin (ไม่หักเงินเดือน)</div>'
    +'<div style="font-size:30px;font-weight:900;color:'+_mgCol+';line-height:1.05;margin-top:5px">'+(_mgBaht!=null?fmtFull(_mgBaht):_dash)+'</div>'
-   +'<div style="font-size:14px;font-weight:800;color:'+_mgCol+';margin-top:1px">'+(_mgGM!=null?_mgGM.toFixed(1)+'% GM':'')+'</div></div>'
+   +'<div style="font-size:14px;font-weight:800;color:'+_mgCol+';margin-top:1px">'+(_mgGM!=null?_mgGM.toFixed(1)+'% <span style="font-weight:600;opacity:.75">Contribution (ก่อนต้นทุนเล่ม)</span>':'')+'</div></div>'
   +'<div style="flex:1;min-width:120px;background:linear-gradient(135deg,rgba(234,88,12,.12),rgba(234,88,12,.03));border:1px solid rgba(234,88,12,.4);border-radius:16px;padding:14px 18px">'
    +'<div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">%VAR ต้นทุนผันแปร</div>'
    +'<div style="font-size:27px;font-weight:900;color:#EA580C;line-height:1.05;margin-top:5px">'+(_mgVarPct!=null?_mgVarPct.toFixed(1)+'%':_dash)+'</div></div>'
@@ -12544,9 +12544,13 @@ function showProductDetail(pname){
    }
   }catch(_dmErr){}
 
-  /* 💰 Gross Margin ทางการ (Finance · พ.ค. 2026) — จาก Looker */
+  /* 💰 Gross Margin ทางการ (Finance · พ.ค. 2026) — จาก Looker
+     แสดงเฉพาะเมื่อกำลังดูเดือน พ.ค. เท่านั้น · เดือนอื่นใช้กล่อง 📐 ประมาณ (กันโชว์ซ้ำ 2 กล่อง) */
   try{
-   if(typeof FINANCE_GM_MAY!=='undefined'){
+   var _mkF=((typeof STATE!=='undefined'&&STATE.ovMonth)||'Jun 26').split(' ');
+   var _MNF={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+   var _isMayView=(_mkF.length===2)&&((_MNF[_mkF[0]]||'')==='05');
+   if(typeof FINANCE_GM_MAY!=='undefined' && _isMayView){
     var _lcf=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
     var _fgK=null,_fbl=0,_pl=(pname||'').toLowerCase();
     for(var _k in FINANCE_GM_MAY){var _c=_lcf(_k.toLowerCase(),_pl);if(_c>_fbl){_fbl=_c;_fgK=_k;}}
