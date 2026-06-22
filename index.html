@@ -10256,10 +10256,10 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   (function(){try{
    if(typeof ADSM_PROD_DAILY==='undefined')return;
    var _MN={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
-   var _mp=(_mKey||'').split(' '); if(_mp.length!==2)return;
+   var _mk=((typeof STATE!=='undefined'&&STATE.ovMonth)||'Jun 26'); var _mp=_mk.split(' '); if(_mp.length!==2)return;
    var _pfx='20'+_mp[1]+'-'+(_MN[_mp[0]]||'05')+'-';
    var _pn=(p.product||'').replace(/^\[[^\]]*\]\s*/,'').trim();
-   var _rows=null; for(var _k in ADSM_PROD_DAILY){ if(_pn&&(_pn.indexOf(_k)>=0||_k.indexOf(_pn)>=0)){_rows=ADSM_PROD_DAILY[_k];break;} }
+   var _pnl=_pn.toLowerCase(); var _rows=null; for(var _k in ADSM_PROD_DAILY){ var _kl=_k.toLowerCase(); if(_pnl&&(_pnl.indexOf(_kl)>=0||_kl.indexOf(_pnl)>=0)){_rows=ADSM_PROD_DAILY[_k];break;} }
    if(!_rows)return;
    var _ac=0,_st=0; _rows.forEach(function(r){ if(String(r.d).indexOf(_pfx)===0){_ac+=r.ac||0;_st+=r.st||0;} });
    _tsp=_ac; _adsT=(_st>0)?_ac/_st*100:0;
