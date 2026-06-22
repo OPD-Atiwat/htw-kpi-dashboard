@@ -12426,51 +12426,46 @@ function showProductDetail(pname){
   H+='</tbody></table>';
   H+='<div style="padding:6px 16px;font-size:9.5px;color:#94a3b8">%Var ราย channel = ค่าจริงจาก MK01 (19 มิ.ย.69): Meta 23.2% · TikTok 43.5% · Shopee 43.7% (ระดับช่อง ไม่แยกเล่ม) · ช่องที่ MK01 ไม่ครอบคลุม (IG/หน้าร้าน/Web/LINE/YT) = ไม่มีข้อมูล Var แสดง – · %Ads/Ad Spend = ค่าแอดจริง</div>';
 
-  /* \ud83c\udfaf \u0e2a\u0e31\u0e14\u0e2a\u0e48\u0e27\u0e19\u0e0a\u0e48\u0e2d\u0e07\u0e17\u0e32\u0e07\u0e17\u0e35\u0e48\u0e04\u0e27\u0e23\u0e40\u0e1b\u0e47\u0e19 (\u0e40\u0e1b\u0e49\u0e32 Margin) */
+  /* 🎯 ควรขายช่องไหนเท่าไหร่ — อิงเดือนที่เล่มนี้ทำ margin สูงสุดจริง (ราย book) */
   try{
-   var _TGT=32; /* อิงจริง: กับดักเคยทำ ~32% · net 16-19% + fixed ~17% */
-   var _HIST={'\u0e01\u0e31\u0e1a\u0e14\u0e31\u0e01\u0e04\u0e27\u0e32\u0e21\u0e23\u0e39\u0e49\u0e2a\u0e36\u0e01\u0e1c\u0e34\u0e14':{fb:40,tt:20,sh:40,note:'\u0e40\u0e09\u0e25\u0e35\u0e48\u0e22+Peak (\u0e21.\u0e04.\u2013\u0e1e.\u0e04. \u0e08\u0e32\u0e01 BEP REF) \u2014 \u0e40\u0e25\u0e48\u0e21 stable'},
-    '\u0e2d\u0e2d\u0e1f\u0e1f\u0e34\u0e28\u0e19\u0e35\u0e49\u0e40\u0e2e\u0e07\u0e0b\u0e27\u0e22':{fb:75,tt:10,sh:15,note:'\u0e21\u0e35\u0e41\u0e04\u0e48 launch 13 \u0e27\u0e31\u0e19 (FB 92%/Shopee 8%) \u0e22\u0e31\u0e07\u0e44\u0e21\u0e48 stable \u2014 \u0e04\u0e27\u0e23\u0e44\u0e15\u0e48\u0e40\u0e02\u0e49\u0e32\u0e2b\u0e32 mix \u0e2a\u0e21\u0e14\u0e38\u0e25\u0e41\u0e1a\u0e1a\u0e01\u0e31\u0e1a\u0e14\u0e31\u0e01'}};
-   var _hb=null; for(var _hk in _HIST){ if(pname.indexOf(_hk)>=0){_hb=_HIST[_hk];break;} }
-   function _BK(pred){var rev=0,cw=0; _rows.forEach(function(r){ if(pred(r.p)){rev+=r.rev;cw+=r.rev*r.mPct;} }); return {rev:rev,cm:rev>0?cw/rev:0};}
-   var _F=_BK(function(p){return p==='Facebook';}), _T=_BK(function(p){return p.indexOf('TikTok')===0;}), _S=_BK(function(p){return p.indexOf('Shopee')===0;});
-   var _R3=_F.rev+_T.rev+_S.rev;
-   if(_R3>0 && Math.abs(_S.cm-_F.cm)>0.5){
-    var wF=_F.rev/_R3,wT=_T.rev/_R3,wS=_S.rev/_R3;
-    var _blend=wF*_F.cm+wT*_T.cm+wS*_S.cm;
-    var Rrem=1-wT;
-    var wSn=(_TGT - wT*_T.cm - Rrem*_F.cm)/(_S.cm-_F.cm);
-    var feasible=wSn>=-1e-6 && wSn<=Rrem+1e-6;
-    var _ok=_blend>=_TGT;
-    var tT=wT,tS,tF;
-    if(_ok){tS=wS;tF=wF;}
-    else{tS=Math.max(wS,Math.min(Rrem,wSn));tF=Rrem-tS;}
-    var _pp=function(x){return Math.round(x*100)+'%';};
-    var _crow=function(lbl,col,cur,tgt){var c=Math.round(cur*100),t=Math.round(tgt*100);
-      var tag=t>c+1?'<span style="color:'+_G+';font-weight:800">↑ ขายเพิ่ม</span>':t<c-1?'<span style="color:'+_R+';font-weight:800">↓ ขายลด</span>':'<span style="color:#94a3b8;font-weight:700">คงไว้</span>';
-      return '<div style="margin-bottom:13px">'
-       +'<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:5px"><b style="color:'+col+'">'+lbl+'</b><span style="color:var(--text2)">ตอนนี้ <b style="color:var(--text1)">'+c+'%</b> → ควร <b style="color:'+col+'">'+t+'%</b> &nbsp; '+tag+'</span></div>'
-       +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><span style="font-size:9px;color:#94a3b8;width:36px">ตอนนี้</span><div style="flex:1;height:9px;background:#eef2f7;border-radius:5px"><div style="height:100%;width:'+c+'%;background:#cbd5e1;border-radius:5px"></div></div></div>'
-       +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:9px;color:'+col+';width:36px;font-weight:700">ควร</span><div style="flex:1;height:9px;background:#eef2f7;border-radius:5px"><div style="height:100%;width:'+t+'%;background:'+col+';border-radius:5px"></div></div></div>'
-       +'</div>';};
-    var H2='<div style="margin-top:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden">';
-    H2+='<div style="background:#0f172a;color:#fff;padding:10px 16px;font-weight:800;font-size:13px">🎯 ควรขายช่องไหนเท่าไหร่ (ให้กำไรถึงเป้า) <span style="font-weight:500;opacity:.7;font-size:11px">· เป้า +32% (อิงที่เล่มเคยทำได้จริง)</span></div>';
-    H2+='<div style="padding:13px 16px 4px;font-size:13px;background:'+(_ok?'rgba(22,163,74,.06)':'rgba(220,38,38,.06)')+'">'
-     +'<span style="font-size:11px;color:var(--text2)">กำไรตอนนี้ (3 ช่องหลัก)</span> &nbsp;<b style="font-size:20px;color:'+(_ok?_G:_R)+'">'+_blend.toFixed(0)+'%</b> '
-     +'<span style="font-size:12px;color:'+(_ok?_G:_R)+';font-weight:700">'+(_ok?'✅ ถึงเป้า +'+_TGT+'% แล้ว':'⚠️ เป้า +'+_TGT+'% — ยังไม่ถึง')+'</span></div>';
-    H2+='<div style="padding:14px 16px 6px">';
-    H2+=_crow('Shopee','#EE4D2D',wS,tS);
-    H2+=_crow('Facebook (Meta)','#1877F2',wF,tF);
-    H2+=_crow('TikTok','#111827',wT,tT);
-    H2+='</div>';
-    H2+='<div style="padding:0 16px 13px;font-size:12.5px">';
-    if(_ok){H2+='<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;color:#166534">✅ <b>สัดส่วนดีแล้ว</b> — Shopee เป็นตัวทำกำไรหลัก ยิ่งขาย Shopee ได้มากยิ่งดี · ระวังอย่าให้ FB บวมเกิน (ค่าแอดแพง กำไรน้อย/ติดลบ)</div>';}
-    else if(!feasible){H2+='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;color:#b91c1c">⚠️ <b>แค่ปรับสัดส่วนไม่พอ</b> — ต้องลดค่าแอด FB/TikTok ด้วย ถึงจะได้กำไร +'+_TGT+'%</div>';}
-    else{H2+='<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;color:#166534">👉 <b>ขาย Shopee ให้มากขึ้น ลดการพึ่ง FB</b> — Shopee กำไรดีสุด (แทบไม่มีค่าแอด) ส่วน FB ค่าแอดแพงเลยกำไรน้อย/ติดลบ</div>';}
-    if(_hb){var _gapS=Math.abs(wS*100-_hb.sh),_gapF=Math.abs(wF*100-_hb.fb),_close=(_gapS<=8&&_gapF<=8);
-     H2+='<div style="margin-top:8px;font-size:11px;color:#94a3b8">📜 เทียบอดีต (Shopee '+_hb.sh+'% / FB '+_hb.fb+'% / TikTok '+_hb.tt+'%): <b style="color:'+(_close?_G:_R)+'">'+(_close?'ปัจจุบันใกล้เคียง':'ตอนนี้เบนจากอดีต'+(wF*100>_hb.fb?' (FB เยอะกว่าเดิม)':wS*100<_hb.sh?' (Shopee น้อยกว่าเดิม)':''))+'</b></div>';}
-    H2+='</div></div>';
-    H+=H2;
+   var _VARm={Facebook:(typeof MK01_VAR_CH!=='undefined'&&MK01_VAR_CH.Facebook)||23.17,TikTok:(typeof MK01_VAR_CH!=='undefined'&&MK01_VAR_CH.TikTok)||43.5,Shopee:(typeof MK01_VAR_CH!=='undefined'&&MK01_VAR_CH.Shopee)||43.71};
+   var _lcp=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
+   var _fk=function(obj){var best=null,bl=0,pl=(pname||'').toLowerCase();for(var k in obj){var c=_lcp(k.toLowerCase(),pl);if(c>bl){bl=c;best=k;}}return bl>=12?best:null;};
+   var _opdK=(typeof OPD_PROD_DATA!=='undefined')?_fk(OPD_PROD_DATA):null;
+   var _admK=(typeof ADSM_PROD_DAILY!=='undefined')?_fk(ADSM_PROD_DAILY):null;
+   if(_opdK){
+    var _mrev={},_od=OPD_PROD_DATA[_opdK];
+    for(var _dt in _od){var _mo=_dt.slice(0,7);if(!_mrev[_mo])_mrev[_mo]={Shopee:0,Facebook:0,TikTok:0};var _r=_od[_dt];
+     _mrev[_mo].Shopee+=(_r['Shopee']||0)+(_r['Shopee Live']||0);_mrev[_mo].Facebook+=(_r['Facebook']||0);_mrev[_mo].TikTok+=(_r['TikTok']||0)+(_r['TikTok Affi']||0)+(_r['TikTok Live']||0);}
+    var _mads={};
+    if(_admK)ADSM_PROD_DAILY[_admK].forEach(function(rr){var _m=String(rr.d).slice(0,7);if(!_mads[_m])_mads[_m]={Shopee:0,Facebook:0,TikTok:0};_mads[_m].Facebook+=rr.fb_ac||0;_mads[_m].TikTok+=(rr.tt_ac||0)+(rr.affi_ac||0);_mads[_m].Shopee+=rr.sp_ac||0;});
+    var _stats=[];
+    for(var _m2 in _mrev){var _tot=_mrev[_m2].Shopee+_mrev[_m2].Facebook+_mrev[_m2].TikTok;if(_tot<20000)continue;
+     var _bl=0,_mix={};['Shopee','Facebook','TikTok'].forEach(function(ch){var rev=_mrev[_m2][ch];_mix[ch]=Math.round(rev/_tot*100);if(rev>0){var ap=(_mads[_m2]&&_mads[_m2][ch])?_mads[_m2][ch]/rev*100:0;_bl+=rev/_tot*(100-_VARm[ch]-ap);}});
+     _stats.push({mo:_m2,bl:_bl,mix:_mix});}
+    if(_stats.length){
+     _stats.sort(function(a,b){return a.mo<b.mo?-1:1;});
+     var _best=_stats[0];_stats.forEach(function(s){if(s.bl>_best.bl)_best=s;});
+     var _cur=_stats[_stats.length-1];
+     var _THm={'01':'ม.ค.','02':'ก.พ.','03':'มี.ค.','04':'เม.ย.','05':'พ.ค.','06':'มิ.ย.','07':'ก.ค.','08':'ส.ค.','09':'ก.ย.','10':'ต.ค.','11':'พ.ย.','12':'ธ.ค.'};
+     var _moTH=function(m){return (_THm[m.slice(5,7)]||m)+' '+m.slice(2,4);};
+     var _crow=function(lbl,col,cur,tgt){var up=tgt>cur+1,dn=tgt<cur-1;var tag=up?'<span style="color:'+_G+';font-weight:800">↑ ขายเพิ่ม</span>':dn?'<span style="color:'+_R+';font-weight:800">↓ ขายลด</span>':'<span style="color:#94a3b8;font-weight:700">คงไว้</span>';
+      return '<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><b style="color:'+col+'">'+lbl+'</b><span style="color:var(--text2)">ตอนนี้ <b style="color:var(--text1)">'+cur+'%</b> → ควร <b style="color:'+col+'">'+tgt+'%</b> &nbsp; '+tag+'</span></div>'
+       +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px"><span style="font-size:9px;color:#94a3b8;width:36px">ตอนนี้</span><div style="flex:1;height:9px;background:#eef2f7;border-radius:5px"><div style="height:100%;width:'+cur+'%;background:#cbd5e1;border-radius:5px"></div></div></div>'
+       +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:9px;color:'+col+';width:36px;font-weight:700">ควร</span><div style="flex:1;height:9px;background:#eef2f7;border-radius:5px"><div style="height:100%;width:'+tgt+'%;background:'+col+';border-radius:5px"></div></div></div></div>';};
+     var H2='<div style="margin-top:14px;border:1px solid var(--border);border-radius:12px;overflow:hidden">';
+     H2+='<div style="background:#0f172a;color:#fff;padding:10px 16px;font-weight:800;font-size:13px">🎯 ควรขายช่องไหนเท่าไหร่ <span style="font-weight:500;opacity:.7;font-size:11px">· อิงเดือนที่เล่มนี้ margin ดีสุด ('+_moTH(_best.mo)+' = '+_best.bl.toFixed(0)+'%)</span></div>';
+     H2+='<div style="padding:13px 16px 4px;font-size:13px">margin mix ตอนนี้ ('+_moTH(_cur.mo)+') = <b style="color:'+(_cur.bl>=_best.bl-2?_G:_R)+';font-size:18px">'+_cur.bl.toFixed(0)+'%</b> · จุดพีคของเล่ม '+_best.bl.toFixed(0)+'%</div>';
+     H2+='<div style="padding:14px 16px 6px">';
+     H2+=_crow('Shopee','#EE4D2D',_cur.mix.Shopee,_best.mix.Shopee);
+     H2+=_crow('Facebook (Meta)','#1877F2',_cur.mix.Facebook,_best.mix.Facebook);
+     H2+=_crow('TikTok','#111827',_cur.mix.TikTok,_best.mix.TikTok);
+     H2+='</div>';
+     var _same=(_best.mo===_cur.mo);
+     H2+='<div style="padding:0 16px 14px;font-size:12.5px">'+(_same?'<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;color:#166534">✅ <b>เดือนนี้คือจุดพีคของเล่มแล้ว</b> — รักษา mix นี้ไว้</div>':'<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;color:#92400e">👉 จุดพีคคือ <b>'+_moTH(_best.mo)+'</b> (margin '+_best.bl.toFixed(0)+'%) — ปรับ mix เข้าหาเดือนนั้น: Shopee '+_best.mix.Shopee+'% / FB '+_best.mix.Facebook+'% / TikTok '+_best.mix.TikTok+'%</div>')+'</div>';
+     H2+='</div>';
+     H+=H2;
+    }
    }
   }catch(_omErr){}
 
