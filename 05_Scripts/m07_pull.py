@@ -56,14 +56,18 @@ def daily_entry(day):
 
 def main():
     today = datetime.date.today()
-    start = today.replace(day=1).strftime("%Y-%m-%d")
-    end   = today.strftime("%Y-%m-%d")
-    print(f"M07 pull {start} → {end}")
+    # MTD actual/cost ยึด "วันปิดล่าสุด" (เมื่อวาน) — ไม่รวมวันนี้ครึ่งวัน เพื่อให้ตรง MMS
+    cutoff = today - datetime.timedelta(days=1)
+    if cutoff.month != today.month:        # วันที่ 1 ของเดือน → ยังไม่มีวันปิด ใช้ today
+        cutoff = today
+    start = cutoff.replace(day=1).strftime("%Y-%m-%d")
+    end   = cutoff.strftime("%Y-%m-%d")
+    print(f"M07 pull (MTD ถึงวันปิดล่าสุด) {start} → {end}")
 
-    # prev month ช่วงเดียวกัน (1 → วันเดียวกัน)
+    # prev month ช่วงเดียวกัน (1 → วันเดียวกันกับ cutoff)
     import calendar
-    pmy, pmm = (today.year, today.month-1) if today.month > 1 else (today.year-1, 12)
-    pnd = min(today.day, calendar.monthrange(pmy, pmm)[1])
+    pmy, pmm = (cutoff.year, cutoff.month-1) if cutoff.month > 1 else (cutoff.year-1, 12)
+    pnd = min(cutoff.day, calendar.monthrange(pmy, pmm)[1])
     pstart = f"{pmy}-{pmm:02d}-01"; pend = f"{pmy}-{pmm:02d}-{pnd:02d}"
     _THm = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."]
 

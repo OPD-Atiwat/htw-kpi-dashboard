@@ -118,7 +118,9 @@ def main():
         by_date[ds] = dr
         for it in data.get("list_item", []):
             k = book_key(it.get("product_name"))
-            if not k: continue
+            kl = k.lower()
+            if not k or "undefined" in kl or kl.startswith("total") or "total by product" in kl:
+                continue   # ข้ามแถวขยะ (Undefined/Total)
             pr = prod_row(it); pr["d"] = ds
             if g(it, "adscost_total") == 0 and g(it, "saletotal_total") == 0:
                 continue

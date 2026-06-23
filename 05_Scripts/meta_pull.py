@@ -18,7 +18,7 @@ import json
 import re
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 
 # ============================================================
@@ -37,7 +37,8 @@ DASHBOARD_PATH = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI
 # ─── วันที่อัตโนมัติ: ต้นเดือนนี้ → วันนี้ ──────────────────
 today     = datetime.now()
 DATE_FROM = today.replace(day=1).strftime("%Y-%m-%d")
-DATE_TO   = today.strftime("%Y-%m-%d")
+# ตัดวันปัจจุบัน (in-progress / MMS ยังไม่ allocate) → ดึงถึงเมื่อวาน ให้ตรงกับ MK13/dashboard
+DATE_TO   = max(DATE_FROM, (today - timedelta(days=1)).strftime("%Y-%m-%d"))
 BASE_URL  = f"https://graph.facebook.com/{API_VERSION}"
 
 MONTH_LABELS = {
@@ -221,6 +222,7 @@ def guess_creator(ad_name):
         "มิ้น":       "มิ้น",
         "แนน":        "แนน",
         "แก้ม":       "แก้ม",
+        "สต็อป":      "สต็อป",
         # Central (inhouse)
         "Course":     "Central",
         "PILOT":      "Central",
@@ -241,6 +243,7 @@ def guess_creator(ad_name):
         if "มิ้น" in b or "min" in b.lower(): return "มิ้น"
         if "แนน" in b: return "แนน"
         if "แก้ม" in b: return "แก้ม"
+        if "สต็อป" in b or "stop" in b.lower(): return "สต็อป"
         # Any other unknown bracket = Influ (external)
         if b and not re.match(r'^\d', b):  # not a date-like tag
             return "Influ"
@@ -248,6 +251,7 @@ def guess_creator(ad_name):
     if "หมิว" in ad_name: return "หมิว"
     if "ริว"  in ad_name: return "ริว"
     if "มิ้น" in ad_name: return "มิ้น"
+    if "สต็อป" in ad_name: return "สต็อป"
     return "Unknown"
 
 
@@ -273,7 +277,7 @@ def resolve_creator_by_product(creator, product):
 
 
 # ครีเอเตอร์ทีมเรา (เฉพาะกลุ่มนี้ที่แชร์ยอด 50/50 ได้)
-TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม"]
+TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม", "สต็อป"]
 
 def guess_creators(ad_name):
     """คืน list ครีเอเตอร์ทีมเราที่เจอใน bracket [Date][Creator1][Creator2]...
@@ -289,6 +293,7 @@ def guess_creators(ad_name):
         elif "มิ้น" in b or "min" in b.lower(): m = "มิ้น"
         elif "แนน" in b: m = "แนน"
         elif "แก้ม" in b: m = "แก้ม"
+        elif "สต็อป" in b or "stop" in b.lower(): m = "สต็อป"
         if m and m not in found:
             found.append(m)
     return found if found else [guess_creator(ad_name)]
@@ -978,6 +983,9 @@ def update_ao_data(html_path):
             "cpm":            cpm,
             "msg":            d["msg"],
             "cost_per_msg":   cost_msg,
+            "book":           _infer_book_from_names(d["ad_name"], d["adset_name"], d["campaign_name"], PRODUCT_MAP),
+            "creator":        guess_creator(d["ad_name"]),
+            "tier":           tier,
         })
 
     ao = {

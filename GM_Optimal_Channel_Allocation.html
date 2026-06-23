@@ -1,0 +1,153 @@
+<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GM-Optimal Channel Allocation — How-to</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{font-family:'IBM Plex Sans Thai',sans-serif;background:#0f1115;color:#e8eaed;margin:0;padding:28px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#9aa0a6;font-size:13px;margin-bottom:18px}
+.cards{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.card{background:#1a1d24;border:1px solid #272b34;border-radius:12px;padding:14px 18px;min-width:150px}
+.card .l{font-size:12px;color:#9aa0a6}.card .v{font-size:20px;font-weight:700;margin-top:4px}
+.ads{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.ads .a{background:#1a1d24;border:1px solid #272b34;border-radius:10px;padding:10px 16px;font-size:13px}
+.ads .a b{font-size:16px;display:block;margin-top:2px}
+.sp{color:#34d399}.tt{color:#f472b6}.fb{color:#60a5fa}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid #21242c}
+th{background:#161922;color:#c3c8cf;font-weight:600;position:sticky;top:0}
+td.bk{text-align:left;max-width:280px}
+.tot{font-weight:700;background:#161922}
+.opt{background:#13241c}
+tr.sec td{background:#0b1f17;color:#34d399;font-weight:700;text-align:left;font-size:13px}
+.up{color:#34d399;font-weight:600}.dn{color:#f87171}
+.grp th{font-size:11px;letter-spacing:.3px}
+.note{margin-top:20px;font-size:12px;color:#9aa0a6;line-height:1.7;background:#1a1d24;border:1px solid #272b34;border-radius:10px;padding:14px 18px}
+</style></head><body>
+<h1>สัดส่วนหนังสือราย Channel ที่ Gross Margin สูงสุด</h1>
+<div class="sub">ฐานข้อมูล: GOALS_DATA Jun 2026 (เล่มขายออนไลน์ราย channel) · %Ads จริง: MK29 พ.ค. 2026 · Margin: Contribution Margin MK01</div>
+<div class="ads">
+<div class="a sp">Shopee %Ads<b>3.9%</b></div>
+<div class="a tt">TikTok %Ads<b>42.2%</b></div>
+<div class="a fb">Facebook %Ads<b>58.3%</b></div>
+<div class="a sp">Shopee Margin<b>49.1%</b></div>
+<div class="a fb">FB Margin<b>9.0%</b></div>
+<div class="a tt">TikTok Margin<b>5.2%</b></div>
+</div>
+<div class="cards">
+<div class="card"><div class="l">GM ตอนนี้ (เล่มออนไลน์)</div><div class="v">฿103,114</div></div>
+<div class="card"><div class="l">GM หลังจัดสัดส่วนใหม่</div><div class="v sp">฿129,741</div></div>
+<div class="card"><div class="l">เพิ่มขึ้น</div><div class="v sp">+25.8%</div></div>
+</div>
+<table>
+<tr class="grp"><th rowspan="2">หนังสือ</th><th colspan="4">เล่มจริง Jun 26</th><th colspan="4">เป้า GM-Optimal</th><th colspan="2">GM ออนไลน์</th></tr>
+<tr class="grp"><th class="sp">SP</th><th class="tt">TT</th><th class="fb">FB</th><th>รวม</th><th class="sp">SP</th><th class="tt">TT</th><th class="fb">FB</th><th>รวม</th><th>เป้า</th><th>Δ</th></tr>
+<tr class="sec"><td colspan="11">★ FOCUS</td></tr><tr>
+<td class="bk">ออฟฟิศนี้เฮงซวย (สัตว์)</td>
+<td>89</td><td>26</td><td>35</td><td class="tot">150</td>
+<td class="opt">105</td><td class="opt">15</td><td class="opt">30</td>
+<td class="tot">150</td>
+<td>฿22,014</td><td class="up">+2,734</td></tr><tr>
+<td class="bk">กับดักความรู้สึกผิด</td>
+<td>77</td><td>28</td><td>42</td><td class="tot">147</td>
+<td class="opt">103</td><td class="opt">15</td><td class="opt">29</td>
+<td class="tot">147</td>
+<td>฿21,585</td><td class="up">+4,368</td></tr><tr>
+<td class="bk">ปีศาจตัวนั้น คือฉันเอง A Guide to Fighting the Demons in My Heart</td>
+<td>0</td><td>29</td><td>9</td><td class="tot">38</td>
+<td class="opt">0</td><td class="opt">13</td><td class="opt">25</td>
+<td class="tot">38</td>
+<td>฿1,170</td><td class="up">+243</td></tr><tr>
+<td class="bk">ปีศาจตัวนั้น คือฉันเอง 2 A Guide to Overcoming the Return of the Demons</td>
+<td>0</td><td>21</td><td>8</td><td class="tot">29</td>
+<td class="opt">0</td><td class="opt">10</td><td class="opt">19</td>
+<td class="tot">29</td>
+<td>฿892</td><td class="up">+167</td></tr><tr>
+<td class="bk">Ghostly Brews ยินดีบริการดวงวิญญาณหลังเที่ยงคืน</td>
+<td>48</td><td>32</td><td>7</td><td class="tot">87</td>
+<td class="opt">61</td><td class="opt">9</td><td class="opt">17</td>
+<td class="tot">87</td>
+<td>฿12,780</td><td class="up">+2,435</td></tr><tr>
+<td class="bk">The Witches' Club ชมรมลับเปลี่ยนชีวิต</td>
+<td>43</td><td>30</td><td>15</td><td class="tot">88</td>
+<td class="opt">61</td><td class="opt">9</td><td class="opt">18</td>
+<td class="tot">88</td>
+<td>฿12,816</td><td class="up">+3,207</td></tr>
+<tr class="sec"><td colspan="11">Non-Focus</td></tr><tr>
+<td class="bk">Ghostly Remains ปลดพันธนาการดวงวิญญาณหลังความตาย</td>
+<td>18</td><td>21</td><td>12</td><td class="tot">51</td>
+<td class="opt">36</td><td class="opt">5</td><td class="opt">10</td>
+<td class="tot">51</td>
+<td>฿7,534</td><td class="up">+3,130</td></tr><tr>
+<td class="bk">เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้</td>
+<td>7</td><td>45</td><td>29</td><td class="tot">81</td>
+<td class="opt">57</td><td class="opt">8</td><td class="opt">16</td>
+<td class="tot">81</td>
+<td>฿11,937</td><td class="up">+8,582</td></tr><tr>
+<td class="bk">ปีศาจความรักมักเลือกฉันเป็นเหยื่อ How to Fight the Love Demon in My Heart</td>
+<td>0</td><td>36</td><td>21</td><td class="tot">57</td>
+<td class="opt">0</td><td class="opt">19</td><td class="opt">38</td>
+<td class="tot">57</td>
+<td>฿1,763</td><td class="up">+258</td></tr><tr>
+<td class="bk">ฉันจะมีชีวิตที่ดี</td>
+<td>0</td><td>32</td><td>13</td><td class="tot">45</td>
+<td class="opt">0</td><td class="opt">15</td><td class="opt">30</td>
+<td class="tot">45</td>
+<td>฿1,392</td><td class="up">+258</td></tr><tr>
+<td class="bk">ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ</td>
+<td>72</td><td>34</td><td>6</td><td class="tot">112</td>
+<td class="opt">79</td><td class="opt">11</td><td class="opt">22</td>
+<td class="tot">112</td>
+<td>฿16,536</td><td class="up">+1,472</td></tr><tr>
+<td class="bk">วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน The Enchanted Garden</td>
+<td>0</td><td>33</td><td>25</td><td class="tot">58</td>
+<td class="opt">0</td><td class="opt">19</td><td class="opt">39</td>
+<td class="tot">58</td>
+<td>฿1,799</td><td class="up">+213</td></tr><tr>
+<td class="bk">ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara</td>
+<td>0</td><td>40</td><td>20</td><td class="tot">60</td>
+<td class="opt">0</td><td class="opt">20</td><td class="opt">40</td>
+<td class="tot">60</td>
+<td>฿1,856</td><td class="up">+304</td></tr><tr>
+<td class="bk">เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (Helmet Girl)</td>
+<td>0</td><td>0</td><td>132</td><td class="tot">132</td>
+<td class="opt">0</td><td class="opt">0</td><td class="opt">132</td>
+<td class="tot">132</td>
+<td>฿4,752</td><td class="">0</td></tr><tr>
+<td class="bk">กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (It Is Never Too Late to Love Yourself)</td>
+<td>0</td><td>38</td><td>258</td><td class="tot">296</td>
+<td class="opt">0</td><td class="opt">99</td><td class="opt">197</td>
+<td class="tot">296</td>
+<td>฿9,151</td><td class="dn">-927</td></tr><tr>
+<td class="bk">ยินดีต้อนรับและขอบคุณที่กลับมา</td>
+<td>0</td><td>30</td><td>6</td><td class="tot">36</td>
+<td class="opt">0</td><td class="opt">12</td><td class="opt">24</td>
+<td class="tot">36</td>
+<td>฿1,114</td><td class="up">+274</td></tr><tr>
+<td class="bk">ทุกความทรงจำคือของขวัญจากวันวาน</td>
+<td>0</td><td>1</td><td>20</td><td class="tot">21</td>
+<td class="opt">0</td><td class="opt">7</td><td class="opt">14</td>
+<td class="tot">21</td>
+<td>฿650</td><td class="dn">-91</td></tr>
+<tr class="sec"><td colspan="11">ไม่มียอดออนไลน์ (ขายผ่านหน้าร้าน/สายส่งล้วน)</td></tr><tr>
+<td class="bk">โอบกอดความไม่สมบูรณ์แบบของเธอ (Embrace Your Flaws)</td>
+<td>0</td><td>0</td><td>0</td><td class="tot">0</td>
+<td class="opt">0</td><td class="opt">0</td><td class="opt">0</td>
+<td class="tot">0</td>
+<td>฿0</td><td class="">0</td></tr><tr>
+<td class="bk">ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (The Millionaire's Top Secret)</td>
+<td>0</td><td>0</td><td>0</td><td class="tot">0</td>
+<td class="opt">0</td><td class="opt">0</td><td class="opt">0</td>
+<td class="tot">0</td>
+<td>฿0</td><td class="">0</td></tr><tr>
+<td class="bk">ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ</td>
+<td>0</td><td>0</td><td>0</td><td class="tot">0</td>
+<td class="opt">0</td><td class="opt">0</td><td class="opt">0</td>
+<td class="tot">0</td>
+<td>฿0</td><td class="">0</td></tr>
+</table>
+<div class="note">
+<b>หลักคิด:</b> Gross Margin สูงสุด = ดันเล่มไปช่องที่ margin ดี+ค่าแอดต่ำ → ลำดับ <span class="sp">Shopee (margin 49%, ads 3.9%)</span> &gt; <span class="fb">Facebook (9%)</span> &gt; <span class="tt">TikTok (5.2%, ads 42%)</span><br>
+<b>เป้า GM-Optimal:</b> คงจำนวนเล่มออนไลน์รวมต่อเล่มเท่าเดิม แล้วเกลี่ยใหม่เป็น Shopee 70% / FB 20% / TikTok 10% (เฉพาะช่องที่เล่มนั้นมียอดอยู่แล้ว) → GM รวมเพิ่ม ~26%<br>
+<b>ข้อควรระวัง:</b> TikTok margin บางสุดแต่เป็นช่อง reach/discovery ใหญ่สุด — จึงตั้ง floor 10% ไว้ ไม่ตัดทิ้ง · เล่มที่ปัจจุบันไม่มียอด Shopee (เช่น ปีศาจ1/2) ต้องเปิด listing + ดัน live ก่อนถึงจะเกลี่ยได้ · "Other" (หน้าร้าน/สายส่ง) ไม่รวมในตารางนี้เพราะไม่มีค่าแอด
+</div>
+</body></html>
