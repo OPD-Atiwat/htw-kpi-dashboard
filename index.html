@@ -1825,6 +1825,32 @@ function bookGM(pname,monthPfx){
  }catch(e){return null;}
 }
 /* %Ads = _spend/_rev (เท่าการ์ด %Ads รวม) — fuzzy match + alias เดือน */
+function bookChGM(pname,monthPfx,chList){
+ try{
+  if(typeof OPD_PROD_DATA==='undefined'||typeof OPD_PROD_QTY==='undefined'||typeof ADSM_PROD_DAILY==='undefined'||typeof _FIN_FEE==='undefined')return null;
+  var lc=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
+  var pl=(pname||'').toLowerCase();
+  var fk=function(o){var best=null,bl=0;for(var k in o){var c=lc(k.toLowerCase(),pl);if(c>bl){bl=c;best=k;}}return bl>=10?best:null;};
+  var oK=fk(OPD_PROD_DATA),qK=fk(OPD_PROD_QTY),aK=fk(ADSM_PROD_DAILY);
+  if(!(oK&&qK&&aK))return null;
+  var grp=function(obj,base){var ks=[base];for(var k in obj){if(k!==base&&k.indexOf('BOXSET')===0&&k.indexOf('E-BOOK')<0&&lc(k.replace('BOXSET ','').toLowerCase(),base.toLowerCase())>=12)ks.push(k);}return ks;};
+  var crev={},cqty={};
+  grp(OPD_PROD_DATA,oK).forEach(function(o2){var od=OPD_PROD_DATA[o2];for(var dt in od){if(dt.indexOf(monthPfx)===0)for(var c in od[dt])crev[c]=(crev[c]||0)+(od[dt][c]||0);}});
+  grp(OPD_PROD_QTY,qK).forEach(function(q2){var qd=OPD_PROD_QTY[q2];for(var dt in qd){if(dt.indexOf(monthPfx)===0)for(var c in qd[dt])cqty[c]=(cqty[c]||0)+(qd[dt][c]||0);}});
+  var prod=0; if(typeof PRINT_COST!=='undefined'){var pcK=null,pl2=0;for(var pk in PRINT_COST){var cc=lc(pk.toLowerCase(),pl);if(cc>pl2){pl2=cc;pcK=pk;}}if(pl2>=10)prod=PRINT_COST[pcK];}
+  var grate=function(g){var mm={fb:['fb_ac','fb_st'],tt:['tt_ac','tt_st'],affi:['affi_ac','affi_st'],sp:['sp_ac','sp_st']}[g];var ac=0,st=0;ADSM_PROD_DAILY[aK].forEach(function(r){if(String(r.d).indexOf(monthPfx)===0){ac+=r[mm[0]]||0;st+=r[mm[1]]||0;}});return st>0?ac/st*100:0;};
+  var rof=function(c){if(c==='Facebook'||c==='Shopify')return grate('fb');if(c==='TikTok Affi')return grate('affi');if(c.indexOf('TikTok')===0)return grate('tt');if(c.indexOf('Shopee')===0)return grate('sp');return 0;};
+  var tR=0,tGM=0;
+  chList.forEach(function(c){
+   var rv=crev[c]||0; if(rv<=0||_FIN_FEE[c]==null)return;
+   var u=cqty[c]||0,pr=u>0?rv/u:null; if(!pr)return;
+   var ship=(c==='Facebook'||c==='Shopify')?20.37:0;
+   var varc=_FIN_FEE[c]+(typeof ttFeeAdj==='function'?ttFeeAdj(c,monthPfx):0)+(prod+8.81+ship)/pr*100;
+   tGM+=rv*(100-varc-rof(c))/100; tR+=rv;
+  });
+  return tR>0?{gm:tGM/tR*100,baht:Math.round(tGM),rev:tR}:null;
+ }catch(e){return null;}
+}
 function getBookAdsPct(pname,monthKey){
  if(typeof ADSM44_PCTADS==='undefined')return null;
  var tbl=ADSM44_PCTADS[monthKey];if(!tbl)return null;
@@ -10492,6 +10518,23 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    +'</div>'
    +'</div></div>';
  })();
+  var _chGMPanel=(function(){
+   if(typeof bookChGM!=='function') return '';
+   var _mg=bookChGM(p.product,_gmCurPfx,['Facebook','Shopify']);
+   var _sg=bookChGM(p.product,_gmCurPfx,['Shopee','Shopee Live']);
+   if(!_mg&&!_sg) return '';
+   var _cc=function(g){return (g==null)?'var(--text3)':(g>=20?'#16A34A':g>=10?'#D97706':g>=0?'#EA580C':'#DC2626');};
+   var _neg=((_mg&&_mg.gm<0)||(_sg&&_sg.gm<0));
+   var _row=function(lbl,col,o){return '<div style="flex:1;text-align:center;padding:0 4px"><div style="font-size:7px;font-weight:700;color:'+col+';white-space:nowrap">'+lbl+'</div><div style="font-size:16px;font-weight:900;color:'+_cc(o?o.gm:null)+';line-height:1.15">'+(o?o.gm.toFixed(0)+'%':'\u2013')+'</div></div>';};
+   return '<div style="flex-shrink:0;width:148px;padding-left:4px;display:flex;align-items:stretch">'
+    +'<div style="width:100%;background:'+(_neg?'rgba(220,38,38,.07)':'var(--surface2)')+';border:1px solid '+(_neg?'rgba(220,38,38,.28)':'var(--border)')+';border-radius:8px;padding:6px 6px;display:flex;flex-direction:column;justify-content:center">'
+    +'<div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;text-align:center;margin-bottom:5px">GM \u0e23\u0e32\u0e22\u0e0a\u0e48\u0e2d\u0e07</div>'
+    +'<div style="display:flex;align-items:stretch">'
+     +_row('Meta','#1877F2',_mg)
+     +'<div style="border-left:1px solid var(--border)"></div>'
+     +_row('Shopee','#EE4D2D',_sg)
+    +'</div></div></div>';
+  })();
  return '<div style="'+_rowStyle+'" data-bg="'+_rowBg+'" onclick="ovShowProductDetail(\''+escH(name).replace(/\\/g,'\\\\').replace(/'/g,'\\x27')+'\')">'
   +thumbHtml
   +'<div style="flex:1;min-width:0">'
@@ -10557,6 +10600,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   })()  +'</div>'
   /* ── Achievement capsule + MoM column (right) ── */
   +_grossPanel
+  +_chGMPanel
   +_achPanel
   +_momPanel
   +'</div>';
