@@ -36,9 +36,27 @@ DASHBOARD_PATH = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI
 
 # ─── วันที่อัตโนมัติ: ต้นเดือนนี้ → วันนี้ ──────────────────
 today     = datetime.now()
-DATE_FROM = today.replace(day=1).strftime("%Y-%m-%d")
-# ตัดวันปัจจุบัน (in-progress / MMS ยังไม่ allocate) → ดึงถึงเมื่อวาน ให้ตรงกับ MK13/dashboard
-DATE_TO   = max(DATE_FROM, (today - timedelta(days=1)).strftime("%Y-%m-%d"))
+# ─── Backfill (one-shot): ถ้ามีไฟล์ .backfill_month (เช่น "2026-05") → ดึงเดือนนั้นทั้งเดือนแทน ───
+import os as _os
+_BF_FILE  = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".backfill_month")
+_BF_MONTH = None
+if _os.path.exists(_BF_FILE):
+    try:
+        _v = open(_BF_FILE).read().strip()
+        if len(_v) == 7 and _v[4] == "-":
+            _BF_MONTH = (int(_v[:4]), int(_v[5:7]))
+    except Exception:
+        _BF_MONTH = None
+if _BF_MONTH:
+    import calendar as _cal
+    _by, _bm  = _BF_MONTH
+    DATE_FROM = "%04d-%02d-01" % (_by, _bm)
+    DATE_TO   = "%04d-%02d-%02d" % (_by, _bm, _cal.monthrange(_by, _bm)[1])
+    print("   \U0001F501 BACKFILL MODE: ดึง Meta %s ถึง %s" % (DATE_FROM, DATE_TO))
+else:
+    DATE_FROM = today.replace(day=1).strftime("%Y-%m-%d")
+    # ตัดวันปัจจุบัน (in-progress / MMS ยังไม่ allocate) → ดึงถึงเมื่อวาน ให้ตรงกับ MK13/dashboard
+    DATE_TO   = max(DATE_FROM, (today - timedelta(days=1)).strftime("%Y-%m-%d"))
 BASE_URL  = f"https://graph.facebook.com/{API_VERSION}"
 
 MONTH_LABELS = {
@@ -208,6 +226,9 @@ def month_key(date_str):
 
 
 def current_month_key():
+    if _BF_MONTH:
+        return MONTH_LABELS.get(_BF_MONTH,
+                                ("%02d" % _BF_MONTH[1]) + str(_BF_MONTH[0])[2:])
     return MONTH_LABELS.get((today.year, today.month),
                             today.strftime("%b") + str(today.year)[2:])
 
@@ -239,11 +260,11 @@ def guess_creator(ad_name):
             return TAG_MAP[b]
         # Fuzzy match our creators
         if "ริว" in b: return "ริว"
-        if "หมิว" in b or "mew" in b.lower(): return "หมิว"
-        if "มิ้น" in b or "min" in b.lower(): return "มิ้น"
+        if "หมิว" in b: return "หมิว"
+        if "มิ้น" in b: return "มิ้น"
         if "แนน" in b: return "แนน"
         if "แก้ม" in b: return "แก้ม"
-        if "สต็อป" in b or "stop" in b.lower(): return "สต็อป"
+        if "สต็อป" in b: return "สต็อป"
         # Any other unknown bracket = Influ (external)
         if b and not re.match(r'^\d', b):  # not a date-like tag
             return "Influ"
@@ -289,11 +310,11 @@ def guess_creators(ad_name):
         b = b.strip()
         m = None
         if "ริว" in b: m = "ริว"
-        elif "หมิว" in b or "mew" in b.lower(): m = "หมิว"
-        elif "มิ้น" in b or "min" in b.lower(): m = "มิ้น"
+        elif "หมิว" in b: m = "หมิว"
+        elif "มิ้น" in b: m = "มิ้น"
         elif "แนน" in b: m = "แนน"
         elif "แก้ม" in b: m = "แก้ม"
-        elif "สต็อป" in b or "stop" in b.lower(): m = "สต็อป"
+        elif "สต็อป" in b: m = "สต็อป"
         if m and m not in found:
             found.append(m)
     return found if found else [guess_creator(ad_name)]
@@ -618,7 +639,7 @@ def update_creator_summary(rows, html_path):
 
     cur_month  = current_month_key()
     var_name   = f"CREATOR_META_{cur_month.upper()}"
-    creators   = ["หมิว", "ริว", "มิ้น"]
+    creators   = ["หมิว", "ริว", "มิ้น", "สต็อป"]
     def _crs(r):
         return r.get("creators") or [r["creator"]]
     def _w(r, cr):
@@ -1024,3 +1045,10 @@ def update_ao_data(html_path):
 
 if __name__ == "__main__":
     main()
+    # one-shot: ลบ flag backfill หลังรันเสร็จ → รอบถัดไปกลับเป็นเดือนปัจจุบัน
+    if _BF_MONTH:
+        try:
+            _os.remove(_BF_FILE)
+            print("   \U0001F501 backfill flag ลบแล้ว (รอบถัดไป = เดือนปัจจุบัน)")
+        except Exception:
+            pass
