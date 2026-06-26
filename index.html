@@ -1750,7 +1750,7 @@ var TT_FEE_DELTA_JUN=2.14;
 function ttFeeAdj(ch,fromDate){return ((ch==='TikTok'||ch==='TikTok Affi'||ch==='TikTok Live'||ch==='TikTok Shop')&&String(fromDate||'')>='2026-06')?TT_FEE_DELTA_JUN:0;}
 /* VAR ราย channel แบบ Finance (Bo pricing) ก่อนหักแอด = FEE คงที่ราย channel + (ต้นทุนเล่ม+แพ็ก ฿8.81+กล่อง ฿20.37 ถ้าบริษัทออกค่าส่ง) ÷ ราคา MK13 จริง
    FEE calibrate จากไฟล์ Finance (ออฟฟิศสัตว์): FB 22.0% · TikTok 40.6% · Shopee 51.5% — แม่นกว่า MK01 (ที่ต่ำกว่าจริง 6-14จุด เพราะไม่รวม server/COD/เงินเดือน) · คืน null ถ้าไม่มีต้นทุนเล่ม/ราคา → fallback MK01 */
-var _FIN_FEE={'Facebook':22.0,'Shopify':22.0,'TikTok':40.6,'TikTok Affi':40.6,'TikTok Live':40.6,'TikTok Shop':40.6,'Shopee':51.5,'Shopee Live':51.5};
+var _FIN_FEE={'Facebook':22.0,'Shopify':22.0,'TikTok':40.6,'TikTok Affi':46.6,'TikTok Live':40.6,'TikTok Shop':40.6,'Shopee':51.5,'Shopee Live':51.5};  /* TikTok Affi +6% ค่าคอม affiliate (FinVAR books) */
 function mgFinVar(pname,ch,priceCh){try{
   if(typeof PRINT_COST==='undefined'||!priceCh||priceCh<=0||_FIN_FEE[ch]==null)return null;
   var lc=function(a,b){var n=Math.min(a.length,b.length),i=0;while(i<n&&a.charAt(i)===b.charAt(i))i++;return i;};
