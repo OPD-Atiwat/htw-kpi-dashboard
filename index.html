@@ -10457,7 +10457,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    +'</div>';
  })();
  var _grossPanel=(function(){
-  if(typeof bookGM!=='function'||typeof isFocusProduct!=='function'||!isFocusProduct(p.product)) return '';
+  if(typeof bookGM!=='function') return '';
   var _gM=bookGM(p.product,_gmCurPfx);
   if(!_gM||!(_gM.rev>0)) return '<div style="flex-shrink:0;width:'+_PILL_W+'"></div>';
   var _gmv=_gM.gm;
