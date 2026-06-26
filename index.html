@@ -10321,6 +10321,13 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   return '<span style="background:'+x.bg+';color:'+x.c+';border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700">'+x.k+' '+pct+'%</span>';
   }).join(' ');
  }
+ var _GMN={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+ var _gmMk=(STATE.ovMonth||'Jun 26').split(' ');
+ var _gmCurPfx=_gmMk.length===2?('20'+_gmMk[1]+'-'+(_GMN[_gmMk[0]]||'06')+'-'):'';
+ var _gmLatestD='';
+ if(typeof OPD_DAILY!=='undefined'&&_gmCurPfx){OPD_DAILY.data.forEach(function(r){if(r.d.indexOf(_gmCurPfx)===0&&r.d>_gmLatestD)_gmLatestD=r.d;});}
+ var _gmPrevPfx='',_gmPrevLbl='';
+ (function(){if(_gmMk.length!==2)return;var _mi=parseInt(_GMN[_gmMk[0]]||'6',10),_yr=parseInt('20'+_gmMk[1],10),_pm=_mi-1,_py=_yr;if(_pm<1){_pm=12;_py--;}_gmPrevPfx=_py+'-'+(_pm<10?'0':'')+_pm+'-';var _TM=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];_gmPrevLbl=_TM[_pm-1];})();
  function productItem(p){
  /* ── OPD override: replace MK13 hardcoded actual with live OPD line-item data ── */
  (function(){
@@ -10448,6 +10455,30 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    +'</div>'
    +'</div>';
  })();
+ var _grossPanel=(function(){
+  if(typeof bookGM!=='function'||typeof isFocusProduct!=='function'||!isFocusProduct(p.product)) return '';
+  var _gM=bookGM(p.product,_gmCurPfx);
+  if(!_gM||!(_gM.rev>0)) return '<div style="flex-shrink:0;width:'+_PILL_W+'"></div>';
+  var _gmv=_gM.gm;
+  var _gc=_gmv>=20?'#16A34A':_gmv>=10?'#D97706':'#DC2626';
+  var _gbg=_gmv>=20?'rgba(16,185,129,.06)':_gmv>=10?'rgba(217,119,6,.05)':'rgba(220,38,38,.06)';
+  var _gbdr=_gmv>=20?'rgba(16,185,129,.2)':_gmv>=10?'rgba(217,119,6,.2)':'rgba(220,38,38,.2)';
+  var _dayG=_gmLatestD?bookGM(p.product,_gmLatestD):null;
+  var _prevG=_gmPrevPfx?bookGM(p.product,_gmPrevPfx):null;
+  var _dGM=(_prevG&&_prevG.gm!=null)?(_gmv-_prevG.gm):null;
+  var _dC=(_dGM==null)?'var(--text3)':(_dGM>=0?'#16A34A':'#DC2626');
+  var _dA=(_dGM==null)?'':(_dGM>=0?'▲':'▼');
+  var _bahtStr=_gM.baht>=1e6?'฿'+(_gM.baht/1e6).toFixed(2)+'M':_gM.baht>=1e3?'฿'+(_gM.baht/1e3).toFixed(0)+'K':'฿'+_gM.baht;
+  return '<div style="flex-shrink:0;width:'+_PILL_W+';padding-left:4px;display:flex;align-items:stretch">'
+   +'<div style="width:100%;background:'+_gbg+';border:1px solid '+_gbdr+';border-radius:8px;padding:5px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center">'
+   +'<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.3px;margin-bottom:1px;white-space:nowrap">GROSS MTD</div>'
+   +'<div style="font-size:16px;font-weight:900;color:'+_gc+';line-height:1.1">'+_gmv.toFixed(1)+'%</div>'
+   +'<div style="font-size:8px;font-weight:700;color:var(--text3);margin-top:1px;line-height:1">'+_bahtStr+'</div>'
+   +(_dayG&&_dayG.gm!=null?'<div style="font-size:8px;color:var(--text2);margin-top:2px;line-height:1">ล่าสุด '+_dayG.gm.toFixed(0)+'%</div>':'')
+   +(_dGM!=null?'<div style="font-size:9px;font-weight:800;color:'+_dC+';margin-top:1px;line-height:1">'+_dA+Math.abs(_dGM).toFixed(1)+' <span style="color:var(--text3);font-weight:600">vs '+_gmPrevLbl+'</span></div>':'')
+   +'</div>'
+   +'</div>';
+ })();
  return '<div style="'+_rowStyle+'" data-bg="'+_rowBg+'" onclick="ovShowProductDetail(\''+escH(name).replace(/\\/g,'\\\\').replace(/'/g,'\\x27')+'\')">'
   +thumbHtml
   +'<div style="flex:1;min-width:0">'
@@ -10512,6 +10543,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    return _pills?'<div style="display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden;margin-bottom:4px">'+_pills+'</div>':'';
   })()  +'</div>'
   /* ── Achievement capsule + MoM column (right) ── */
+  +_grossPanel
   +_achPanel
   +_momPanel
   +'</div>';
