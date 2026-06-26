@@ -10299,7 +10299,8 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  }
 
  var focus=gdata.filter(function(p){return isFocusProduct(p.product)&&!p.other;});
- var nonFocus=gdata.filter(function(p){return !isFocusProduct(p.product)&&!p.other;});
+ var nonFocus=gdata.filter(function(p){return !isFocusProduct(p.product)&&!p.other&&p.status!=='OOS';});
+ var oosBooks=gdata.filter(function(p){return p.status==='OOS'&&!p.other&&!isFocusProduct(p.product);});
  var otherBooks=gdata.filter(function(p){return !!p.other;});
  /* prev month map — keyed by product name */
  var _prevMap={};
@@ -10825,7 +10826,8 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  +(spotHtml?'<div style="grid-column:1/-1">'+spotHtml+'</div>':'')
  +'<div style="grid-column:1/-1">'+buildGroupCard(focus,'Focus Products','var(--accent)','rgba(24,119,242,.07)','rgba(24,119,242,.45)','ov-focus-card',1)+'</div>'
  +'<div style="grid-column:1/-1;margin-top:4px">'+buildGroupCard(nonFocus,'Non-Focus · เล่มรอง','var(--text2)','var(--surface2)','var(--border)','ov-nonfocus-card',2)+'</div>'
- +(otherBooks.length?'<div style="grid-column:1/-1">'+buildGroupCard(otherBooks,'Other Titles','#7C3AED','rgba(124,58,237,.05)','rgba(124,58,237,.25)','ov-other-card',1,'',true)+'</div>':'');
+ +(otherBooks.length?'<div style="grid-column:1/-1">'+buildGroupCard(otherBooks,'Other Titles','#7C3AED','rgba(124,58,237,.05)','rgba(124,58,237,.25)','ov-other-card',1,'',true)+'</div>':'')
+ +(oosBooks.length?'<div style="grid-column:1/-1;margin-top:4px">'+buildGroupCard(oosBooks,'Stock หมด · ขายหมด ('+oosBooks.length+')','#92400E','rgba(146,64,14,.05)','rgba(146,64,14,.28)','ov-oos-card',1,'',true)+'</div>':'');
 
  /* Smart Forecast card — ใช้ engine forecast (override=null) ให้ตรงกับ Hero
     (fcMultiplier reconcile ด้วย OPD base แล้ว → การ์ดรายเล่มรวมก็ ≈ engine) */
