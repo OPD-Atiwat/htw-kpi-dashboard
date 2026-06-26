@@ -12934,6 +12934,28 @@ function showProductDetail(pname){
   // per-channel table
   var _chs=Object.keys(_uCh).filter(function(c){return (_uCh[c]||0)>0;}).sort(function(a,b){return _uCh[b]-_uCh[a];});
   if(_chs.length){
+   var _RR_MAIN={'Facebook':1,'Shopee':1,'TikTok':1,'TikTok Affi':1};
+   function _rrRow(c,cls){
+    var _u=Math.round(_uCh[c]||0);
+    var _r=_uChRate(c);
+    var _fc=Math.round(_r*_rrDaysInMonth);
+    var _pct=_uTot>0?(_u/_uTot*100):0;
+    var _col=_RR_C[c]||'#64748B';
+    var _pv=Math.round(_prevCh[c]||0);
+    var _dl=_pv>0?((_u-_pv)/_pv*100):null;
+    var _dc=(_dl==null)?'var(--text2)':(_dl>=0?'#16A34A':'#DC2626');
+    var _da=(_dl==null)?'':(_dl>=0?'▲':'▼');
+    return '<tr'+(cls?' class="'+cls+'" style="display:none"':'')+'>'
+     +'<td><span class="plat-badge" style="background:'+_col+';color:#fff">'+escH(c)+'</span></td>'
+     +'<td class="num"><b>'+fmtNum(_u)+'</b></td>'
+     +'<td class="num" style="color:#2563EB;font-weight:700">'+_r.toFixed(1)+'</td>'
+     +'<td class="num" style="color:#16A34A;font-weight:700">'+fmtNum(_fc)+'</td>'
+     +'<td class="num">'+_pct.toFixed(1)+'%</td>'
+     +'<td class="num"><span style="color:var(--text2);font-size:11px">'+fmtNum(_pv)+'</span>'+(_dl==null?'':' <span style="color:'+_dc+';font-weight:800;font-size:11px">'+_da+Math.abs(_dl).toFixed(0)+'%</span>')+'</td>'
+     +'</tr>';
+   }
+   var _rrMain=_chs.filter(function(c){return _RR_MAIN[c];});
+   var _rrOth=_chs.filter(function(c){return !_RR_MAIN[c];});
    var _thd2='<thead><tr><th style="width:auto">ช่องทาง</th><th class="num" style="width:64px">เล่ม</th><th class="num" style="width:48px">/วัน</th><th class="num" style="width:60px">คาด</th><th class="num" style="width:46px">%</th><th class="num" style="width:90px">vs '+_TH_MO[_pmo-1]+'</th></tr></thead>';
    var _lRows='';_rrMain.forEach(function(c){_lRows+=_rrRow(c,'');});
    var _rRows='';_rrOth.forEach(function(c){_rRows+=_rrRow(c,'');});
