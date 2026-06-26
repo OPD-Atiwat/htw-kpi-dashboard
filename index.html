@@ -10483,7 +10483,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    +'</div>';
  })();
  var _grossPanel=(function(){
-  if(typeof bookGM!=='function') return '';
+  if(typeof bookGM!=='function'||typeof isFocusProduct!=='function'||!isFocusProduct(p.product)) return '';
   var _gM=bookGM(p.product,_gmCurPfx);
   if(!_gM||!(_gM.rev>0)) return '<div style="flex-shrink:0;width:'+_PILL_W+'"></div>';
   var _gmv=_gM.gm;
@@ -10519,7 +10519,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    +'</div></div>';
  })();
   var _chGMPanel=(function(){
-   if(typeof bookChGM!=='function') return '';
+   if(typeof bookChGM!=='function'||typeof isFocusProduct!=='function'||!isFocusProduct(p.product)) return '';
    var _mg=bookChGM(p.product,_gmCurPfx,['Facebook','Shopify']);
    var _sg=bookChGM(p.product,_gmCurPfx,['Shopee','Shopee Live']);
    if(!_mg&&!_sg) return '';
