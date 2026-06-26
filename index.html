@@ -10499,7 +10499,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   var _bahtStr=_gM.baht>=1e6?'฿'+(_gM.baht/1e6).toFixed(2)+'M':_gM.baht>=1e3?'฿'+(_gM.baht/1e3).toFixed(0)+'K':'฿'+_gM.baht;
   var _dgc=(_dayG&&_dayG.gm!=null)?(_dayG.gm>=20?'#16A34A':_dayG.gm>=10?'#D97706':'#DC2626'):'var(--text3)';
   return '<div style="flex-shrink:0;width:206px;padding-left:4px;display:flex;align-items:stretch">'
-   +'<div style="width:100%;background:'+_gbg+';border:1px solid '+_gbdr+';border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;cursor:pointer" title="\u0e41\u0e15\u0e30\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e40\u0e15\u0e47\u0e21">'
+   +'<div style="width:100%;background:'+_gbg+';border:1px solid '+_gbdr+';border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center;cursor:pointer" title="\u0e41\u0e15\u0e30\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e40\u0e15\u0e47\u0e21" onclick="event.stopPropagation();gmFocusPopup(\''+escH(name).replace(/\\/g,'\\\\').replace(/\x27/g,'\\x27')+'\')">'
    +'<div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;text-align:center;margin-bottom:5px">Gross Margin</div>'
    +'<div style="display:flex;align-items:stretch">'
      +'<div style="flex:1;text-align:center;padding:0 4px">'
@@ -10531,7 +10531,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
    var _sumStr=Math.abs(_sum)>=1e6?(_sum<0?'-':'')+'\u0e3f'+(Math.abs(_sum)/1e6).toFixed(2)+'M':Math.abs(_sum)>=1e3?(_sum<0?'-':'')+'\u0e3f'+(Math.abs(_sum)/1e3).toFixed(0)+'K':(_sum<0?'-':'')+'\u0e3f'+Math.abs(_sum);
    var _row=function(lbl,col,o){return '<div style="flex:1;text-align:center;padding:0 4px"><div style="font-size:7px;font-weight:700;color:'+col+';white-space:nowrap">'+lbl+'</div><div style="font-size:16px;font-weight:900;color:'+_cc(o?o.gm:null)+';line-height:1.15">'+(o?o.gm.toFixed(0)+'%':'\u2013')+'</div></div>';};
    return '<div style="flex-shrink:0;width:148px;padding-left:4px;display:flex;align-items:stretch">'
-    +'<div style="width:100%;background:'+(_neg?'rgba(220,38,38,.07)':'var(--surface2)')+';border:1px solid '+(_neg?'rgba(220,38,38,.28)':'var(--border)')+';border-radius:8px;padding:6px 6px;display:flex;flex-direction:column;justify-content:center;cursor:pointer" title="\u0e41\u0e15\u0e30\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e40\u0e15\u0e47\u0e21">'
+    +'<div style="width:100%;background:'+(_neg?'rgba(220,38,38,.07)':'var(--surface2)')+';border:1px solid '+(_neg?'rgba(220,38,38,.28)':'var(--border)')+';border-radius:8px;padding:6px 6px;display:flex;flex-direction:column;justify-content:center;cursor:pointer" title="\u0e41\u0e15\u0e30\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e40\u0e15\u0e47\u0e21" onclick="event.stopPropagation();gmFocusPopup(\''+escH(name).replace(/\\/g,'\\\\').replace(/\x27/g,'\\x27')+'\')">'
     +'<div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;text-align:center;margin-bottom:5px">GM \u0e27\u0e31\u0e19\u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14 \u00b7 \u0e23\u0e32\u0e22\u0e0a\u0e48\u0e2d\u0e07</div>'
     +'<div style="display:flex;align-items:stretch">'
      +_row('Meta','#1877F2',_mg)
