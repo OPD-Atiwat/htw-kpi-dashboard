@@ -13112,6 +13112,7 @@ function showProductDetail(pname){
   h+='';
   h+='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 14px 8px;height:200px"><canvas id="units-daily-rr"></canvas></div>';
   h+='</details>';
+  h+='</div>';
   window._unitsDailyChartData={id:'units-daily-rr',dates:_dts,vals:_vals,avg:_uRate};
  })();
 
@@ -13189,7 +13190,8 @@ function showProductDetail(pname){
     +'<span style="font-size:10px;font-weight:700;color:var(--text1)">฿'+_totFmt+'</span>'
     +'</div>';
   });
-  h+='<details ontoggle="window.dispatchEvent(new Event(\'resize\'))" style="border:1px solid var(--border);border-radius:10px;padding:8px 14px"><summary style="font-weight:700;font-size:13px;color:var(--text1);cursor:pointer;padding:6px 0">📊 ยอดขายรายวันแยกช่องทาง <span style="font-size:10px;font-weight:500;color:var(--text2)">(กดดู)</span></summary>';
+  h+='<div style="padding:6px 20px 10px">';
+  h+='<details open ontoggle="window.dispatchEvent(new Event(\'resize\'))" style="border:1px solid rgba(24,119,242,.4);border-radius:10px;padding:8px 14px;background:rgba(24,119,242,.03)"><summary style="font-weight:800;font-size:13px;color:var(--text1);cursor:pointer;padding:6px 0">📊 ยอดขายรายวันแยกช่องทาง</summary>';
   h+='';
   h+='<div style="position:relative;height:200px"><canvas id="'+_chartId+'"></canvas></div>';
   if(_segHtml){
