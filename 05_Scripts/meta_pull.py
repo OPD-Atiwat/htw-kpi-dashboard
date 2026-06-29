@@ -244,6 +244,7 @@ def guess_creator(ad_name):
         "แนน":        "แนน",
         "แก้ม":       "แก้ม",
         "สต็อป":      "สต็อป",
+        "สต๊อป":      "สต็อป",
         # Central (inhouse)
         "Course":     "Central",
         "PILOT":      "Central",
@@ -264,7 +265,7 @@ def guess_creator(ad_name):
         if "มิ้น" in b: return "มิ้น"
         if "แนน" in b: return "แนน"
         if "แก้ม" in b: return "แก้ม"
-        if "สต็อป" in b: return "สต็อป"
+        if "สต็อป" in b or "สต๊อป" in b: return "สต็อป"
         # Any other unknown bracket = Influ (external)
         if b and not re.match(r'^\d', b):  # not a date-like tag
             return "Influ"
@@ -272,7 +273,7 @@ def guess_creator(ad_name):
     if "หมิว" in ad_name: return "หมิว"
     if "ริว"  in ad_name: return "ริว"
     if "มิ้น" in ad_name: return "มิ้น"
-    if "สต็อป" in ad_name: return "สต็อป"
+    if "สต็อป" in ad_name or "สต๊อป" in ad_name: return "สต็อป"
     return "Unknown"
 
 
@@ -314,7 +315,7 @@ def guess_creators(ad_name):
         elif "มิ้น" in b: m = "มิ้น"
         elif "แนน" in b: m = "แนน"
         elif "แก้ม" in b: m = "แก้ม"
-        elif "สต็อป" in b: m = "สต็อป"
+        elif "สต็อป" in b or "สต๊อป" in b: m = "สต็อป"
         if m and m not in found:
             found.append(m)
     return found if found else [guess_creator(ad_name)]
