@@ -2367,10 +2367,10 @@ var MONTHLY_FINANCE_GOALS = {
    MONTHLY_FINANCE_GOALS['Jul 26']={totalGoal:6630000,onlineGoal:5000000,consignGoal:1630000,bookfairGoal:0,profitGoal:null};
   }
   window.CHANNEL_GOAL_BY_PRODUCT={
-   "ออฟฟิศนี้เฮงซวย (สัตว์)":{TikTok:480000,Facebook:430000,Shopee:450000,Other:20000},
-   "ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ":{TikTok:350000,Facebook:400000,Shopee:230000,Other:20000},
-   "กับดักความรู้สึกผิด":{TikTok:380000,Facebook:283000,Shopee:300000,Other:20000},
-   "ปีศาจตัวนั้น คือฉันเอง A Guide to Fighting the Demons in My Heart":{TikTok:430000,Facebook:140000,Shopee:220000,Other:10000}
+   "ออฟฟิศนี้เฮงซวย (สัตว์)":{TikTok:480000,TikTokShop:171000,TikTokAffi:309000,Facebook:430000,Shopee:450000,Other:20000},
+   "ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ":{TikTok:350000,TikTokShop:125000,TikTokAffi:225000,Facebook:400000,Shopee:230000,Other:20000},
+   "กับดักความรู้สึกผิด":{TikTok:380000,TikTokShop:136000,TikTokAffi:244000,Facebook:283000,Shopee:300000,Other:20000},
+   "ปีศาจตัวนั้น คือฉันเอง A Guide to Fighting the Demons in My Heart":{TikTok:430000,TikTokShop:154000,TikTokAffi:276000,Facebook:140000,Shopee:220000,Other:10000}
   };
  }catch(e){console.warn('Jul overlay',e);}
 })();
@@ -13163,7 +13163,7 @@ function showProductDetail(pname){
  // ── End Donut Chart ──────────────────────────────────────────────────────
 
  h+='<div style="overflow-x:auto"><table><thead><tr>'
- +'<th>ช่องทาง</th><th class="num">Revenue</th><th class="num">FC</th><th class="num">Spend</th>'
+ +'<th>ช่องทาง</th><th class="num">Revenue</th><th class="num">🎯เป้า ก.ค.</th><th class="num">FC</th><th class="num">Spend</th>'
  +'<th class="num">ROAS</th><th class="num">Purchases</th><th class="num">เล่ม</th><th class="num">%Rev</th><th class="num">%Ads</th><th class="num">%Margin</th>'
  +'</tr></thead><tbody>';
  var _MAINCH={'Shopee':1,'TikTok':1,'TikTok Affi':1,'Facebook':1};
@@ -13191,6 +13191,7 @@ function showProductDetail(pname){
  return '<tr'+(cls?' class="'+cls+'" style="display:none"':'')+'>'
  +'<td><span class="plat-badge" style="background:'+_chColor+';color:#fff">'+(_chIcon?_chIcon+' ':'')+escH(p)+'</span></td>'
  +'<td class="num"><b>'+fmtFull(d.rev)+'</b></td>'
+ +(function(){var _gd=(window.CHANNEL_GOAL_BY_PRODUCT||{})[pname]||{};var _gm={'Facebook':'Facebook','Shopee':'Shopee','TikTok':'TikTokShop','TikTok Affi':'TikTokAffi'}[p];var _gv=_gm?(_gd[_gm]||0):0;return '<td class="num" style="color:#0d9488;font-weight:700">'+(_gv>0?fmtFull(_gv):'<span style="color:var(--text2)">–</span>')+'</td>';})()
  +'<td class="num" style="color:#7C3AED;font-weight:700">'+(d.rev>0?fmtFull(_chFc(d.rev)):'<span style="color:var(--text2)">–</span>')+'</td>'
  +'<td class="num">'+(_hasSpd?fmtFull(_spd):'<span style="color:var(--text2)">–</span>')+'</td>'
  +'<td class="num">'+(_roas2!=null?_roas2.toFixed(2)+'x':'<span style="color:var(--text2)">–</span>')+'</td>'
@@ -13209,7 +13210,7 @@ function showProductDetail(pname){
  if(_othP.length){
   var _othRev=_othP.reduce(function(t,p){return t+(platCurrent[p].rev||0);},0);
   h+='<tr class="chToggleRow" data-o="0" onclick="var op=this.getAttribute(\'data-o\')===\'1\';this.setAttribute(\'data-o\',op?\'0\':\'1\');document.querySelectorAll(\'.chOther\').forEach(function(e){e.style.display=op?\'none\':\'table-row\';});this.querySelector(\'.cv\').textContent=op?\'▸\':\'▾\';" style="cursor:pointer;background:var(--surface2)">'
-   +'<td colspan="10" style="padding:9px 12px;font-size:12px;font-weight:600;color:var(--text2)"><span class="cv" style="font-weight:800;margin-right:6px">▸</span>ช่องอื่นๆ อีก '+_othP.length+' ช่อง (รวม '+fmtFull(_othRev)+' · '+(totalRev>0?(_othRev/totalRev*100).toFixed(1):'0')+'%) — คลิกเพื่อดู</td></tr>';
+   +'<td colspan="11" style="padding:9px 12px;font-size:12px;font-weight:600;color:var(--text2)"><span class="cv" style="font-weight:800;margin-right:6px">▸</span>ช่องอื่นๆ อีก '+_othP.length+' ช่อง (รวม '+fmtFull(_othRev)+' · '+(totalRev>0?(_othRev/totalRev*100).toFixed(1):'0')+'%) — คลิกเพื่อดู</td></tr>';
   _othP.forEach(function(p){h+=_chRow(p,'chOther');});
  }
  // OPD channels ครบแล้ว — ไม่แสดง อื่นๆ
