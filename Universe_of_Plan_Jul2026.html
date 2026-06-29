@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universe of Plan — ก.ค. 2026 · How-to</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#2a3340;
+    --ink:#e6edf3; --sub:#9aa7b4; --mut:#6b7785;
+    --green:#2ea043; --greenbg:#0f2417;
+    --red:#f85149; --redbg:#2a1416;
+    --amber:#d29922; --amberbg:#2a2110;
+    --blue:#3b82f6; --bluebg:#0f1d33;
+    --purple:#a371f7; --purplebg:#1c1430;
+    --teal:#39c5bb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;font-weight:400;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 80px}
+  header.hero{border:1px solid var(--line);background:linear-gradient(135deg,#10202e,#161b22);border-radius:18px;padding:34px 30px;margin-bottom:26px}
+  .kicker{color:var(--teal);font-weight:600;letter-spacing:.14em;font-size:12px;text-transform:uppercase}
+  h1{font-size:30px;font-weight:700;margin:8px 0 6px;letter-spacing:-.01em}
+  .hero p{color:var(--sub);font-size:15px}
+  .hero .meta{margin-top:14px;color:var(--mut);font-size:12.5px}
+  section{margin-top:30px}
+  h2{font-size:20px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  h2 .n{font-size:13px;color:var(--bg);background:var(--teal);width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+  h3{font-size:15px;font-weight:600;margin:16px 0 8px;color:var(--ink)}
+  p.lead{color:var(--sub);font-size:14px;margin-bottom:10px}
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:760px){.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .kpi .lab{color:var(--mut);font-size:12.5px;font-weight:500}
+  .kpi .val{font-size:23px;font-weight:700;margin-top:4px}
+  .kpi .delta{font-size:12.5px;margin-top:2px}
+  .up{color:var(--green)} .down{color:var(--red)} .warn{color:var(--amber)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+  th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600}
+  .p-green{background:var(--greenbg);color:#56d364}
+  .p-red{background:var(--redbg);color:#ff7b72}
+  .p-amber{background:var(--amberbg);color:#e3b341}
+  .p-blue{background:var(--bluebg);color:#79c0ff}
+  .bucket{border-radius:14px;padding:16px 18px;border:1px solid var(--line)}
+  .b-keep{background:var(--greenbg);border-color:#1d4427}
+  .b-test{background:var(--bluebg);border-color:#1d3a5c}
+  .b-fix{background:var(--redbg);border-color:#5c2422}
+  .bucket h4{font-size:14px;font-weight:700;margin-bottom:8px}
+  .bucket ul{list-style:none;font-size:13px;color:var(--ink)}
+  .bucket li{padding:4px 0 4px 18px;position:relative;color:var(--sub)}
+  .bucket li:before{content:"▪";position:absolute;left:0;color:var(--mut)}
+  ul.clean{list-style:none;font-size:14px}
+  ul.clean li{padding:6px 0 6px 22px;position:relative;color:var(--sub)}
+  ul.clean li:before{content:"→";position:absolute;left:0;color:var(--teal);font-weight:700}
+  ul.clean li b{color:var(--ink);font-weight:600}
+  .callout{border-left:3px solid var(--teal);background:var(--panel2);padding:13px 16px;border-radius:0 10px 10px 0;font-size:14px;margin:12px 0}
+  .callout.red{border-color:var(--red)} .callout.amber{border-color:var(--amber)}
+  .northstar{border:1px solid #1d4427;background:linear-gradient(135deg,#0f2417,#161b22);border-radius:14px;padding:20px 22px;font-size:15px}
+  .northstar b{color:#56d364}
+  .tag{font-size:11px;color:var(--mut);font-weight:500}
+  .foot{margin-top:40px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+  .day{font-weight:600;color:var(--ink)}
+  .small{font-size:12.5px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Universe of Plan</div>
+  <h1>โคตรแผนเดือนกรกฎาคม 2026 · ทีม How-to</h1>
+  <p>แผนเดียวจบ — แม็พทุกชั้นจาก data จริง (MK13 · Meta · GMV Max · BEP · KMS) ดันทุกอย่างให้ถึงเป้าแบบ "มีกำไร" ไม่ใช่แค่ยอด</p>
+  <div class="meta">เรียบเรียงจาก Dashboard (index.html) · Pricing for Channel · TikTok GMV Max (live) · KMS Brain — โฟกัส: กรกฎาคม 2026</div>
+</header>
+
+<!-- 0. THE BIG ARTERY -->
+<section>
+  <div class="northstar">
+    🎯 <b>เส้นเลือดใหญ่ของแผน (จำแค่อันเดียว):</b><br>
+    <b>TikTok/Shopee = เครื่องโต</b> เลี้ยงให้แรง · <b>FB = เบรกแล้วซ่อม</b> (ROAS ต้อง ≥ จุดคุ้มทุน ก่อนเติมงบ) · <b>เล่มออฟฟิศ = ย้ายออกจาก FB → TikTok + ผ่าตัดคอนเทนต์</b> · <b>ตั้งเพดาน ROI ใหม่ = 3.8</b> เพราะ fee TikTok ขึ้น · <b>Dashboard = ติดสัญญาณเตือน ROI</b> ไม่ให้เผาเงินเงียบ
+  </div>
+</section>
+
+<!-- 1. DIAGNOSIS -->
+<section>
+  <h2><span class="n">1</span>สถานการณ์ — ภาพ "ดูดี" ที่ซ่อนแผล</h2>
+  <p class="lead">มิ.ย. 1–25 เทียบ พ.ค. 1–25 (same-period)</p>
+  <div class="grid g3">
+    <div class="kpi"><div class="lab">ยอดรวม Jun (1–25)</div><div class="val">฿7,041,379</div><div class="delta up">▲ +18% จาก พ.ค. (฿5,948,802)</div></div>
+    <div class="kpi"><div class="lab">TikTok + Shopee</div><div class="val">▲ +77% / +80%</div><div class="delta up">เครื่องยนต์ที่กลบทุกอย่าง</div></div>
+    <div class="kpi"><div class="lab">Facebook</div><div class="val">฿1,462,959</div><div class="delta down">▼ −35% (จาก ฿2,243,009)</div></div>
+  </div>
+  <div class="callout red">
+    <b>แผลจริง:</b> Meta/FB ทั้งแบรนด์ มิ.ย. spend ฿399,679 → revenue ฿573,241 = <b>ROAS 1.43</b> ขณะที่จุดคุ้มทุน FB อยู่ที่ <b>1.92</b> → <b>ยิง FB ขาดทุนทั้งเดือน</b> ทุก creator ต่ำกว่าเส้น (หมิว 1.46 · ริว 1.43 · มิ้น 1.47 · สต็อป 0.84). เล่มออฟฟิศพึ่ง FB 71.6% เลยโดนเต็มๆ — ทั้งแบรนด์รอดเพราะ TikTok/Shopee บังไว้
+  </div>
+</section>
+
+<!-- 2. BREAKEVEN -->
+<section>
+  <h2><span class="n">2</span>จุดคุ้มทุนใหม่ — fee ขึ้น ROI เป้าเก่าใช้ไม่ได้แล้ว</h2>
+  <p class="lead">GMV Max โชว์แค่ ROI ดิบ (GMV÷Cost) ไม่หัก fee/commission/COGS/เงินเดือนให้ — ต้องคิดเอง</p>
+  <div class="card">
+    <h3>โครงสร้างต้นทุน TikTok ต่อเล่ม (ราคา ~฿225 จาก Pricing for Channel)</h3>
+    <ul class="clean">
+      <li><b>fee TikTok รวม ~25%</b> = ค่าธรรมเนียมขาย 8.03% + มาร์เก็ตเพลส 13.91% + ค่าสั่งซื้อ 3.21%</li>
+      <li><b>เงินเดือนส่วนกลาง 11%</b> + ส่งเสริมการขาย 5.31% + COGS ~14% + commission/COD/server</li>
+      <li>→ เหลือ <b>margin ก่อนหักแอด ~34%</b> (margin หลังแอด ~4.5% เฉือนกระดูก)</li>
+    </ul>
+  </div>
+  <h3>จุดคุ้มทุน (Breakeven ROI) ราย channel = 1 ÷ margin ก่อนแอด</h3>
+  <table>
+    <tr><th>Channel</th><th class="num">Margin ก่อนแอด</th><th class="num">BE ROI</th><th>สถานะตอนนี้</th></tr>
+    <tr><td>Facebook</td><td class="num">52%</td><td class="num">1.92</td><td><span class="pill p-red">🔴 ทำได้ 1.43 = ขาดทุน</span></td></tr>
+    <tr><td>TikTok</td><td class="num">~34%</td><td class="num">~2.9 → 3.8*</td><td><span class="pill p-amber">⚠️ ก้ำกึ่ง</span></td></tr>
+    <tr><td>Shopee</td><td class="num">36%</td><td class="num">2.76</td><td><span class="pill p-green">✅ ads แค่ 3% กำไรเกือบชัวร์</span></td></tr>
+  </table>
+  <p class="small">*ถ้านับ fulfillment (pick/pack/คลัง ~฿33/เล่ม) ที่เราจ่ายเอง BE TikTok ขยับเป็น ~3.8 — ใช้ค่านี้เป็นเพดานปลอดภัยตามวิธี BEP เต็มต้นทุนของเรา</p>
+  <div class="callout amber">
+    <b>กฎทองเดือนนี้:</b> ตั้ง target ROI TikTok ในใจ = <b>ขั้นต่ำ 3.8</b> (ไม่ใช่ 3.0–3.5 แบบเดิม). campaign ไหนต่ำกว่า = เลี้ยงไว้ขาดทุนเงียบ
+  </div>
+</section>
+
+<!-- 3. GMV MAX BOARD -->
+<section>
+  <h2><span class="n">3</span>บอร์ด GMV Max [OPDHOWTO] — เทียบเพดาน 3.8</h2>
+  <p class="lead">ภาพรวม GMV Max มิ.ย.: Cost ฿915,438 · GMV ฿3,484,863 · ROI รวม 3.81 (เครื่องยนต์เงินจริง)</p>
+  <table>
+    <tr><th>Campaign (เล่ม)</th><th class="num">Cost</th><th class="num">GMV</th><th class="num">CPO</th><th class="num">ROI</th><th>vs BE 3.8</th></tr>
+    <tr><td>150Quotes Affi2</td><td class="num">฿183,102</td><td class="num">฿671,023</td><td class="num">66</td><td class="num">3.66</td><td><span class="pill p-amber">เฉียด</span></td></tr>
+    <tr><td><b>Trap (กับดัก)</b></td><td class="num">฿78,629</td><td class="num">฿270,235</td><td class="num">88</td><td class="num">3.44</td><td><span class="pill p-red">ต่ำ</span></td></tr>
+    <tr><td>Ghostly Affi</td><td class="num">฿42,753</td><td class="num">฿157,931</td><td class="num">70</td><td class="num">3.69</td><td><span class="pill p-amber">เฉียด</span></td></tr>
+    <tr><td><b>Coworkers (เฮงซวยสัตว์)</b></td><td class="num">฿37,611</td><td class="num">฿133,551</td><td class="num">92🔴</td><td class="num">3.55</td><td><span class="pill p-red">ต่ำ</span></td></tr>
+    <tr><td>Kiwtum</td><td class="num">฿37,209</td><td class="num">฿127,273</td><td class="num">80</td><td class="num">3.42</td><td><span class="pill p-red">ต่ำ</span></td></tr>
+    <tr><td>Ghost</td><td class="num">฿36,563</td><td class="num">฿119,822</td><td class="num">59</td><td class="num">3.28</td><td><span class="pill p-red">ต่ำ</span></td></tr>
+    <tr><td>Demons (ปีศาจ) Affi</td><td class="num">฿30,618</td><td class="num">฿110,903</td><td class="num">69</td><td class="num">3.62</td><td><span class="pill p-amber">เฉียด</span></td></tr>
+    <tr><td>150Quotes (28May)</td><td class="num">฿26,465</td><td class="num">฿73,869</td><td class="num">118🔴</td><td class="num">2.79</td><td><span class="pill p-red">ขาดทุนชัด</span></td></tr>
+  </table>
+  <div class="callout">
+    <b>อ่านออกมา:</b> เกือบทั้งบอร์ดต่ำกว่าเพดาน 3.8 → เดือนนี้ <b>ไม่ใช่เร่งงบ แต่คือยกคุณภาพ ROI</b>. ตัดเลือดไหลก่อน (150Quotes-28May 2.79) แล้วรีดตัวเฉียด (Ghostly/Demons/150Quotes-Affi2) ให้ทะลุ 3.8 ด้วยคอนเทนต์ — <span class="tag">หมายเหตุ: อ่านอย่างเดียว ไม่ปรับ setting ให้ — ทีมปรับเอง</span>
+  </div>
+</section>
+
+<!-- 4. CHANNEL PLAYBOOK -->
+<section>
+  <h2><span class="n">4</span>Channel Playbook ก.ค.</h2>
+  <div class="grid g2">
+    <div class="card"><h3>🔵 Facebook — เบรก & ซ่อม</h3>
+      <ul class="clean">
+        <li><b>ตัด/ลดงบเล่มออฟฟิศบน FB</b> ก่อน (BE 1.92 ทำได้ 1.43)</li>
+        <li>เหลือ FB ไว้เฉพาะบทบาท <b>"จุด demand"</b> ป้อน Shopee (correlation FB→Shopee)</li>
+        <li>เลิก cross-attribute งบไม่ระบุ creator (~฿174K มิ.ย.)</li>
+        <li>เป้า: ดึง FB ROAS 1.43 → ≥ 1.92 ก่อนค่อยเติมงบ</li>
+      </ul></div>
+    <div class="card"><h3>🟢 TikTok GMV Max — เครื่องโต</h3>
+      <ul class="clean">
+        <li><b>รับงบที่ย้ายจาก FB</b> (เล่มออฟฟิศ TikTok 3.55 &gt; FB 1.43)</li>
+        <li>คุมทุก campaign ให้ <b>ROI ≥ 3.8</b></li>
+        <li>ก๊อปสูตรตัวแชมป์ (CheapDopamine ROI 4.32 / CPO 45)</li>
+        <li>เกาะแคมเปญ (ต้น/PayDay/สิ้นเดือน) ดันด้วย Live margin สูง</li>
+      </ul></div>
+    <div class="card"><h3>🟠 Shopee — เก็บ margin</h3>
+      <ul class="clean">
+        <li>เกาะแคมเปญ DD/PayDay (เคส 27 พ.ค. ลดราคา +80%)</li>
+        <li>รับ traffic จาก FB ปิดการขายที่ margin สูงกว่า</li>
+      </ul></div>
+    <div class="card"><h3>⚪ Consignment / หน้าร้าน</h3>
+      <ul class="clean">
+        <li>margin สูงสุด — พยุงกำไรรวม</li>
+        <li>กฎ Bookfair: ห้าม overwrite หักออกจากหน้าร้านกัน double-count</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- 5. PORTFOLIO -->
+<section>
+  <h2><span class="n">5</span>Portfolio รายเล่ม ก.ค.</h2>
+  <table>
+    <tr><th>เล่ม (ชื่อเต็ม GOALS_DATA)</th><th>Jun</th><th>บทบาท ก.ค.</th></tr>
+    <tr><td>กับดักความรู้สึกผิด</td><td><span class="pill p-blue">83.5%</span></td><td>เรือธง — เลี้ยงทะลุ 100% (Trap ROI 3.44 → ดันถึง 3.8)</td></tr>
+    <tr><td>ออฟฟิศนี้เฮงซวย (สัตว์)</td><td><span class="pill p-red">30.7%</span></td><td><b>เคสผ่าตัด</b> — ย้าย FB→TikTok + คอนเทนต์หัวกรวย (ดูชั้น 6)</td></tr>
+    <tr><td>ปีศาจตัวนั้น คือฉันเอง</td><td><span class="pill p-amber">90.9%</span></td><td>รักษา — Demons Affi 3.62 รีดถึง 3.8</td></tr>
+    <tr><td>The Witches' Club ชมรมลับเปลี่ยนชีวิต</td><td><span class="pill p-red">55.8%</span></td><td>review มุม/งบ — ตัดสินใจ scale หรือ hold</td></tr>
+    <tr><td>ฉันจะมีชีวิตที่ดี</td><td><span class="pill p-red">50.8%</span></td><td>review — เปลี่ยน angle หรือลดงบ</td></tr>
+    <tr><td>ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ (Launch)</td><td><span class="pill p-blue">NEW</span></td><td><b>Launch 22 ก.ค.</b> เป้า ฿1,000,000 (BEP ฿372,612) — แพคคู่กับออฟฟิศ + Live เปิดตัว</td></tr>
+    <tr><td>ขอใช้ชีวิตที่เหลือ / กว่าจะคิดได้ / Ghostly Remains</td><td><span class="pill p-green">179/299/145%</span></td><td>ปล่อยวิ่ง — รักษาโมเมนตัม</td></tr>
+  </table>
+</section>
+
+<!-- 6. OFFICE BOOK RESCUE -->
+<section>
+  <h2><span class="n">6</span>ผ่าตัดเล่มออฟฟิศ (เฮงซวยสัตว์) — KMS Brain</h2>
+  <div class="grid g2">
+    <div class="card"><h3>ทำไมตก (data)</h3>
+      <ul class="clean">
+        <li>มิ.ย. เททั้งงบไป <b>Solution 1.19</b> (สอนจบในคลิป) + <b>Painpoint 0.67</b> (เจ็บล้วน)</li>
+        <li>ยิงผิดกลุ่ม GenZ 25–34 (1.92) ทั้งที่คนซื้อจริง <b>GenY 35–54</b> (2.13–2.23)</li>
+        <li>CPO แพงสุดทุกช่อง (TikTok 92) = ปัญหา angle จริง</li>
+      </ul></div>
+    <div class="card"><h3>สูตรแก้ (เสียบลงปฏิทิน)</h3>
+      <ul class="clean">
+        <li>หัวกรวย <b>Insight 2.12 → Review 2.15 → Promotion 2.17</b></li>
+        <li>ตัด Painpoint · ลด Solution เหลือ teaser</li>
+        <li>โทน <b>เยียวยา–มีทางรอด</b> เลิกเฟียส/สายสู้</li>
+        <li>จุดต่าง: "บางตัวสู้ได้ บางตัวรู้ว่าควรเดินจากอย่างผู้ชนะ"</li>
+      </ul></div>
+  </div>
+  <div class="callout">ทุกคลิป 4 จังหวะ: <b>เจ็บสั้น 3 วิ → ตั้งชื่อสัตว์/เล่ห์ (identity hook) → หนังสือ=ทางออก (teaser) → offer + CTA</b> · creator: หมิว 2.07 + ริว 1.95 · หยุดอินฟลู/สต็อป · <b>ROAS &lt; 2.3 = เบรกทันที</b></div>
+</section>
+
+<!-- 7. CREATOR -->
+<section>
+  <h2><span class="n">7</span>Creator & KPI ก.ค.</h2>
+  <table>
+    <tr><th>Creator</th><th>เล่มหลัก</th><th class="num">Revenue Goal</th><th>Guardrail</th></tr>
+    <tr><td>ริว / มิ้น</td><td>volume + กับดัก/ปีศาจ</td><td class="num">฿1,060,000</td><td rowspan="3" style="vertical-align:middle">ROAS ≥ 2.3 · CPM ≤ ฿100 (FB) · <b>&lt;2.3 เบรก</b></td></tr>
+    <tr><td>สต็อป</td><td>—</td><td class="num">฿968,000</td></tr>
+    <tr><td>หมิว</td><td>เฮงซวยสัตว์ (top FB 2.07)</td><td class="num">฿850,000</td></tr>
+  </table>
+  <p class="small">แคท = เฮงซวยสัตว์ · แก้ม = กับดัก · 50/50 split เมื่อ ad มีหลายชื่อ · หยุดอินฟลู (ROAS 0.85–1.23)</p>
+</section>
+
+<!-- 8. LIVE CALENDAR -->
+<section>
+  <h2><span class="n">8</span>Live & Campaign Calendar ก.ค.</h2>
+  <p class="lead">Live เกาะแคมเปญถูกแล้ว (กลางเดือนไม่มีแคมเปญ → ให้ FB/Content/Shopee แบก)</p>
+  <table>
+    <tr><th>วัน</th><th>เวลา</th><th>งาน</th><th>โฟกัส</th></tr>
+    <tr><td class="day">ศ. 3</td><td>18–20</td><td>Live ขาย (ริว/มิ้น)</td><td>เรือธง กับดัก เก็บฐานต้นเดือน</td></tr>
+    <tr><td class="day">จ. 6</td><td>18–21</td><td>Live + Live DD</td><td>เคลียร์ stock + เล่มขายดี</td></tr>
+    <tr><td class="day">9–21</td><td>—</td><td><span class="pill p-amber">ไม่มี Live</span></td><td>FB(ซ่อมแล้ว)+Content+Shopee แบก · ดันเฮงซวยสัตว์ด้วย TikTok</td></tr>
+    <tr><td class="day">พ. 22</td><td>18–20</td><td><b>Live เปิดตัว "ถือไพ่"</b></td><td>Launch เล่มใหม่</td></tr>
+    <tr><td class="day">พฤ. 23</td><td>18–21</td><td>Live PayDay</td><td>ดันเล่มใหม่ซ้ำ (เงินเดือนออก กำลังซื้อพีค)</td></tr>
+    <tr><td class="day">ศ. 31</td><td>19–21</td><td>Live ขาย</td><td>ปิดยอดสิ้นเดือน</td></tr>
+  </table>
+  <p class="small">ข้อเสนอ: เพิ่ม Live ซ้ำ 24/25 reinforce launch เล่มใหม่ (เป้า launch ฿1.0M ใหญ่ — รอบเดียวไม่พอ)</p>
+</section>
+
+<!-- 9. DASHBOARD -->
+<section>
+  <h2><span class="n">9</span>แก้ Dashboard (รากฐาน)</h2>
+  <ul class="clean">
+    <li><b>เพิ่มการ์ด FB ROAS vs เส้นกำไร 1.92</b> — แดงเมื่อต่ำกว่า (ตัวเลขสำคัญสุดที่ตอนนี้ไม่ถูก flag)</li>
+    <li><b>View "Channel Efficiency"</b> — ยอด MoM + ROI + ทะลุ BE ไหม ในที่เดียว กันภาพลวงที่ TikTok/Shopee กลบ FB</li>
+    <li><b>เส้น BE ROI ราย channel</b> (FB 1.92 / TikTok 3.8 / Shopee 2.76) ฝังในตาราง campaign</li>
+    <li><b>เคลียร์ meta_ads_data.json</b> — ค้างตั้งแต่ 26 พ.ค. (มีแค่ May 1–25) เป็นไฟล์ลอย ลบ/ซ่อม meta_pull</li>
+    <li>กฎแก้ไฟล์: commit local → publish ผ่าน .sync_trigger (runner ถือ git lock)</li>
+  </ul>
+</section>
+
+<!-- 10. TOOLS -->
+<section>
+  <h2><span class="n">10</span>เครื่องมือ/Agent ที่ "เกิดมาเพื่อแผนนี้"</h2>
+  <div class="grid g3">
+    <div class="card"><h3>⭐ Meta Ads MCP <span class="tag">(ต่อแล้ว)</span></h3><p class="small">insights trend/anomaly · benchmark CPM/CTR · ปรับ/เบรก ad ROAS&lt;เส้น · A/B หัวกรวย — ดึงสด ไม่ต้องรอ MK13</p></div>
+    <div class="card"><h3>🧩 Plugins <span class="tag">(ติดตั้งแล้ว)</span></h3><p class="small">marketing: campaign-plan · performance-report · brand-review · data: build-dashboard · create-viz</p></div>
+    <div class="card"><h3>🛠 Skills ภายใน</h3><p class="small">pct-ads-calc · bep-builder · team-kpi-commission · tiktok-kms-mapping · howto-brain · short-report</p></div>
+    <div class="card"><h3>🔌 ต่อเพิ่ม</h3><p class="small">Supermetrics → รวม TikTok/Shopee/Meta แก้ meta json ค้าง · Slack → ส่ง brief ROAS เตือนทีม</p></div>
+    <div class="card"><h3>📱 GMV Max <span class="tag">(manual)</span></h3><p class="small">ไม่มี API native — ดึงผ่าน browser อ่านอย่างเดียว + skill tiktok-kms-mapping</p></div>
+    <div class="card"><h3>⏰ Scheduled</h3><p class="small">daily-sales-margin-brief · weekly-creator-coaching — ผูก guardrail ROAS</p></div>
+  </div>
+</section>
+
+<!-- 11. 3 BUCKETS -->
+<section>
+  <h2><span class="n">11</span>สรุป 3 ถัง: รักษา / ลอง / แก้</h2>
+  <div class="grid g3">
+    <div class="bucket b-keep"><h4>✅ ของเดิมที่ดี — รักษา</h4><ul>
+      <li>TikTok Affi + Shopee เกาะแคมเปญ</li>
+      <li>เรือธงกับดัก (เครื่องปั่นเงิน)</li>
+      <li>หัวกรวย Insight→Review→Promotion</li>
+      <li>format สัมภาษณ์หมอ/animation ซึมเศร้า</li>
+      <li>50/50 split · same-period MTD</li>
+    </ul></div>
+    <div class="bucket b-test"><h4>🆕 ของใหม่ — ต้องลอง</h4><ul>
+      <li>เพดาน ROI 3.8 + budget cap ตาม ROAS</li>
+      <li>Launch "ถือไพ่" BEP + Live เปิดตัว</li>
+      <li>quiz "หัวหน้าเป็นสัตว์ตัวไหน"</li>
+      <li>โทนเยียวยา GenY 35–54</li>
+      <li>การ์ด FB ROAS + Channel Efficiency</li>
+      <li>Meta Ads MCP ดึงสดเบรกทันเวลา</li>
+    </ul></div>
+    <div class="bucket b-fix"><h4>🔧 ของเดิมที่แย่ — แก้/ตัด</h4><ul>
+      <li>เบรก FB เล่มออฟฟิศ (ขาดทุน 1.43)</li>
+      <li>ตัด Painpoint · ลด Solution</li>
+      <li>หยุดอินฟลู/สต็อป (ROAS&lt;1.3)</li>
+      <li>campaign ROI&lt;3.8 หยุดเลี้ยงเงียบ</li>
+      <li>ลบ meta_ads_data.json ค้าง</li>
+      <li>เลิกโทนเฟียส/สายสู้</li>
+    </ul></div>
+  </div>
+</section>
+
+<div class="foot">
+  Universe of Plan · กรกฎาคม 2026 · ทีม How-to OpenDurian — แหล่ง: Dashboard index.html · Pricing for Channel · TikTok GMV Max (live read-only) · KMS Brain · BEP _REF<br>
+  ⚠️ จุดที่ต้อง confirm: เล่มบน TikTok เราจ่าย fulfillment เองไหม → ตัดสิน BE ROI จริง (2.9 vs 3.8). แผนนี้ใช้ 3.8 เป็นเพดานปลอดภัย
+</div>
+
+</div>
+</body>
+</html>

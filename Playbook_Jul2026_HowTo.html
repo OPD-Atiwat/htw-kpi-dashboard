@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook กรกฎาคม 2026 · ทีม How-to</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1117;--panel:#161b22;--panel2:#1c2330;--line:#2a3340;
+    --ink:#e6edf3;--sub:#9aa7b4;--mut:#6b7785;
+    --green:#2ea043;--red:#f85149;--amber:#d29922;--blue:#3b82f6;--teal:#39c5bb;--purple:#a371f7;
+    --greenbg:#0f2417;--redbg:#2a1416;--amberbg:#2a2110;--bluebg:#0f1d33;--purplebg:#1c1430;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+  .wrap{max-width:1060px;margin:0 auto;padding:30px 20px 90px}
+  header.hero{border:1px solid var(--line);background:linear-gradient(135deg,#10202e,#161b22);border-radius:18px;padding:32px 28px;margin-bottom:22px}
+  .kicker{color:var(--teal);font-weight:600;letter-spacing:.14em;font-size:12px;text-transform:uppercase}
+  h1{font-size:28px;font-weight:700;margin:8px 0 6px}
+  .hero p{color:var(--sub);font-size:14.5px}
+  .how{margin-top:14px;background:#0e1826;border:1px solid var(--line);border-radius:10px;padding:12px 15px;font-size:13px;color:var(--sub)}
+  .how b{color:var(--teal)}
+  /* stepper nav */
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+  .toc a{font-size:12.5px;color:var(--sub);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:5px 12px;text-decoration:none}
+  .toc a:hover{border-color:var(--teal);color:var(--ink)}
+  section.step{margin-top:26px;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:22px 24px}
+  .stephead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .stepno{flex:none;width:34px;height:34px;border-radius:10px;background:var(--teal);color:#06121a;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .stephead h2{font-size:19px;font-weight:700}
+  .stepsub{color:var(--mut);font-size:13px;margin:2px 0 14px 46px}
+  h3{font-size:14.5px;font-weight:600;margin:16px 0 8px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--sub);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+  .p-green{background:var(--greenbg);color:#56d364}.p-red{background:var(--redbg);color:#ff7b72}
+  .p-amber{background:var(--amberbg);color:#e3b341}.p-blue{background:var(--bluebg);color:#79c0ff}.p-pur{background:var(--purplebg);color:#d2b3ff}
+  ul.clean{list-style:none;font-size:13.5px;margin-top:4px}
+  ul.clean li{padding:5px 0 5px 20px;position:relative;color:var(--sub)}
+  ul.clean li:before{content:"→";position:absolute;left:0;color:var(--teal);font-weight:700}
+  ul.clean li b{color:var(--ink)}
+  .callout{border-left:3px solid var(--teal);background:var(--panel2);padding:12px 15px;border-radius:0 10px 10px 0;font-size:13.5px;margin:12px 0}
+  .callout.red{border-color:var(--red)}.callout.amber{border-color:var(--amber)}.callout.green{border-color:var(--green)}
+  .grid{display:grid;gap:12px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:820px){.g2,.g3,.g5{grid-template-columns:1fr}}
+  .mini{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .mini .t{font-size:12px;color:var(--mut);font-weight:500}
+  .mini .v{font-size:18px;font-weight:700;margin-top:3px}
+  .northstar{border:1px solid #1d4427;background:linear-gradient(135deg,#0f2417,#161b22);border-radius:12px;padding:16px 18px;font-size:14px}
+  .northstar b{color:#56d364}
+  .small{font-size:12px;color:var(--mut)}
+  .stage{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .stage:last-child{border:none}
+  .stage .ico{flex:none;width:30px;height:30px;border-radius:8px;background:var(--bluebg);color:#79c0ff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .stage .b{font-size:13.5px}.stage .b b{color:var(--ink)}
+  .foot{margin-top:34px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+  .tagnew{font-size:10px;background:var(--purplebg);color:#d2b3ff;padding:1px 7px;border-radius:20px;font-weight:600;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Team Playbook · ทีม How-to</div>
+  <h1>โคตรแผนกรกฎาคม 2026 — เป็นขั้นเป็นตอน</h1>
+  <p>เปิดแล้วทำตามได้เลย ตั้งแต่เป้า → จังหวะแคมเปญ → งบ → คอนเทนต์ → ปิดการขาย → วัดผล → ปิดช่องโหว่</p>
+  <div class="how">📖 <b>วิธีใช้:</b> อ่านเรียงจาก STEP 0 ลงมา · ตารางสีบอกสถานะ (<span class="pill p-green">ดี</span> <span class="pill p-amber">ระวัง</span> <span class="pill p-red">ต้องแก้</span>) · <span class="tagnew">ใหม่</span> = ของที่ยังไม่เคยทำ</div>
+  <div class="toc">
+    <a href="#s0">0 · เป้า</a><a href="#s1">1 · จังหวะเดือน</a><a href="#s2">2 · งบ</a><a href="#s3">3 · คอนเทนต์</a>
+    <a href="#s4">4 · Journey</a><a href="#s5">5 · แพคคู่</a><a href="#s6">6 · กฎแอด</a><a href="#s7">7 · ตัววัด</a><a href="#s8">8 · ปิดช่องโหว่</a>
+  </div>
+</header>
+
+<!-- STEP 0 -->
+<section class="step" id="s0">
+  <div class="stephead"><div class="stepno">0</div><h2>เป้าเดือน + เส้นเลือดใหญ่</h2></div>
+  <div class="stepsub">รู้ก่อนว่าเดือนนี้สู้เพื่ออะไร</div>
+  <div class="grid g3">
+    <div class="mini"><div class="t">เป้าแบรนด์รวม</div><div class="v">฿6,630,000</div></div>
+    <div class="mini"><div class="t">เป้า Online</div><div class="v">฿5,000,000</div></div>
+    <div class="mini"><div class="t">เป้า Consignment</div><div class="v">฿1,630,000</div></div>
+  </div>
+  <p class="small" style="margin-top:8px">เล่มใหญ่สุด: <b style="color:var(--ink)">ออฟฟิศ ฿1.38M</b> · <b style="color:var(--ink)">ถือไพ่ (launch) ฿1.00M</b> · กับดัก ฿0.98M · ปีศาจ1 ฿0.80M · ที่เหลือรวม ฿0.84M <span class="small">(ที่มา: JUL 26 PLAN OVERLAY ใน dashboard)</span></p>
+  <div class="northstar" style="margin-top:14px">
+    🎯 <b>จำแค่อันเดียว:</b> TikTok/Shopee = เครื่องโต เลี้ยงให้แรง · FB = เบรกแล้วซ่อม + ใช้ดันไป Shopee · เล่มออฟฟิศ = ย้ายออกจาก FB + ผ่าตัดคอนเทนต์ · <b>เพดาน ROI ใหม่ = 3.8</b> (fee TikTok ขึ้น) · วัดด้วย <b>กำไรรวม FB+Shopee</b> ไม่ใช่ ROAS ช่องเดียว
+  </div>
+  <div class="callout red" style="margin-top:12px"><b>ทำไมต้องเปลี่ยน:</b> มิ.ย. ยอดรวม +18% แต่ FB ยิงขาดทุนทั้งเดือน (ROAS 1.43 &lt; คุ้มทุน 1.92) — TikTok/Shopee บังไว้ เล่มออฟฟิศพึ่ง FB 71.6% เลยตกเป้าเหลือ 30.7%</div>
+</section>
+
+<!-- STEP 1 -->
+<section class="step" id="s1">
+  <div class="stephead"><div class="stepno">1</div><h2>จังหวะเดือน — เกาะวันแคมเปญ</h2></div>
+  <div class="stepsub">TikTok ยิงแรงเฉพาะรอบแคมเปญ · กลางเดือน TikTok ปิด → FB ดันไป Shopee แทน</div>
+  <table>
+    <tr><th>สัปดาห์</th><th>ธีม</th><th>TikTok (Live+GMV Max)</th><th>FB</th><th class="num">น้ำหนักงาน</th></tr>
+    <tr><td><b>W1 · 1–7</b></td><td>🔥 7.7 Mega Sale</td><td>เต็มสูบ · Live 3, 6</td><td>วอร์ม + สนับสนุน</td><td class="num">30%</td></tr>
+    <tr><td><b>W2 · 8–14</b></td><td>กลางเดือน (TikTok พัก)</td><td>—</td><td>🔥 FB → Shopee + sprint คอนเทนต์ออฟฟิศ</td><td class="num">18%</td></tr>
+    <tr><td><b>W3 · 15–21</b></td><td>Pre-launch ถือไพ่</td><td>เบา</td><td>tease + เปิด waitlist + สะสมกลุ่มคน</td><td class="num">20%</td></tr>
+    <tr><td><b>W4 · 22–31</b></td><td>🔥 Launch 22 · Payday 25 · ปิด 31</td><td>เต็มสูบ · Live 22, 23, 31</td><td>retarget + bridge</td><td class="num">32%</td></tr>
+  </table>
+  <div class="callout amber"><b>ต้องแก้แพลนไลฟ์:</b> แพลนเดิม (3,6,22,23,31) <b>พลาด 7.7 ซึ่งใหญ่สุด</b> และ payday จริง = 25 แต่ไลฟ์ 23 → <span class="tagnew">ใหม่</span> เพิ่ม/ขยับไลฟ์เกาะ <b>7.7</b> และ <b>25</b></div>
+</section>
+
+<!-- STEP 2 -->
+<section class="step" id="s2">
+  <div class="stephead"><div class="stepno">2</div><h2>แบ่งงบแอด</h2></div>
+  <div class="stepsub">เทเงินไปช่องที่กำไร + ทุ่มวันแคมเปญ</div>
+  <div class="grid g2">
+    <div>
+      <h3>เป้ายอดราย Channel (จาก dashboard)</h3>
+      <table>
+        <tr><th>Channel</th><th class="num">เป้ายอด</th><th class="num">%online</th></tr>
+        <tr><td>TikTok (Ads 672K+Affi 1.21M+Live 268K)</td><td class="num">฿2,150,000</td><td class="num">43%</td></tr>
+        <tr><td>Facebook</td><td class="num">฿1,448,000</td><td class="num">29%</td></tr>
+        <tr><td>Shopee (Shop 915K+Live 305K)</td><td class="num">฿1,220,000</td><td class="num">24%</td></tr>
+        <tr><td>Shopify/IG/อื่นๆ</td><td class="num">฿182,000</td><td class="num">4%</td></tr>
+        <tr><td>Consignment (แยกจาก online)</td><td class="num">฿1,630,000</td><td>—</td></tr>
+      </table>
+      <p class="small">งบแอดทุ่ม TikTok เป็นหลัก (เครื่องกำไร ROI≥3.8) · FB คุมไม่ให้เกินคุ้มทุน + ดันไป Shopee · Shopee ads เฉพาะ D-day</p>
+    </div>
+    <div>
+      <h3>จังหวะใช้งบ (ตาม intent ไม่เกลี่ยเท่ากัน)</h3>
+      <ul class="clean">
+        <li><b>~55% เทเข้า 3 หน้าต่างแคมเปญ</b> (7.7 / 22–26 / 31)</li>
+        <li>~45% baseline กลางเดือน</li>
+        <li><span class="tagnew">ใหม่</span> วันธรรมดา cap GMV Max ไม่ให้ auto-spend หลุดคุ้มทุน 3.8</li>
+        <li>เก็บงบไปทุ่มวัน intent สูง = ROI ดีกว่ามาก</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="step" id="s3">
+  <div class="stephead"><div class="stepno">3</div><h2>แบ่งคอนเทนต์ (~146 ชิ้น/เดือน)</h2></div>
+  <div class="stepsub">วันธรรมดา 6 ชิ้น (หมิว 2 IMG · ริว 2 VDO · มิ้น 2 VDO) · เสาร์ 2 · อาทิตย์หยุด</div>
+  <div class="grid g2">
+    <div>
+      <h3>คลิปขาย (Sale VDO ≈96) แบ่งรายเล่ม</h3>
+      <table>
+        <tr><th>เล่ม (เป้า ก.ค.)</th><th class="num">%</th><th class="num">ชิ้น</th></tr>
+        <tr><td>ออฟฟิศนี้เฮงซวย (สัตว์) ฿1.38M <span class="pill p-red">กู้</span></td><td class="num">28%</td><td class="num">~27</td></tr>
+        <tr><td>ถือไพ่ ฿1.00M <span class="tagnew">launch</span></td><td class="num">20%</td><td class="num">~19</td></tr>
+        <tr><td>กับดัก ฿0.98M <span class="pill p-green">เรือธง</span></td><td class="num">20%</td><td class="num">~19</td></tr>
+        <tr><td>ปีศาจ 1+2 ฿0.97M</td><td class="num">18%</td><td class="num">~17</td></tr>
+        <tr><td>หมุนเวียน (Witches/Ghostly/ขอใช้ชีวิต/คาปิบาร่า ฯลฯ)</td><td class="num">14%</td><td class="num">~14</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>หมวดคอนเทนต์ (จาก angle ที่ยิงดีจริงบน Meta)</h3>
+      <table>
+        <tr><th>หมวด</th><th class="num">%</th><th>หมายเหตุ</th></tr>
+        <tr><td>Promotion (ส่งฟรี)</td><td class="num">30%</td><td><span class="pill p-green">ROAS 2.02 ตัวปิด</span></td></tr>
+        <tr><td>Review (ลดเสี่ยง)</td><td class="num">30%</td><td>กู้คืนสุขภาพใจ</td></tr>
+        <tr><td>Insight (รู้ทันสัตว์/อ่านคน)</td><td class="num">28%</td><td>ตัวเปิดหัวกรวย</td></tr>
+        <tr><td>Solution (teaser)</td><td class="num">12%</td><td>ห้ามสอนจบในคลิป</td></tr>
+        <tr><td>Painpoint</td><td class="num">0%</td><td><span class="pill p-red">เลิก (0.67)</span></td></tr>
+      </table>
+      <p class="small">IMG Engage (หมิว 50): ออฟฟิศ 40% · กับดัก 30% · launch+อื่น 30%</p>
+    </div>
+  </div>
+  <div class="callout">ทุกคลิปขาย 4 จังหวะ: <b>เจ็บสั้น 3 วิ → ตั้งชื่อสัตว์/เล่ห์ (identity hook) → หนังสือ = ทางออก (teaser) → offer + CTA</b> · กลุ่มเป้า <b>GenY 35–54</b> · โทนเยียวยา ไม่เฟียส</div>
+</section>
+
+<!-- STEP 4 -->
+<section class="step" id="s4">
+  <div class="stephead"><div class="stepno">4</div><h2>เส้นทางลูกค้า (Journey) 5 สเตจ</h2></div>
+  <div class="stepsub">ร้อยทุกช่องที่เราคุมจริง: คอนเทนต์ → แชท → ปิด → อัปเซล → ซื้อซ้ำ</div>
+  <div class="stage"><div class="ico">1</div><div class="b"><b>DISCOVER — สร้างดีมานด์.</b> FB+TikTok content angle ที่พิสูจน์แล้ว ยิง GenY 35–54 · วัดด้วย <b>Cost per MSG</b> ไม่ใช่ ROAS · <span class="tagnew">ใหม่</span> สะสมกลุ่มคน (คนดูจบ/ATC/คนแชท) ไว้ก่อนแคมเปญ</div></div>
+  <div class="stage"><div class="ico">2</div><div class="b"><b>ENGAGE — เปลี่ยน reach เป็นสินทรัพย์.</b> CTA "ทักแชท / เก็บโค้ด / ติดตามร้าน Shopee" · <span class="tagnew">ใหม่</span> โค้ดเฉพาะ FB ใช้บน Shopee (จับยอดที่รั่ว) · เล่มใหม่เปิด waitlist ก่อน launch</div></div>
+  <div class="stage"><div class="ico">3</div><div class="b"><b>CONVERT — ปิดที่ช่องคุ้มสุด.</b> TikTok GMV Max + Live (ROI ≥ 3.8) · Shopee รับจาก FB ปิดที่ margin สูง · FB ปิดเฉพาะตัวที่ ROAS ≥ 1.92</div></div>
+  <div class="stage"><div class="ico">4</div><div class="b"><b>BUNDLE/UPSELL — ดัน AOV (ห้ามขาด).</b> แพคที่ data รับรอง + Promotion ส่งฟรี + upsell แลกซื้อ ทุกแคมเปญ (ดู STEP 5)</div></div>
+  <div class="stage"><div class="ico">5</div><div class="b"><b>REPEAT — เก็บตก + ซื้อซ้ำ.</b> retarget: ATC ค้าง→เร่ง · wishlist→เติมสต็อก · ดูจบไม่ซื้อ→ส่ง Review · <span class="tagnew">ใหม่</span> LINE/Shopee broadcast ฟรีก่อนโค้ดหมด · cross-sell→boxset</div></div>
+</section>
+
+<!-- STEP 5 -->
+<section class="step" id="s5">
+  <div class="stephead"><div class="stepno">5</div><h2>แพคคู่ / อัปเซล</h2></div>
+  <div class="stepsub">เลือกคู่จากพฤติกรรมซื้อจริง + ความเกี่ยวของเนื้อหา</div>
+  <h3>เล่มเก่า (จาก data ซื้อคู่จริง)</h3>
+  <table>
+    <tr><th>แพค</th><th class="num">ซื้อคู่จริง</th><th>ใช้ทำอะไร</th></tr>
+    <tr><td>กับดัก + ปีศาจ 1</td><td class="num">×771</td><td>ชุดทำเงินสุด ดัน AOV (เน้น Shopee)</td></tr>
+    <tr><td>เฮงซวยสัตว์ + กับดัก</td><td class="num">×465</td><td>เรือธงลากเล่มออฟฟิศที่ขายเดี่ยวยาก</td></tr>
+  </table>
+  <h3>เล่มใหม่ "ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ" <span class="tagnew">ใหม่</span></h3>
+  <div class="callout green">
+    <b>คู่หลัก = ถือไพ่ + ออฟฟิศนี้เฮงซวย (สัตว์)</b><br>
+    <b>ทำไม:</b> เนื้อหาคือสกิลเดียวกัน — ถือไพ่ = "อ่านใจคนเพื่อได้เปรียบ" · เฮงซวยสัตว์ = "อ่านประเภทคน Toxic แล้วรับมือให้อยู่เหนือกว่า" → คนที่อยากเรียนวิชาอ่านใจ = คนเดียวกับที่ปวดหัวกับคนเฮงซวยในออฟฟิศ <b>กลุ่มซ้อนกันสนิท</b><br>
+    <b>ได้ 2 เด้ง:</b> traffic launch สดของเล่มใหม่ลากเล่มออฟฟิศที่กำลังกู้ · ฐานคนอ่านออฟฟิศเดิม = กลุ่มอุ่นพร้อมซื้อเล่มใหม่
+  </div>
+  <ul class="clean">
+    <li><b>คู่เสริม (ยืมเรือธง):</b> ถือไพ่ + กับดัก — ดึง volume วัน launch (กับดัก anchor แข็งสุด)</li>
+    <li><b>early-bird ลายเซ็นจำกัด</b> ช่วงเปิดตัว สร้าง urgency + ของสะสม</li>
+    <li><span class="tagnew">ใหม่</span> เดือนถัดไป เอา co-purchase ถือไพ่จริงป้อนกลับ dashboard หา "คู่จริง"</li>
+  </ul>
+</section>
+
+<!-- STEP 6 -->
+<section class="step" id="s6">
+  <div class="stephead"><div class="stepno">6</div><h2>กฎเปิด-ปิดแอด (ให้ MKT ใช้)</h2></div>
+  <div class="stepsub">ใช้ไม้บรรทัดตามบทบาทแอด — เลิกฆ่าแอดดีทิ้งเพราะวัดผิดตัว</div>
+  <table>
+    <tr><th>ประเภทแอด</th><th>หน้าที่</th><th>วัดด้วย</th><th>ห้ามวัดด้วย</th></tr>
+    <tr><td><b>[MSG] แชท (เปิดหัว)</b></td><td>ดูดแชท ดันไป Shopee</td><td><span class="pill p-blue">Cost per MSG + ยอด Shopee วันนั้น</span></td><td><span class="pill p-red">ROAS FB ล้วน</span></td></tr>
+    <tr><td><b>[Sales] ปิดการขาย</b></td><td>ปิดตรงบน FB/TikTok</td><td><span class="pill p-green">ROAS ≥ 1.92 (FB) / ROI ≥ 3.8 (TikTok)</span></td><td>Cost per MSG</td></tr>
+  </table>
+  <div class="callout amber"><b>ก่อนกดปิดแอด "แชทเยอะ ROAS ต่ำ" เช็ค 3 ข้อ:</b> (1) วันนั้น Shopee ขึ้นตามไหม (2) อัตราแชท→ปิดการขายจากทีมแชท (3) margin รวมบวกไหม — ถ้าโอเค <b>เก็บไว้</b> · <span class="tagnew">ใหม่</span> แท็กชื่อแอด [MSG]/[Sales] ตั้งแต่ตั้งค่า จะได้รู้ว่าใช้เกณฑ์ไหน</div>
+  <p class="small">เล่มออฟฟิศ: เลิกกระจาย 503 ad ย่อย (เฉลี่ย ฿342/ad) → รวมงบเข้าตัวชนะ (Advantage+/CBO) · หยุดอินฟลู/สต็อป (ROAS 0.84–1.39) · ทำต่อ: ส่งฟรี (2.02) + Review กู้คืนสุขภาพใจ</p>
+</section>
+
+<!-- STEP 7 -->
+<section class="step" id="s7">
+  <div class="stephead"><div class="stepno">7</div><h2>ตัววัด + เช็คทุกสัปดาห์</h2></div>
+  <div class="stepsub">รู้ทันทีว่าอะไรเวิร์ค/ไม่เวิร์ค</div>
+  <table>
+    <tr><th>Stage</th><th>ตัววัดหลัก</th><th>เป้า / เกณฑ์</th></tr>
+    <tr><td>Discover</td><td>Cost per MSG · CPM · %ดูจบ</td><td>CPM ≤ ฿100</td></tr>
+    <tr><td>Engage</td><td>แชท · follower · ATC · โค้ด FB→Shopee · ขนาดกลุ่ม</td><td>กลุ่มโตทุกสัปดาห์</td></tr>
+    <tr><td>Convert</td><td>ROAS FB / ROI TikTok / chat→order / CPO</td><td>FB ≥ 1.92 · TikTok ≥ 3.8</td></tr>
+    <tr><td>Bundle</td><td>AOV · attach rate · ยอด upsell</td><td>AOV ขึ้น MoM</td></tr>
+    <tr><td>Repeat</td><td>retarget ROAS · ATC recovery · ซื้อซ้ำ</td><td>—</td></tr>
+    <tr><td colspan="3" style="background:var(--panel2)"><b>🌟 ตัวตัดสินรวม:</b> Blended Margin FB+Shopee รายวัน · FB spend ↔ Shopee orders · Creator vs goal (ริว/มิ้น ฿1.06M · สต็อป ฿968K · หมิว ฿850K · ROAS&lt;2.3 เบรก)</td></tr>
+  </table>
+  <h3>Checkpoint รายสัปดาห์</h3>
+  <table>
+    <tr><th>จบ</th><th>ดูตัวเลข</th></tr>
+    <tr><td>W1</td><td>ยอด 7.7 vs เป้า · GMV Max ROI ≥3.8 · ขนาดกลุ่มคนโต</td></tr>
+    <tr><td>W2</td><td>FB↔Shopee ขึ้นตามไหม · blended margin บวก · run-rate ออฟฟิศ</td></tr>
+    <tr><td>W3</td><td>waitlist ถือไพ่ · CPM/Cost per MSG · ROAS creator ≥2.3</td></tr>
+    <tr><td>W4</td><td>launch ถือไพ่ vs ฿1.0M · payday · AOV/attach · ปิดเดือน vs ฿5.0M online</td></tr>
+  </table>
+</section>
+
+<!-- STEP 8 -->
+<section class="step" id="s8">
+  <div class="stephead"><div class="stepno">8</div><h2>ปิดช่องโหว่ให้ครบ</h2></div>
+  <div class="stepsub">ทุกจุดที่เจอ + วิธีปิด (ทำ W1 ให้เสร็จก่อน 7.7)</div>
+  <table>
+    <tr><th>ช่องโหว่</th><th>วิธีปิด</th></tr>
+    <tr><td>ฆ่าแอด MSG ดีทิ้ง (วัด ROAS ผิด)</td><td>แท็ก [MSG]/[Sales] + blended FB+Shopee + กฎ 3 ข้อ</td></tr>
+    <tr><td>ยอดรั่วไป Shopee จับไม่ได้</td><td><span class="tagnew">ใหม่</span> โค้ดเฉพาะ FB ใช้บน Shopee</td></tr>
+    <tr><td>GMV Max โชว์ ROI ดิบ ไม่เทียบคุ้มทุน</td><td>ใส่เส้น BE ROI (FB 1.92 / TikTok 3.8) ในตาราง</td></tr>
+    <tr><td>ไม่มีการ์ดเตือน FB ROAS</td><td>เพิ่มการ์ดแดงเมื่อต่ำกว่าคุ้มทุน</td></tr>
+    <tr><td>เล่มออฟฟิศงบกระจาย 503 ad</td><td>รวมงบเข้าตัวชนะ (Advantage+/CBO)</td></tr>
+    <tr><td>Live พลาด 7.7 + payday เร็วไป</td><td>เพิ่ม/ขยับ Live เกาะ 7.7 และ 25</td></tr>
+    <tr><td>bundle เก็บ data แต่ไม่ชู</td><td>การ์ด "Top Bundle to Push" + ยอด upsell</td></tr>
+    <tr><td>เล่มใหม่ไม่มี anchor</td><td>launch bundle ถือไพ่+ออฟฟิศ/กับดัก + ป้อน co-purchase กลับ</td></tr>
+    <tr><td>retarget ไม่มีกระสุน</td><td><span class="tagnew">ใหม่</span> สะสมกลุ่มคน D-7 ก่อนแคมเปญ</td></tr>
+    <tr><td>meta_ads_data.json ค้างตั้งแต่ พ.ค.</td><td>ลบ/ซ่อม meta_pull</td></tr>
+  </table>
+</section>
+
+<div class="foot">
+  Team Playbook · กรกฎาคม 2026 · ทีม How-to OpenDurian<br>
+  แหล่งข้อมูล: Dashboard index.html (GOALS/PROFIT/ADSM/RAW_DATA/UPSELL) · Pricing for Channel · TikTok GMV Max (อ่านสด) · KMS Brain · Plan Live Jul<br>
+  ⚠️ ต้อง confirm: (1) เล่มบน TikTok เราจ่าย fulfillment เองไหม → ตัดสิน BE ROI จริง (2.9 vs 3.8 · ตอนนี้ใช้ 3.8 เป็นเพดานปลอดภัย) (2) ธีมถือไพ่ละเอียด เพื่อ fine-tune คู่แพค
+</div>
+
+</div>
+</body>
+</html>
