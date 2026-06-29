@@ -12720,6 +12720,15 @@ function showProductDetail(pname){
    if(_subR.length){_mgGrp('SUB CHANNEL','#94a3b8'); _subR.forEach(_mgRow);}}
   else{_mgGrp('ราย CHANNEL','#0f172a'); _subR.forEach(_mgRow);}
   H+='</tbody></table>';
+  try{var _cgbp=(window.CHANNEL_GOAL_BY_PRODUCT||{})[pname];
+   if(_cgbp){var _cgR=[['TikTok',_cgbp.TikTok],['Facebook (รวม IG/LINE)',_cgbp.Facebook],['Shopee',_cgbp.Shopee],['อื่นๆ',_cgbp.Other]].filter(function(x){return x[1];});
+    var _cgT=_cgR.reduce(function(s,x){return s+x[1];},0);
+    H+='<div style="padding:11px 16px;border-top:1px solid var(--border);background:rgba(57,197,187,.06)">'
+     +'<div style="font-size:10px;color:var(--text2);font-weight:800;text-transform:uppercase;margin-bottom:7px">🎯 เป้ายอดขายราย Channel (ก.ค. · BEP-based)</div>'
+     +'<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    _cgR.forEach(function(x){H+='<tr style="border-bottom:1px solid #f3f5f8"><td style="text-align:left;padding:5px 0;font-weight:700">'+escH(x[0])+'</td><td style="text-align:right;padding:5px 0;font-weight:700">'+_mfmt(x[1])+'</td></tr>';});
+    H+='<tr><td style="text-align:left;padding:6px 0;font-weight:900">รวมเป้าเล่ม</td><td style="text-align:right;padding:6px 0;font-weight:900;color:var(--accent)">'+_mfmt(_cgT)+'</td></tr></table></div>';}
+  }catch(_e){}
   H+='<div style="padding:6px 16px;font-size:9.5px;color:#94a3b8">%Var ราย channel = ค่าจริงจาก MK01 (19 มิ.ย.69): Meta 23.2% · TikTok 43.5% · Shopee 43.7% (ระดับช่อง ไม่แยกเล่ม) · %Ads ราย channel = อัตราจริงจาก M44 (Meta=fb_ac÷fb_st · TikTok Affi=affi · TikTok Shop/Live=tt · Shopee=sp) · ช่องไม่มีใน M44 (IG/หน้าร้าน/Web/LINE/YT)=ไม่มีค่าแอด · '+(_allocGM?'GM%/GM฿ = หลังหัก %var + %ads + ต้นทุนเล่ม/หน่วย (ปันตามยอดขาย) → ผลรวมช่อง = Gross Margin ของเล่ม (Finance)':'ตารางนี้เป็น Contribution (var MK01 + ค่าแอด M44 · ยังไม่หักต้นทุนพิมพ์เล่ม)')+'าแอด M44 · ยังไม่หักต้นทุนพิมพ์เล่ม)</div>';
 
   /* ควรขายช่องไหนเท่าไหร่ — อิงเดือนที่เล่มนี้ทำ margin สูงสุดจริง (ราย book) */
