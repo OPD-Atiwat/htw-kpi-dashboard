@@ -4703,7 +4703,7 @@ function renderOverview(data){
  var ch='';
  CREATORS.forEach(function(cr){
  var _useAO=(typeof AO_DATA!=='undefined'&&AO_DATA.ads&&AO_DATA.ads.length&&AO_DATA.period&&(range.from||'').length>=7&&AO_DATA.period.indexOf((range.from||'').slice(0,7))>=0);
- var cd=_useAO?AO_DATA.ads.filter(function(a){return a.creator===cr.name;}):monthData.filter(function(r){var _cs=r.creators||[r.creator];return _cs.indexOf(cr.name)>=0;});
+ var cd=_useAO?AO_DATA.ads.filter(function(a){var _nm=a.ad_name||'';return _nm.indexOf(cr.name)>=0||(cr.name==='สต็อป'&&_nm.indexOf('สต๊อป')>=0);}):monthData.filter(function(r){var _cs=r.creators||[r.creator];return _cs.indexOf(cr.name)>=0;});
  var rev=0,spend=0,imp=0,msg=0;
  cd.forEach(function(r){if(_useAO){rev+=r.revenue||0;spend+=r.spend||0;imp+=r.impressions||0;msg+=r.msg||0;}else{var _cs=r.creators||[r.creator];var _sh=(r.share!=null)?r.share:(_cs.length?1/_cs.length:1);rev+=(r.revenue_thb||0)*_sh;spend+=(r.spend_thb||0)*_sh;imp+=(r.impressions||0)*_sh;msg+=(r.messages||0)*_sh;}});
  var roas=spend>0?(rev/spend):0;
