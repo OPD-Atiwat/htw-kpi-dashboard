@@ -915,7 +915,7 @@ def pull_adset_insights_agg():
             "spend","impressions","reach","inline_link_clicks","ctr","cpm",
             "actions","action_values","purchase_roas",
         ]),
-        "time_range":  json.dumps({"since": DATE_FROM, "until": DATE_TO}),
+        "time_range":  json.dumps({"since": DATE_FROM, "until": today.strftime("%Y-%m-%d")}),  # ถึงวันนี้ ให้ตรง Meta UI live (creator/AO)
         "time_increment": "all_days",   # aggregate ทั้งช่วง ไม่แยกรายวัน
         "filtering":   json.dumps([
             {"field": "spend", "operator": "GREATER_THAN", "value": "0"}
