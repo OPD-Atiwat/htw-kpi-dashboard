@@ -371,7 +371,6 @@ def pull_ad_insights():
         "fields":         API_FIELDS,
         "time_range":     json.dumps({"since": DATE_FROM, "until": DATE_TO}),
         "time_increment": 1,
-        "action_attribution_windows": json.dumps(["7d_click","1d_view"]),
         "filtering":      json.dumps([
             {"field": "spend", "operator": "GREATER_THAN", "value": "0"}
         ]),
