@@ -13345,26 +13345,34 @@ function showProductDetail(pname){
   window._prodDailyChartData={id:_chartId,dates:_allDates,channels:_channels,pdata:_pdata,corepd:_coreForBook,pairdaily:_pairForBook};
  })();
 
- /* ── 🔗 Upsell & ซื้อคู่ (MK13 ก.พ.-พ.ค.) — พับเปิด/ปิด ── */
- try{ if(typeof UPSELL_DATA!=='undefined'){
-  var _us=null; for(var _uk in UPSELL_DATA){ if(pname.indexOf(_uk)>=0||_uk.indexOf(pname)>=0){_us=UPSELL_DATA[_uk];break;} }
-  if(_us){
-   var _solo=100-_us.bun;
-   var _roleTxt=_us.anc>=60?'<b style="color:#16A34A">เล่มตั้ง (anchor)</b> — เวลาขายพ่วงชุด เล่มนี้มักเป็นตัวดึง ดึงเล่มอื่นตาม':(_us.anc<=40?'<b style="color:#EA580C">ตัวพ่วง</b> — มักถูกพ่วง/แถมไปกับเล่มอื่น':'<b>ผสม</b> — เป็นทั้งตัวตั้งและตัวพ่วง');
-   var _pairsHtml=(_us.pairs&&_us.pairs.length)?_us.pairs.map(function(p){return '<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid #f3f5f8;font-size:12px"><span style="color:var(--text1)">'+escH(p[0])+'</span><span style="color:var(--text2);white-space:nowrap;font-weight:700">'+p[1]+' ออเดอร์</span></div>';}).join(''):'<div style="font-size:12px;color:var(--text2)">— ไม่มีคู่ซื้อที่ชัดเจน</div>';
-   var _bar=function(lbl,pct,col){return '<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--text2)">'+lbl+'</span><b style="color:'+col+'">'+pct+'%</b></div><div style="height:8px;background:#eef2f7;border-radius:5px"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:5px"></div></div></div>';};
-   var H3='<div style="padding:0 20px 18px">';
-   H3+='<div data-o="0" onclick="var op=this.getAttribute(\'data-o\')===\'1\';this.setAttribute(\'data-o\',op?\'0\':\'1\');var g=this.nextElementSibling;g.style.display=op?\'none\':\'block\';this.querySelector(\'.ucv\').textContent=op?\'▸\':\'▾\';" style="cursor:pointer;font-weight:700;font-size:13px;color:var(--text1);margin-bottom:10px;user-select:none"><span class="ucv" style="font-weight:800;margin-right:6px">▸</span>🔗 Upsell & ซื้อคู่ <span style="font-size:10px;font-weight:500;color:var(--text3)">(MK13 · 120 วันล่าสุด)</span> — คลิกดู</div>';
-   H3+='<div style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">';
-   H3+=_bar('ขายพ่วงชุด/Upsell',_us.bun,'#7C3AED')+_bar('ขายเดี่ยว',_solo,'#16A34A');
-   if(_us.free>0)H3+='<div style="font-size:11.5px;color:var(--text2);margin:2px 0 8px">ของแถม (แถม?=true) '+_us.free+'%</div>';
-   H3+='<div style="font-size:12px;margin:8px 0;padding:8px 11px;background:var(--bg2);border-radius:8px">บทบาทในชุด: '+_roleTxt+' <span style="color:var(--text3)">(เป็นเล่มตั้ง '+_us.anc+'% ของออเดอร์แบบพ่วง)</span></div>';
-   H3+='<div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;margin:10px 0 4px">เล่มที่ถูกซื้อคู่บ่อยสุด</div>'+_pairsHtml;
-   H3+='<div style="font-size:9.5px;color:#94a3b8;margin-top:8px">จับคู่จาก Order เดียวกัน · anchor = เล่มราคาสูงสุดในชุด · ข้อมูล MK13 120 วันล่าสุด</div>';
-   H3+='</div></div>';
-   h+=H3;
-  }
- }}catch(_usErr){}
+  /* ── 🔗 Upsell & ซื้อคู่ (เดือนที่เลือก) — พับเปิด/ปิด ── */
+  try{ if(typeof UPSELL_PAIR_DAILY!=='undefined'){
+   var _upd=null; for(var _uk in UPSELL_PAIR_DAILY){ if(pname.indexOf(_uk)>=0||_uk.indexOf(pname)>=0){_upd=UPSELL_PAIR_DAILY[_uk];break;} }
+   if(_upd){
+    var _MNu={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+    var _mku=((typeof STATE!=='undefined'&&STATE.ovMonth)||'Jun 26').split(' ');
+    var _yyu='20'+(_mku[1]||'26'),_mou=_MNu[_mku[0]]||'06';
+    var _frU=_yyu+'-'+_mou+'-01';
+    var _ldU=new Date(+_yyu,+_mou,0).getDate();
+    var _toU=_yyu+'-'+_mou+'-'+String(_ldU).padStart(2,'0');
+    var _tdU=(new Date()).toISOString().slice(0,10); if(_toU>_tdU)_toU=_tdU;
+    var _aggU={};
+    for(var _dtU in _upd){ if(_dtU<_frU||_dtU>_toU)continue; _upd[_dtU].forEach(function(p){_aggU[p[0]]=(_aggU[p[0]]||0)+(p[1]||0);}); }
+    var _prsU=Object.keys(_aggU).map(function(k){return [k,_aggU[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    var _imgForU=function(nm){ try{ if(typeof BOOK_COVER_MAP==='undefined'||typeof BOOK_COVERS==='undefined')return null; var _bk=null; for(var _k in BOOK_COVER_MAP){ if(_k.indexOf(nm)===0||nm.indexOf(_k)===0||_k.indexOf(nm)>=0){_bk=BOOK_COVER_MAP[_k];break;} } return (_bk&&BOOK_COVERS[_bk])?BOOK_COVERS[_bk]:null; }catch(e){return null;} };
+    if(_prsU.length){
+     var _mLblU=(_mku[0]||'')+' '+(_mku[1]||'');
+     var _rowsU=_prsU.map(function(p){ var _im=_imgForU(p[0]); var _th=_im?'<img src="'+_im+'" style="width:30px;height:42px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.18)">':'<div style="width:30px;height:42px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);flex-shrink:0"></div>'; return '<div style="display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid #f3f5f8;font-size:12px">'+_th+'<span style="color:var(--text1);flex:1;min-width:0">'+escH(p[0])+'</span><b style="color:var(--text2);white-space:nowrap">'+fmt(p[1])+' ออเดอร์</b></div>'; }).join('');
+     var H3='<div style="padding:0 20px 18px">';
+     H3+='<div data-o="0" onclick="var op=this.getAttribute(\'data-o\')===\'1\';this.setAttribute(\'data-o\',op?\'0\':\'1\');var g=this.nextElementSibling;g.style.display=op?\'none\':\'block\';this.querySelector(\'.ucv\').textContent=op?\'▸\':\'▾\';" style="cursor:pointer;font-weight:700;font-size:13px;color:var(--text1);padding:6px 0"><span class="ucv">▸</span> 🔗 Upsell & ซื้อคู่ ('+_mLblU+')</div>';
+     H3+='<div style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">';
+     H3+='<div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;margin:0 0 6px">เล่มที่ถูกซื้อคู่บ่อยสุด (เฉพาะ '+_mLblU+')</div>'+_rowsU;
+     H3+='<div style="font-size:9.5px;color:#94a3b8;margin-top:8px">จับคู่จาก Order เดียวกัน · กรองเฉพาะเดือน '+_mLblU+' · ที่มา MK13</div>';
+     H3+='</div></div>';
+     h+=H3;
+    }
+   }
+  }}catch(_usErr){}
 
  /* ── Ads Spend per channel (ADSM44) ── */
  (function(){
