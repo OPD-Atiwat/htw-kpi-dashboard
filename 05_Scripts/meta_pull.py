@@ -439,12 +439,12 @@ def transform_rows(raw_rows):
         fmt     = guess_format(ad_name)
         product = guess_product(ad_name)
         launch  = guess_launch_date(ad_name)
-        # creators list — เลิกแชร์ 50/50: แต่ละครีในชื่อแอดได้ผลงานเต็ม (share=1.0 ไม่หาร)
+        # creators list (รองรับแชร์ 50/50 เมื่อมีหลายครีในชื่อแอด)
         creators = guess_creators(ad_name)
         if product == "Cross Page":
-            creators = ["Cross Page"]          # Cross Page ทับเสมอ
+            creators = ["Cross Page"]          # Cross Page ทับเสมอ ไม่แชร์
         creator = creators[0]                  # primary (tag แรก) — backward compat
-        share   = 1.0                          # ไม่แชร์: แต่ละครีได้เต็ม (ไม่หาร len)
+        share   = round(1.0 / len(creators), 6)
 
         rows.append({
             "month":        month_key(date_str),
