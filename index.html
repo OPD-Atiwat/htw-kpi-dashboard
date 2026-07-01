@@ -8965,14 +8965,15 @@ function ovUpdateStickyBar(o){
  var _mAch=function(act,goal){return goal>0?(act/goal*100):0;};
  var _mC=function(p){return p>=100?'var(--success,#16A34A)':p>=80?'#EA580C':'var(--danger,#DC2626)';};
  var _mg=function(lbl,act,goal){var p=_mAch(act,goal);return '<span style="display:flex;flex-direction:column;line-height:1.1"><span style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px">'+lbl+'</span><b style="font-size:12px;color:'+_mC(p)+'">'+fmtCard(act)+' <span style="font-weight:600;color:var(--text3)">/'+fmtCard(goal)+' · '+p.toFixed(0)+'%</span></b></span>';};
- bar.innerHTML='<span style="font-size:11px;font-weight:800;color:var(--accent,#1877F2);text-transform:uppercase;letter-spacing:.5px">'+escH(o.month||'')+' · Sale Online</span>'
+ var _smLive=!o.isFinal;var _smBym=(typeof M07_MARGIN_BY_MONTH!=='undefined'&&M07_MARGIN_BY_MONTH[o.month])?M07_MARGIN_BY_MONTH[o.month]:null;var _smSrc=function(k,pd){if(_smLive)return {a:M07_MARGIN[k].actual,g:M07_MARGIN[k].goal};if(_smBym&&_smBym[k])return {a:_smBym[k].actual,g:_smBym[k].goal};return {a:pd,g:(M07_MARGIN[k]?M07_MARGIN[k].goal:0)};};var _smO=_smSrc('online',o.onlineProfitActual),_smC=_smSrc('consign',o.consignProfitActual),_smT=_smSrc('total',o.profitActual);
+  bar.innerHTML='<span style="font-size:11px;font-weight:800;color:var(--accent,#1877F2);text-transform:uppercase;letter-spacing:.5px">'+escH(o.month||'')+' · Sale Online</span>'
   +_c('Goal',g>0?fmtCard(g):'–','var(--text2)')
   +_c('Forecast',fc!=null?fmtCard(fc):'–',(fc!=null&&g>0&&fc<g)?'var(--danger,#DC2626)':'#7C3AED')
   +_c('Actual',a>0?fmtCard(a):'฿0')
   +_c('ของเป้า',ach!=null?ach.toFixed(1)+'%':'–',achCol)
   +'<span style="width:1px;height:24px;background:var(--border);margin:0 2px"></span>'
   +'<span style="font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase">Margin</span>'
-  +_mg('Online',M07_MARGIN.online.actual,M07_MARGIN.online.goal)+_mg('Consign',M07_MARGIN.consign.actual,M07_MARGIN.consign.goal)+_mg('รวม',M07_MARGIN.total.actual,M07_MARGIN.total.goal);
+  +_mg('Online',_smO.a,_smO.g)+_mg('Consign',_smC.a,_smC.g)+_mg('รวม',_smT.a,_smT.g);
 }
 
 /* Row 2: Category Cards — Online | Consign | Bookfair */
