@@ -12,7 +12,17 @@ TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXN
 HTML  = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/index.html"
 
 HOWTO_TEAM = 35          # listMapping id ของ OpenDurian HOW-TO
-GOALS = {"online": 174000, "consign": 560000, "total": 734000}   # เป้า margin (กำหนดเอง)
+GOALS = {"online": 431000, "consign": 429005, "total": 860005}   # เป้า margin เดือนปัจจุบัน (Jul 26 / default)
+# เป้า Profit ก่อนผลิต ราย month — อิงชีต Base Profit (Brand OpenDurian HOW-TO)
+GOALS_BY_MONTH = {
+    "Jan 26": {"online": -72897, "consign": 552897, "total": 480000},
+    "Feb 26": {"online": 29858,  "consign": 570000, "total": 599858},
+    "Mar 26": {"online": 438563, "consign": 458938, "total": 897500},
+    "Apr 26": {"online": 468000, "consign": 630000, "total": 1308000},
+    "May 26": {"online": 249400, "consign": 624050, "total": 873450},
+    "Jun 26": {"online": 174000, "consign": 560000, "total": 734000},
+    "Jul 26": {"online": 431000, "consign": 429005, "total": 860005},
+}
 
 def fetch_margin(is_consign_group, start, end):
     """is_consign_group: 1=ไม่รวม Consignment (Online), 2=รวม Consignment (Total)"""
@@ -99,6 +109,35 @@ def main():
     if n != 1:
         print("  ⚠️  ไม่พบ var M07_MARGIN — ข้าม"); return
     html = new_html
+
+    # ── 1b) M07_MARGIN_BY_MONTH (ทุกเดือน full-month — dynamic, ไม่ hardcode) ──
+    ENG = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    bym = {}
+    _m = datetime.date(2026, 1, 1)
+    _curfirst = cutoff.replace(day=1)
+    while _m <= _curfirst:
+        y, mo = _m.year, _m.month
+        ms = f"{y}-{mo:02d}-01"; last = calendar.monthrange(y, mo)[1]
+        # เดือนปัจจุบัน → MTD ถึง cutoff; เดือนจบแล้ว → ทั้งเดือน
+        me = end if (y == cutoff.year and mo == cutoff.month) else f"{y}-{mo:02d}-{last:02d}"
+        try:
+            on = fetch_margin(1, ms, me); to = fetch_margin(2, ms, me)
+            key = f"{ENG[mo-1]} {str(y)[2:]}"
+            g = GOALS_BY_MONTH.get(key, GOALS)
+            bym[key] = {
+                "online":  {"goal": g["online"],  "actual": on["actual"]},
+                "consign": {"goal": g["consign"], "actual": to["actual"] - on["actual"]},
+                "total":   {"goal": g["total"],   "actual": to["actual"]},
+            }
+        except Exception as e:
+            print(f"  BYM {ms} fail: {e}")
+        _m = datetime.date(y+1, 1, 1) if mo == 12 else datetime.date(y, mo+1, 1)
+    new_html_b, nb = write_var(html, "M07_MARGIN_BY_MONTH", bym)
+    if nb == 1:
+        html = new_html_b
+        print(f"  ✅ M07_MARGIN_BY_MONTH {len(bym)} เดือน: " + ", ".join(f"{k}={bym[k]['total']['actual']:,}" for k in bym))
+    else:
+        print("  ⚠️  ไม่พบ var M07_MARGIN_BY_MONTH — ข้าม (เพิ่ม var M07_MARGIN_BY_MONTH = {}; ใน index.html)")
 
     # ── 2) M07_DAILY (รายวัน — self-backfill ตั้งแต่ 1 มี.ค.) ──
     daily = read_var(html, "M07_DAILY") or {}
