@@ -439,12 +439,12 @@ def transform_rows(raw_rows):
         fmt     = guess_format(ad_name)
         product = guess_product(ad_name)
         launch  = guess_launch_date(ad_name)
-        # creators list — เลิกแชร์ 50/50: แต่ละครีในชื่อแอดได้ผลงานเต็ม (share=1.0 ไม่หาร)
+        # creators list (รองรับแชร์ 50/50 เมื่อมีหลายครีในชื่อแอด)
         creators = guess_creators(ad_name)
         if product == "Cross Page":
-            creators = ["Cross Page"]          # Cross Page ทับเสมอ
+            creators = ["Cross Page"]          # Cross Page ทับเสมอ ไม่แชร์
         creator = creators[0]                  # primary (tag แรก) — backward compat
-        share   = 1.0                          # ไม่แชร์: แต่ละครีได้เต็ม (ไม่หาร len)
+        share   = round(1.0 / len(creators), 6)
 
         rows.append({
             "month":        month_key(date_str),
@@ -820,19 +820,6 @@ def print_summary(rows):
 # ─── Main ──────────────────────────────────────────────────────
 
 def main():
-    # ── re-read backfill flag ทุกรอบ (แก้ module-cache: runner import meta_pull ครั้งเดียว flag เดิมไม่ถูกอ่านซ้ำ) ──
-    global DATE_FROM, DATE_TO
-    try:
-        if _os.path.exists(_BF_FILE):
-            _v3 = open(_BF_FILE).read().strip()
-            if len(_v3) == 7 and _v3[4] == "-":
-                import calendar as _c3
-                _y3, _m3 = int(_v3[:4]), int(_v3[5:7])
-                DATE_FROM = "%04d-%02d-01" % (_y3, _m3)
-                DATE_TO   = "%04d-%02d-%02d" % (_y3, _m3, _c3.monthrange(_y3, _m3)[1])
-                print("   \U0001F501 BACKFILL(main re-read): ดึง Meta %s ถึง %s" % (DATE_FROM, DATE_TO))
-    except Exception as _e3:
-        print("   backfill re-read fail:", _e3)
     print("=" * 72)
     print("  Meta Ads API Puller v2 — OpenDurian How-to")
     print(f"  ช่วง: {DATE_FROM} → {DATE_TO}")
