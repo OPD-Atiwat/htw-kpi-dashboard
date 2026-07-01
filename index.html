@@ -9088,22 +9088,27 @@ function renderOvMarginCards(o){
  var totalRevAct=o.totalActual||0;
 
  var h='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
+ /* เดือนปัจจุบัน (ยังไม่จบ) → M07_MARGIN สด · เดือนย้อนหลัง (จบแล้ว) → PROFIT_DATA[month] lock */
+ var _liveMg=!o.isFinal;
+ var _mgO=_liveMg?{goal:M07_MARGIN.online.goal,actual:M07_MARGIN.online.actual,fc:M07_MARGIN.online.fc}:{goal:o.onlineProfitGoal||0,actual:o.onlineProfitActual,fc:o.onlineProfitFc};
+ var _mgC=_liveMg?{goal:M07_MARGIN.consign.goal,actual:M07_MARGIN.consign.actual,fc:M07_MARGIN.consign.fc}:{goal:o.consignProfitGoal||0,actual:o.consignProfitActual,fc:o.consignProfitFc};
+ var _mgT=_liveMg?{goal:M07_MARGIN.total.goal,actual:M07_MARGIN.total.actual,fc:M07_MARGIN.total.fc}:{goal:o.profitGoal||0,actual:o.profitActual,fc:o.profitFc};
  h+=mgCard({
   title:'Online', color:'var(--accent)',
   revGoal:onlineRevGoal, revActual:onlineRevAct, fc:o.onlineForecast,
-  profitGoal:M07_MARGIN.online.goal, profit:M07_MARGIN.online.actual, profitFc:M07_MARGIN.online.fc,
+  profitGoal:_mgO.goal, profit:_mgO.actual, profitFc:_mgO.fc,
   marginPct:null
  });
  h+=mgCard({
   title:'Consignment & Distrib.', color:'#9333EA',
   revGoal:consignRevGoal, revActual:consignRevAct, fc:o.consignForecast,
-  profitGoal:M07_MARGIN.consign.goal, profit:M07_MARGIN.consign.actual, profitFc:M07_MARGIN.consign.fc,
+  profitGoal:_mgC.goal, profit:_mgC.actual, profitFc:_mgC.fc,
   marginPct:null
  });
  h+=mgCard({
   title:'Total Brand', color:'#0EA5E9',
   revGoal:totalRevGoal, revActual:totalRevAct, fc:o.totalForecast,
-  profitGoal:M07_MARGIN.total.goal, profit:M07_MARGIN.total.actual, profitFc:M07_MARGIN.total.fc,
+  profitGoal:_mgT.goal, profit:_mgT.actual, profitFc:_mgT.fc,
   marginPct:null
  });
  h+='</div>';
