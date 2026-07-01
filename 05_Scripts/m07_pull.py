@@ -100,6 +100,34 @@ def main():
         print("  ⚠️  ไม่พบ var M07_MARGIN — ข้าม"); return
     html = new_html
 
+    # ── 1b) M07_MARGIN_BY_MONTH (ทุกเดือน full-month — dynamic, ไม่ hardcode) ──
+    ENG = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    bym = {}
+    _m = datetime.date(2026, 2, 1)
+    _curfirst = cutoff.replace(day=1)
+    while _m <= _curfirst:
+        y, mo = _m.year, _m.month
+        ms = f"{y}-{mo:02d}-01"; last = calendar.monthrange(y, mo)[1]
+        # เดือนปัจจุบัน → MTD ถึง cutoff; เดือนจบแล้ว → ทั้งเดือน
+        me = end if (y == cutoff.year and mo == cutoff.month) else f"{y}-{mo:02d}-{last:02d}"
+        try:
+            on = fetch_margin(1, ms, me); to = fetch_margin(2, ms, me)
+            key = f"{ENG[mo-1]} {str(y)[2:]}"
+            bym[key] = {
+                "online":  {"goal": GOALS["online"],  "actual": on["actual"]},
+                "consign": {"goal": GOALS["consign"], "actual": to["actual"] - on["actual"]},
+                "total":   {"goal": GOALS["total"],   "actual": to["actual"]},
+            }
+        except Exception as e:
+            print(f"  BYM {ms} fail: {e}")
+        _m = datetime.date(y+1, 1, 1) if mo == 12 else datetime.date(y, mo+1, 1)
+    new_html_b, nb = write_var(html, "M07_MARGIN_BY_MONTH", bym)
+    if nb == 1:
+        html = new_html_b
+        print(f"  ✅ M07_MARGIN_BY_MONTH {len(bym)} เดือน: " + ", ".join(f"{k}={bym[k]['total']['actual']:,}" for k in bym))
+    else:
+        print("  ⚠️  ไม่พบ var M07_MARGIN_BY_MONTH — ข้าม (เพิ่ม var M07_MARGIN_BY_MONTH = {}; ใน index.html)")
+
     # ── 2) M07_DAILY (รายวัน — self-backfill ตั้งแต่ 1 มี.ค.) ──
     daily = read_var(html, "M07_DAILY") or {}
     want = []
