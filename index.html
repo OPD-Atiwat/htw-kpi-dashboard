@@ -4363,9 +4363,8 @@ function renderOverview(data){
     - เดือนที่ยังไม่ปิด (live): บังคับใช้ OPD_DAILY เสมอ (pmActualTotal อาจล้าสมัย)
       ใช้ pmOnlineActual+ttAffiRev เพื่อ match Finance TikTok ที่รวม Affi แล้ว
     - เดือนที่ปิดแล้ว (isFinal) แต่ไม่มี Finance: fallback pmActualTotal → OPD */
- var _finSaleOnlineActual=_finCh
-  ?(_finCh.TikTok+_finCh.Shopee+_finCh.Facebook+(chTot['Lazada']||0)+(chTot['Web']||0))
-  :(isFinal?(pmActualTotal>0?pmActualTotal:pmOnlineActual):(pmOnlineActual+ttAffiRev));
+ /* SALE ONLINE = MK13/OPD online ทุกช่อง ไม่รวมหน้าร้าน/Bookfair (ไม่ใช้ Finance subset ที่ตก IG/LINE/YouTube) */
+ var _finSaleOnlineActual=(pmOnlineActual||0)+(ttAffiRev||0);
  var focusRev=metaRev+ttRev+spRev;
  /* nonFocusRev: ตัดออก channels ที่อยู่ใน focusRev แล้ว
     ทุกกรณี: Instagram (อยู่ใน metaRev), TikTok Live (อยู่ใน ttRev), Shopee Live (อยู่ใน spRev)
