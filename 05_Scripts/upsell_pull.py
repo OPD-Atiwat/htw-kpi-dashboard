@@ -172,8 +172,6 @@ def main():
     book = defaultdict(lambda: {"u": 0, "bu": 0, "fu": 0, "ao": 0, "bo": 0, "pairs": defaultdict(int)})
     core = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))  # core[book][date][ch] = ยอดไม่รวม upsell
     pday = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))    # pday[book][date][co-book] = #orders พ่วงคู่กัน
-    # valch[anchor][partner][channel] = {"u": units, "v": value} — Upsell ทุก channel + จำนวนเล่ม + ยอด
-    valch = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: {"u": 0, "v": 0.0})))
     for ono, lines in orders.items():
         distinct = set(l["book"] for l in lines)
         multi = len(distinct) > 1
@@ -189,13 +187,6 @@ def main():
                 for ob in distinct:
                     if ob != b:
                         pday[b][odate][ob] += 1
-            # per-channel + units: anchor b, partner line l (l.book != b)
-            for b in distinct:
-                for l in lines:
-                    if l["book"] == b or not l["ch"]:
-                        continue
-                    valch[b][l["book"]][l["ch"]]["u"] += l["qty"]
-                    valch[b][l["book"]][l["ch"]]["v"] += l["price"]
         for b in distinct:
             bl = [l for l in lines if l["book"] == b]
             u = sum(l["qty"] for l in bl)
@@ -242,28 +233,7 @@ def main():
             if dd:
                 pday_out[b] = dd
 
-    # UPSELL_VAL_CH: anchor -> [{b: partner, ch:[{c,u,v}], tu, tv}] top 6 by value (ทุก channel)
-    valch_out = {}
-    for b in out:
-        if b not in valch:
-            continue
-        arr = []
-        for ob, chs in valch[b].items():
-            chlist = sorted(
-                [{"c": c, "u": dd["u"], "v": round(dd["v"])} for c, dd in chs.items() if dd["v"] > 0],
-                key=lambda x: -x["v"])
-            if not chlist:
-                continue
-            arr.append({"b": ob[:60], "ch": chlist,
-                        "tu": sum(x["u"] for x in chlist),
-                        "tv": sum(x["v"] for x in chlist)})
-        arr.sort(key=lambda x: -x["tv"])
-        if arr:
-            valch_out[b] = arr[:6]
-
     ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    html, nV = write_var(html, "UPSELL_VAL_CH", json.dumps(valch_out, ensure_ascii=False, separators=(",", ":")))
-    print(f"  UPSELL_VAL_CH: {len(valch_out)} anchors (n={nV})")
     html, n1 = write_var(html, "UPSELL_DATA", json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     html, n3 = write_var(html, "CORE_PROD_DATA", json.dumps(core_out, ensure_ascii=False, separators=(",", ":")))
     html, n4 = write_var(html, "UPSELL_PAIR_DAILY", json.dumps(pday_out, ensure_ascii=False, separators=(",", ":")))
