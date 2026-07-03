@@ -2350,6 +2350,7 @@ var MONTHLY_FINANCE_GOALS = {
  try{
   if(typeof GOALS_DATA!=='undefined' && !GOALS_DATA['Jul 26']){
    GOALS_DATA['Jul 26']=[{"product":"ออฟฟิศนี้เฮงซวย (สัตว์)","status":"Planning","goal":1380000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"กับดักความรู้สึกผิด","status":"Planning","goal":983000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจตัวนั้น คือฉันเอง A Guide to Fighting the Demons in My Heart","status":"Planning","goal":800000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจตัวนั้น คือฉันเอง 2 A Guide to Overcoming the Return of the Demons","status":"Planning","goal":172000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"Ghostly Brews ยินดีบริการดวงวิญญาณหลังเที่ยงคืน","status":"Planning","goal":137000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"Ghostly Remains ปลดพันธนาการดวงวิญญาณหลังความตาย","status":"Planning","goal":41000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"The Witches' Club ชมรมลับเปลี่ยนชีวิต","status":"Planning","goal":172000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"โอบกอดความไม่สมบูรณ์แบบของเธอ (Embrace Your Flaws)","status":"Planning","goal":0,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้","status":"Planning","goal":17000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจความรักมักเลือกฉันเป็นเหยื่อ How to Fight the Love Demon in My Heart","status":"Planning","goal":24000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ฉันจะมีชีวิตที่ดี","status":"Planning","goal":46000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ","status":"Planning","goal":48000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน The Enchanted Garden","status":"Planning","goal":34000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara","status":"Planning","goal":55000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (Helmet Girl)","status":"Planning","goal":12000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (It Is Never Too Late to Love Yourself)","status":"Planning","goal":24000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (The Millionaire's Top Secret)","status":"Planning","goal":24000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ยินดีต้อนรับและขอบคุณที่กลับมา","status":"Planning","goal":17000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ทุกความทรงจำคือของขวัญจากวันวาน","status":"Planning","goal":9000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ","status":"Planning","goal":5000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ","status":"New","goal":1000000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}}];
+   try{ GOALS_DATA['Jul 26'].forEach(function(p){ if(typeof getOpdProdActual==='function'){ var _r=getOpdProdActual(p.product,'2026-07-01','2026-07-31'); if(_r&&_r.actual>0){ p.actual=_r.actual; if(_r.channels)p.channels=_r.channels; p.achieve=p.goal>0?Math.round(p.actual/p.goal*100):0; } } }); }catch(_e){}
   }
   if(typeof CHANNEL_GOALS_DIRECT!=='undefined' && !CHANNEL_GOALS_DIRECT['Jul 26']){
    CHANNEL_GOALS_DIRECT['Jul 26']={
@@ -4127,8 +4128,8 @@ function renderOverview(data){
  gdata.forEach(function(p){var ch=p.channels||{};pmChTot.TikTok+=(ch.TikTok||0);pmChTot.Shopee+=(ch.Shopee||0);pmChTot.Facebook+=(ch.Facebook||0);});
  var _useGoalsChData=pmChTot.TikTok>0||pmChTot.Shopee>0||pmChTot.Facebook>0;
  /* === PREVIOUS MONTH ACTUALS — MoM comparison === */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26'};
+ var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
+ var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevMoLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):'';
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
@@ -9805,8 +9806,8 @@ function openChDrilldown(chKey){
  var gdata=GOALS_DATA[month]||[];
 
  /* Previous month */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26'};
+ var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
+ var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):null;
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
@@ -10092,8 +10093,8 @@ function openSubChDrilldown(parentKey, subChKey, subLabel, subActual, subGoal, d
  var gdata=GOALS_DATA[month]||[];
 
  /* Previous month */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26'};
+ var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
+ var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):null;
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
