@@ -9814,11 +9814,10 @@ function openChDrilldown(chKey){
  var _prevMtdPm=null, _prevMtdDay=0, _prevMtdLabel=_prevLabel;
  var _isFinalMonth=!!FINANCE_CHANNEL_ACTUALS[month]; /* closed month = has Finance */
  if(!_isFinalMonth && _prevMo){
-  var _pfxMap={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05'};
-  var _curPfx=_pfxMap[month]||'';
+  var _curPfx=(_gpR(month)[0]||'').slice(0,7);
   if(_curPfx){
    _prevMtdDay=getOpdMaxDay(_curPfx);
-   var _prevPfx=_pfxMap[_prevMo]||'';
+   var _prevPfx=(_gpR(_prevMo)[0]||'').slice(0,7);
    if(_prevMtdDay>0&&_prevPfx){
     _prevMtdPm=getOpdMtdChannels(_prevPfx,_prevMtdDay);
     _prevMtdLabel=(_moThShort[_prevMo]||_prevMo)+' 1-'+_prevMtdDay;
@@ -9899,8 +9898,7 @@ function openChDrilldown(chKey){
  }
 
  var prodMap={};
- var _pPfxMapProd={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05','Jun 26':'2026-06'};
- var _pPfxProd=_prevMo?_pPfxMapProd[_prevMo]:'';
+ var _pPfxProd=_prevMo?(_gpR(_prevMo)[0]||'').slice(0,7):'';
  var _pTotDaysProd=_pPfxProd?new Date(parseInt(_pPfxProd.split('-')[0]),parseInt(_pPfxProd.split('-')[1]),0).getDate():30;
  var _prodSclProd=(!_isFinalMonth&&_prevMtdDay>0)?(_prevMtdDay/_pTotDaysProd):1;
 
@@ -9912,7 +9910,7 @@ function openChDrilldown(chKey){
  });
  _prevGdata.forEach(function(p){
   if(!p.product||p.product==='อื่นๆ') return;
-  if(prodMap[p.product]) prodMap[p.product].prev=Math.round((p.actual||0)*_prodSclProd);
+  if(prodMap[p.product]){var _pp=(_prevPfx&&_prevMtdDay>0&&typeof getOpdProdActual==='function')?getOpdProdActual(p.product,_prevPfx+'-01',_prevPfx+'-'+('0'+_prevMtdDay).slice(-2)):null;prodMap[p.product].prev=_pp?_pp.actual:Math.round((p.actual||0)*_prodSclProd);}
  });
  var prodRows=Object.values(prodMap).sort(function(a,b){return b.rev-a.rev;});
 
