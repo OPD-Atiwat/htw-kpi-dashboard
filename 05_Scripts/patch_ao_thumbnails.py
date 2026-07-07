@@ -31,10 +31,14 @@ def extract_fb_video_id(url):
 
 print("=== Patch AO_DATA: thumbnails + Sheet mapping ===")
 
-# 1. Load creative map
-with open(MAP_PATH, "r", encoding="utf-8") as f:
-    creative_map = json.load(f)
-print(f"Creative map: {len(creative_map)} ads")
+# 1. Load creative map (optional — ถ้าไม่มี/พัง ให้ทำ Sheet mapping ต่อได้ ไม่ crash)
+creative_map = {}
+try:
+    with open(MAP_PATH, "r", encoding="utf-8") as f:
+        creative_map = json.load(f)
+    print(f"Creative map: {len(creative_map)} ads")
+except Exception as _e:
+    print(f"⚠️  โหลด creative map ไม่ได้ ({_e}) — ข้าม thumbnail injection, ทำ Sheet mapping ต่อ")
 
 # 2. Fetch Sheet
 print("Fetching Sheet...")
@@ -43,6 +47,15 @@ with urllib.request.urlopen(SHEET_URL) as r:
 rows = list(csv.reader(io.StringIO(raw)))
 headers = rows[0]
 idx = {h.strip(): i for i, h in enumerate(headers)}
+
+def _col(row, name):
+    """อ่านคอลัมน์แบบปลอดภัย — คอลัมน์หาย/แถวสั้น → คืน '' (กัน KeyError ทำ patch พังทั้งตัว)"""
+    i = idx.get(name, -1)
+    return row[i].strip() if (i >= 0 and len(row) > i) else ""
+
+_missing = [c for c in ("Link FB Post", "Ads FB Name", "Creator", "Key Message", "Product") if c not in idx]
+if _missing:
+    print(f"⚠️  Sheet ขาดคอลัมน์: {_missing} (มี: {list(idx.keys())[:12]}...) — ข้ามเฉพาะคอลัมน์ที่หาย")
 
 # Build lookup maps:
 # name_map:    ads_fb_name  → entry
@@ -54,16 +67,16 @@ keymsg_list = []
 
 for row in rows[1:]:
     if not row: continue
-    fb_url   = row[idx["Link FB Post"]].strip() if len(row) > idx["Link FB Post"] else ""
-    ads_name = row[idx["Ads FB Name"]].strip()  if len(row) > idx["Ads FB Name"]  else ""
-    creator  = row[idx["Creator"]].strip()      if len(row) > idx["Creator"]      else ""
-    key_msg  = row[idx["Key Message"]].strip()  if len(row) > idx["Key Message"]  else ""
+    fb_url   = _col(row, "Link FB Post")
+    ads_name = _col(row, "Ads FB Name")
+    creator  = _col(row, "Creator")
+    key_msg  = _col(row, "Key Message")
     if not fb_url:
         continue
     entry = {
         "fb_post_url": fb_url,
         "creator":  creator,
-        "product":  row[idx["Product"]].strip() if len(row) > idx["Product"] else "",
+        "product":  _col(row, "Product"),
         "key_msg":  key_msg,
     }
     # Priority 1: by Ads FB Name
