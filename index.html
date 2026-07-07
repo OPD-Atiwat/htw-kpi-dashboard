@@ -2351,7 +2351,7 @@ var MONTHLY_FINANCE_GOALS = {
  try{
   if(typeof GOALS_DATA!=='undefined' && !GOALS_DATA['Jul 26']){
    GOALS_DATA['Jul 26']=[{"product":"ออฟฟิศนี้เฮงซวย (สัตว์)","status":"Planning","goal":1400000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"กับดักความรู้สึกผิด","status":"Planning","goal":1479000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจตัวนั้น คือฉันเอง A Guide to Fighting the Demons in My Heart","status":"Planning","goal":858000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจตัวนั้น คือฉันเอง 2 A Guide to Overcoming the Return of the Demons","status":"Planning","goal":197000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"Ghostly Brews ยินดีบริการดวงวิญญาณหลังเที่ยงคืน","status":"Planning","goal":298000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"Ghostly Remains ปลดพันธนาการดวงวิญญาณหลังความตาย","status":"Planning","goal":115000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"The Witches' Club ชมรมลับเปลี่ยนชีวิต","status":"Planning","goal":192000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"โอบกอดความไม่สมบูรณ์แบบของเธอ (Embrace Your Flaws)","status":"Planning","goal":0,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"เหนื่อยมากไหม พักก่อนก็ได้นะวันนี้","status":"Planning","goal":0,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ปีศาจความรักมักเลือกฉันเป็นเหยื่อ How to Fight the Love Demon in My Heart","status":"Planning","goal":57000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ฉันจะมีชีวิตที่ดี","status":"Planning","goal":50000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ขอใช้ชีวิตที่เหลือ เพื่อตัวเองนะ","status":"Planning","goal":206000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน The Enchanted Garden","status":"Planning","goal":81000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara","status":"Planning","goal":111000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (Helmet Girl)","status":"Planning","goal":0,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (It Is Never Too Late to Love Yourself)","status":"Planning","goal":139000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ความลับสู่เงินล้านที่โรงเรียนไม่เคยสอน (The Millionaire's Top Secret)","status":"Planning","goal":30000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ยินดีต้อนรับและขอบคุณที่กลับมา","status":"Planning","goal":54000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ทุกความทรงจำคือของขวัญจากวันวาน","status":"Planning","goal":13000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ชีวิตมีเรื่องให้ขอบคุณมากกว่าเสียใจ","status":"Planning","goal":7000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}},{"product":"ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ","status":"New","goal":813000,"actual":0,"achieve":0,"channels":{},"pct_ads":{}}];
-   try{ GOALS_DATA['Jul 26'].forEach(function(p){ if(typeof getOpdProdActual==='function'){ var _r=getOpdProdActual(p.product,'2026-07-01','2026-07-31'); if(_r&&_r.actual>0){ p.actual=_r.actual; if(_r.channels)p.channels=_r.channels; p.achieve=p.goal>0?Math.round(p.actual/p.goal*100):0; } } }); }catch(_e){}
+   try{ GOALS_DATA['Jul 26'].forEach(function(p){ if(typeof getOpdProdActual==='function'){ var _r=getOpdProdActual(p.product,_gpR('jul')[0],_gpR('jul')[1]); if(_r&&_r.actual>0){ p.actual=_r.actual; if(_r.channels)p.channels=_r.channels; p.achieve=p.goal>0?Math.round(p.actual/p.goal*100):0; } } }); }catch(_e){}
   }
   if(typeof CHANNEL_GOALS_DIRECT!=='undefined' && !CHANNEL_GOALS_DIRECT['Jul 26']){
    CHANNEL_GOALS_DIRECT['Jul 26']={
@@ -3488,12 +3488,16 @@ function populateFilters() {
 
 /* APPLY FILTERS */
 function _gpR(p){
- p=p||(STATE&&STATE.globalPeriod)||'';
+ /* แหล่งเดียว period->[from,to]: code(jul)/label(Jul 26|Jul26)/YTD|all/custom */
+ p=(p==null?((STATE&&STATE.globalPeriod)||''):p);
+ var z=function(x){return(x<10?'0':'')+x;},d=new Date(),ty=d.getFullYear(),today=ty+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());
  if(p==='custom'&&STATE&&STATE.customFrom&&STATE.customTo)return[STATE.customFrom,STATE.customTo];
- var M={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12},n=M[p];
+ if(p==='all'||/^ytd/i.test(''+p))return[ty+'-01-01',today];
+ var M={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12},n=M[p],yr=ty;
+ if(!n){var mm=(''+p).match(/^([A-Za-z]{3})\s*(\d{2})$/);if(mm){n=M[mm[1].toLowerCase()];if(n)yr=2000+parseInt(mm[2],10);}}
  if(!n)return[null,null];
- var z=function(x){return(x<10?'0':'')+x;},d=new Date(),y=d.getFullYear(),cur=((d.getMonth()+1)===n);
- return[y+'-'+z(n)+'-01',cur?(y+'-'+z(n)+'-'+z(d.getDate())):(y+'-'+z(n)+'-'+z(new Date(y,n,0).getDate()))];
+ var cur=((d.getMonth()+1)===n&&ty===yr);
+ return[yr+'-'+z(n)+'-01',cur?today:(yr+'-'+z(n)+'-'+z(new Date(yr,n,0).getDate()))];
 }
 function setGlobalPeriod(p){
  STATE.globalPeriod=p;
@@ -3932,19 +3936,7 @@ function _mayToDate(){
  if(y===2026&&mo===5) return '2026-05-'+(dd<10?'0':'')+dd;
  return (y>2026||(y===2026&&mo>5))?'2026-05-31':'2026-05-31';
 }
-function ovMonthRange(m){
- /* Custom date range override */
- if(STATE&&STATE.globalPeriod==='custom'&&STATE.customFrom&&STATE.customTo)
-  return {from:STATE.customFrom,to:STATE.customTo};
- if(m==='YTD 26') return {from:'2026-01-01',to:_junToDate()}; /* YTD: Jan 1 → today */
- if(m==='Feb 26') return {from:'2026-02-01',to:'2026-02-28'};
- if(m==='Mar 26') return {from:'2026-03-01',to:'2026-03-31'};
- if(m==='Apr 26') return {from:'2026-04-01',to:'2026-04-30'};
- if(m==='May 26') return {from:'2026-05-01',to:_mayToDate()};
- if(m==='Jun 26') return {from:'2026-06-01',to:_junToDate()};
- if(m==='Jul 26') return {from:'2026-07-01',to:'2026-07-31'}; /* future: ยังไม่มี data → actual 0 */
- return {from:'2026-06-01',to:_junToDate()}; /* default */
-}
+function ovMonthRange(m){  /* delegate -> _gpR (แหล่งเดียว) */  if(STATE&&STATE.globalPeriod==='custom'&&STATE.customFrom&&STATE.customTo)return {from:STATE.customFrom,to:STATE.customTo};  var r=_gpR(m); if(!r||!r[0])r=_gpR((STATE&&STATE.globalPeriod)||'jun'); return {from:r[0],to:r[1]}; }
 /* Returns true when the month's last day has passed */
 function isMonthFinal(monthStr){
  var ends={'Jan 26':'2026-01-31','Feb 26':'2026-02-28','Mar 26':'2026-03-31',
@@ -8189,9 +8181,8 @@ function renderCreator(data){
   }
   /* Step 3: For each month distribute TikTok revenue proportionally
      Source: OPD_DAILY (MK13) — same date range as the rest of the chart */
-  var MO_DATE={'Feb26':['2026-02-01','2026-02-28'],'Mar26':['2026-03-01','2026-03-31'],'Apr26':['2026-04-01','2026-04-30']};
   Object.keys(tkByMonth).forEach(function(moCode){
-   var rng=MO_DATE[moCode]; if(!rng) return;
+   var rng=_gpR(moCode); if(!rng||!rng[0]) return;
    var totalTkRev=0;
    if(typeof OPD_DAILY!=='undefined'&&OPD_DAILY.data){
     OPD_DAILY.data.forEach(function(r){
@@ -8221,9 +8212,9 @@ function renderCreator(data){
     var actual=TT_CREATOR_REV[moCode];
     if(!actual||!moCodesInData[moCode]) return;
     /* Undo proportional share already added */
-    var rng=MO_DATE[moCode];
+    var rng=_gpR(moCode);
     var moTkRev=0;
-    if(rng&&OPD_DAILY&&OPD_DAILY.data){
+    if(rng&&rng[0]&&OPD_DAILY&&OPD_DAILY.data){
      OPD_DAILY.data.forEach(function(r){
       if(r.d>=rng[0]&&r.d<=rng[1]) moTkRev+=(r['TikTok']||0)+(r['TikTok Live']||0);
      });
@@ -12493,14 +12484,7 @@ function showProductDetail(pname){
  }
  /* ── Channel revenue: OPD_PROD_DATA (MK13) — per-product actual ── */
  var _popPeriod=(STATE&&STATE.globalPeriod)||'may';
- var _popFrom,_popTo;
- if(_popPeriod==='jun'){_popFrom='2026-06-01';_popTo=_junToDate();}
- else if(_popPeriod==='may'){_popFrom='2026-05-01';_popTo=_mayToDate();}
- else if(_popPeriod==='apr'){_popFrom='2026-04-01';_popTo='2026-04-30';}
- else if(_popPeriod==='mar'){_popFrom='2026-03-01';_popTo='2026-03-31';}
- else if(_popPeriod==='feb'){_popFrom='2026-02-01';_popTo='2026-02-28';}
- else if(_popPeriod==='jul'){_popFrom='2026-07-01';_popTo='2026-07-31';}
- else if(_popPeriod==='custom'&&STATE.customFrom&&STATE.customTo){_popFrom=STATE.customFrom;_popTo=STATE.customTo;}
+ var _pr=_gpR(_popPeriod),_popFrom=_pr[0]||'2026-05-01',_popTo=_pr[1]||'2026-05-31';
  var _opdRes=(typeof getOpdProdActual==='function'&&_popFrom)?getOpdProdActual(pname,_popFrom,_popTo):null;
  var platCurrent={};
  if(_opdRes&&_opdRes.channels){
