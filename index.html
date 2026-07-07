@@ -893,6 +893,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
    <span style="font-size:10px;color:var(--text3);white-space:nowrap">· คลิก row เพื่อดู KPI</span>
   </div>
   <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+   <input id="content-search" type="text" placeholder="ค้นชื่อคอนเทนต์…" oninput="cbContentSearch(this.value)" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text1);font-size:11px;font-family:inherit;min-width:150px;outline:none">
    <!-- Platform group -->
    <div style="display:flex;gap:3px;background:var(--surface2);border-radius:8px;padding:3px;border:1px solid var(--border)">
     <button id="tiktok-only-btn" onclick="toggleTikTokOnly()"
@@ -6767,6 +6768,10 @@ function renderTop3Days(data){
 function renderContent(data){
  try{renderTop3Days(data);}catch(e){}
  var filtered=data.slice();
+ var _CP=(STATE&&STATE.globalPeriod)||'',_CTF=null,_CTT=null;
+ if(_CP==='custom'&&STATE.customFrom&&STATE.customTo){_CTF=STATE.customFrom;_CTT=STATE.customTo;}
+ else{var _CMM={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12},_CMN=_CMM[_CP];if(_CMN){var _CPD=function(n){return(n<10?'0':'')+n;},_CNW=new Date(),_CYR=_CNW.getFullYear(),_CIC=((_CNW.getMonth()+1)===_CMN);_CTF=_CYR+'-'+_CPD(_CMN)+'-01';_CTT=_CIC?(_CYR+'-'+_CPD(_CMN)+'-'+_CPD(_CNW.getDate())):(_CYR+'-'+_CPD(_CMN)+'-'+_CPD(new Date(_CYR,_CMN,0).getDate()));}}
+ var _CTMO=_CTF?_CTF.slice(0,7):'';
  /* ซ่อน Central creator */
  filtered=filtered.filter(function(r){return r.creator!=='Central';});
  if(STATE.videoOnly){
@@ -6783,14 +6788,16 @@ function renderContent(data){
  if(STATE.metaOnly){
  filtered=filtered.filter(function(r){return r.platform==='Meta';});
  }
+ if(STATE.contentSearch){var _q=(''+STATE.contentSearch).toLowerCase().trim();if(_q)filtered=filtered.filter(function(r){return (((r.content_name||r.product||'')+' '+(r.creator||'')).toLowerCase().indexOf(_q)>-1);});}
+ if(_CTF){filtered=filtered.filter(function(r){return r.ad_date&&r.ad_date>=_CTF&&r.ad_date<=_CTT;});}
 
  // Aggregate
  var cmap={};
  filtered.forEach(function(r){
  var key=(r.content_name||r.product||'Unknown')+'||'+(r.creator||'')+'||'+(r.platform||'');
- if(!cmap[key])cmap[key]={content_name:r.content_name||r.product||'Unknown',creator:r.creator||'',platform:r.platform||'',product:r.product||'',content_type:'',rev:0,spend:0,pur:0,passCount:0,totalCount:0,dates:new Set(),passDates:new Set(),isNew:false,launch:'',rows:[]};
+ if(!cmap[key])cmap[key]={content_name:r.content_name||r.product||'Unknown',creator:r.creator||'',platform:r.platform||'',product:r.product||'',content_type:'',rev:0,spend:0,pur:0,msg:0,passCount:0,totalCount:0,dates:new Set(),passDates:new Set(),isNew:false,launch:'',rows:[]};
  var c=cmap[key];
- c.rev+=r.revenue_thb;c.spend+=r.spend_thb;c.pur+=r.purchases;c.totalCount++;
+ c.rev+=r.revenue_thb;c.spend+=r.spend_thb;c.pur+=r.purchases;c.msg=(c.msg||0)+(r.messages||0);c.totalCount++;
  if(r.is_new)c.isNew=true;
  if(r.launch_date && (!c.launch||r.launch_date>c.launch)) c.launch=r.launch_date;
  if(r.content_type&&!c.content_type)c.content_type=r.content_type;
@@ -6813,10 +6820,7 @@ function renderContent(data){
   /* Fallback: strip [ริว]/[มิ้น]/[หมิว] prefix added by MMSMK importer */
   if(!_m){var _s=c.content_name.replace(/^\[(ริว|มิ้น|หมิว)\]\s*/,'');if(_s!==c.content_name)_m=META_AD_PERF[_s];}
   if(_m&&_m.days&&_m.days.length>0){
-   var _ctPer=(STATE&&STATE.globalPeriod)||'';
-   var _ctF=null,_ctT=null;
-   if(_ctPer==='custom'&&STATE.customFrom&&STATE.customTo){_ctF=STATE.customFrom;_ctT=STATE.customTo;}
-   else{var _moMap={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};var _mn=_moMap[_ctPer];if(_mn){var _pad=function(n){return(n<10?'0':'')+n;};var _now=new Date();var _yr=_now.getFullYear();var _isCur=((_now.getMonth()+1)===_mn);_ctF=_yr+'-'+_pad(_mn)+'-01';_ctT=_isCur?(_yr+'-'+_pad(_mn)+'-'+_pad(_now.getDate())):(_yr+'-'+_pad(_mn)+'-'+_pad(new Date(_yr,_mn,0).getDate()));}}
+   var _ctF=_CTF,_ctT=_CTT;
    var _mdays=_ctF?_m.days.filter(function(d){return d.d>=_ctF&&d.d<=_ctT;}):_m.days;
    c.dates=new Set(_mdays.map(function(d){return d.d;}));
    c.passDates=new Set(_mdays.filter(function(d){return d.pass===1;}).map(function(d){return d.d;}));
@@ -7003,8 +7007,8 @@ function renderContent(data){
  var _cTag=(c.content_name.match(/^\[\d{2}\.\d{2}\.\d{2}\]\[([^\]]+)\]/)||[])[1]||'';
  var _cWho=(c.creator==='Influ'&&_cTag)?_cTag:c.creator;
  if(c.creator==='Influ'&&_cTag) _dispName=_cTag+' — '+_dispName;   /* Influ: นำชื่ออินฟลู */
- var _newMo=c.launch&&_curMo&&c.launch.slice(0,7)===_curMo;       /* แอดใหม่เดือนนี้ */
- var _newCell=(_newMo||c.isNew)?'<span style="font-size:9.5px;font-weight:800;letter-spacing:.3px;background:#10B981;color:#fff;border-radius:5px;padding:2px 8px">NEW</span>':'';
+ var _newMo=c.launch&&_CTMO&&c.launch.slice(0,7)===_CTMO;       /* แอดใหม่เดือนนี้ */
+ var _newCell=_newMo?'<span style="font-size:9.5px;font-weight:800;letter-spacing:.3px;background:#10B981;color:#fff;border-radius:5px;padding:2px 8px">NEW</span>':'';
  html+='<td class="td-content"><b>'+escH(_dispName)+'</b>'+successBadge+aiBadge+'</td>';
  html+='<td>'+escH(_cWho)+'</td>';
  html+='<td>'+escH(c.product)+'</td>';
@@ -7166,6 +7170,7 @@ function toggleNewOnly(){
  _setCBBtn('new-only-btn',STATE.newOnly,'#F59E0B');
  renderContent(STATE.filteredData);
 }
+function cbContentSearch(v){STATE.contentSearch=v;STATE.contentPage=0;renderContent(STATE.filteredData);}
 function toggleSuccessOnly(){
  STATE.successOnly=!STATE.successOnly; STATE.contentPage=0;
  _setCBBtn('success-only-btn',STATE.successOnly,'#16A34A');
