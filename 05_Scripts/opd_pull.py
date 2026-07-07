@@ -883,21 +883,6 @@ def main():
     mk13_rows = download_csv(mk13_url, timeout=180, retries=3)
     print(f"  ได้ {len(mk13_rows)} rows (รวม header)")
 
-    # gviz supplement: export?format=csv ถูก truncate ตัดวันล่าสุดของเดือนปัจจุบันทิ้ง
-    # → ดึง gviz (de-truncate) เฉพาะเดือนปัจจุบันมาเสริม (col F = วันที่)
-    # parse_mk13 dedup ด้วย (order_id, date, creator) อยู่แล้ว → append ซ้ำได้ ไม่ double-count
-    try:
-        import urllib.parse as _up
-        _mfrom = datetime.now().replace(day=1).strftime("%Y-%m-%d")
-        _tq = _up.quote("SELECT * WHERE F >= date '%s'" % _mfrom)
-        _gv_url = "https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&gid=%s&tq=%s" % (OPD_SHEET_ID, MK13_GID, _tq)
-        _gv = download_csv(_gv_url, timeout=120, retries=2)
-        if _gv and len(_gv) > 1:
-            mk13_rows.extend(_gv[1:])   # skip gviz header
-            print(f"  + gviz เสริมเดือนปัจจุบัน ({_mfrom}+): +{len(_gv)-1} rows")
-    except Exception as _gve:
-        print(f"  gviz supplement fail (ข้าม): {_gve}")
-
     creators = {}
     daily_creators = {}
     if mk13_rows:
