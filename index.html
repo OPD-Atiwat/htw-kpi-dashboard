@@ -13690,12 +13690,10 @@ var CH_ICONS = {
 };
 
 function chDateBounds(preset){
- if(preset==='feb') return {from:'2026-02-01',to:'2026-02-28'};
- if(preset==='mar') return {from:'2026-03-01',to:'2026-03-31'};
- if(preset==='apr') return {from:'2026-04-01',to:'2026-04-30'};
- if(preset==='may') return {from:'2026-05-01',to:_mayToDate()};
- if(preset==='jun') return {from:'2026-06-01',to:_junToDate()};
- return {from:'2026-02-01',to:_junToDate()}; /* all: full range */
+ /* dynamic: รองรับทุกเดือน (jul+) ผ่าน _gpR — ไม่ hardcode */
+ if(preset&&preset!=='all'){var r=_gpR(preset);if(r&&r[0])return {from:r[0],to:r[1]};}
+ var d=new Date(),t=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+ return {from:'2026-02-01',to:t}; /* all/custom: Feb1 → วันนี้ */
 }
 
 function setChRange(preset){
@@ -13704,7 +13702,7 @@ function setChRange(preset){
  var ti=document.getElementById('ch-to');
  if(fi) fi.value=b.from;
  if(ti) ti.value=b.to;
- ['feb','mar','apr','may','jun','all'].forEach(function(k){
+ ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec','all'].forEach(function(k){
  var btn=document.getElementById('chq-'+k);
  if(btn) btn.classList.toggle('active',k===preset);
  });
@@ -13721,7 +13719,7 @@ function setChType(type){
 }
 
 function applyChCustomRange(){
- ['feb','mar','apr','may','jun','all'].forEach(function(k){
+ ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec','all'].forEach(function(k){
  var btn=document.getElementById('chq-'+k);
  if(btn) btn.classList.remove('active');
  });
