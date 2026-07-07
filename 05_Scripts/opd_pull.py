@@ -375,13 +375,8 @@ def build_affiliate_data(creators, ads_products, daily_creators=None):
     for month in ads_products.keys():
         all_months.add(month)
 
-    # เรียงเดือนตามลำดับเวลา (dynamic — ไม่ hardcode เพื่อให้เดือนใหม่ทุกเดือนโผล่เองอัตโนมัติ)
-    def _mkey(m):
-        try:
-            return datetime.strptime(m, "%b%y")
-        except Exception:
-            return datetime(2000, 1, 1)
-    months_sorted = sorted(all_months, key=_mkey)
+    month_order = ["Jan26","Feb26","Mar26","Apr26","May26","Jun26"]
+    months_sorted = [m for m in month_order if m in all_months]
 
     # สร้าง creator summary
     creator_data = {}
@@ -887,21 +882,6 @@ def main():
     print(f"\n[MK13] กำลังดาวน์โหลด... (ไฟล์ใหญ่ อาจใช้เวลา 1-2 นาที)", flush=True)
     mk13_rows = download_csv(mk13_url, timeout=180, retries=3)
     print(f"  ได้ {len(mk13_rows)} rows (รวม header)")
-
-    # gviz supplement: export?format=csv ถูก truncate ตัดวันล่าสุดของเดือนปัจจุบันทิ้ง
-    # → ดึง gviz (de-truncate) เฉพาะเดือนปัจจุบันมาเสริม (col F = วันที่)
-    # parse_mk13 dedup ด้วย (order_id, date, creator) อยู่แล้ว → append ซ้ำได้ ไม่ double-count
-    try:
-        import urllib.parse as _up
-        _mfrom = datetime.now().replace(day=1).strftime("%Y-%m-%d")
-        _tq = _up.quote("SELECT * WHERE F >= date '%s'" % _mfrom)
-        _gv_url = "https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&gid=%s&tq=%s" % (OPD_SHEET_ID, MK13_GID, _tq)
-        _gv = download_csv(_gv_url, timeout=120, retries=2)
-        if _gv and len(_gv) > 1:
-            mk13_rows.extend(_gv[1:])   # skip gviz header
-            print(f"  + gviz เสริมเดือนปัจจุบัน ({_mfrom}+): +{len(_gv)-1} rows")
-    except Exception as _gve:
-        print(f"  gviz supplement fail (ข้าม): {_gve}")
 
     creators = {}
     daily_creators = {}
