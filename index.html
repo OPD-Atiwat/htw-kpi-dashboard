@@ -4137,8 +4137,8 @@ function renderOverview(data){
  gdata.forEach(function(p){var ch=p.channels||{};pmChTot.TikTok+=(ch.TikTok||0);pmChTot.Shopee+=(ch.Shopee||0);pmChTot.Facebook+=(ch.Facebook||0);});
  var _useGoalsChData=pmChTot.TikTok>0||pmChTot.Shopee>0||pmChTot.Facebook>0;
  /* === PREVIOUS MONTH ACTUALS — MoM comparison === */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
+ var _moKeys=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],r=[];for(var y=25;y<=28;y++)for(var m=0;m<12;m++)r.push(A[m]+' '+y);return r;})();
+ var _moThShort=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],T=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],o={};for(var y=25;y<=28;y++)for(var m=0;m<12;m++)o[A[m]+' '+y]=T[m]+y;return o;})();
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevMoLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):'';
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
@@ -4158,7 +4158,7 @@ function renderOverview(data){
   var _mtdDay=getOpdMaxDay(_curPrefix);
   if(_mtdDay>0){
    /* Map prev month string → date prefix */
-   var _prevPfxMap={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05','Jun 26':'2026-06','Jul 26':'2026-07'};
+   var _prevPfxMap=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],o={};for(var y=25;y<=28;y++)for(var m=0;m<12;m++)o[A[m]+' '+y]='20'+y+'-'+('0'+(m+1)).slice(-2);return o;})();
    var _prevPrefix=_prevPfxMap[_prevMo]||'';
    if(_prevPrefix){
     var _pm=getOpdMtdChannels(_prevPrefix,_mtdDay);
@@ -5051,7 +5051,7 @@ STATE.lbProduct=_lbProdForMult;
  /* Product MoM — live months: scale prev actuals to same MTD period (no per-product daily data) */
  var _prevGdataForProd=_prevGdata;
  if(!isFinal&&typeof _mtdDay!=='undefined'&&_mtdDay>0&&_prevMo){
-  var _pMOP={'Jan 26':'2026-01','Feb 26':'2026-02','Mar 26':'2026-03','Apr 26':'2026-04','May 26':'2026-05','Jun 26':'2026-06','Jul 26':'2026-07'};
+  var _pMOP=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],o={};for(var y=25;y<=28;y++)for(var m=0;m<12;m++)o[A[m]+' '+y]='20'+y+'-'+('0'+(m+1)).slice(-2);return o;})();
   var _pPfx2=_pMOP[_prevMo]||'';
   var _pTotDays=_pPfx2?new Date(parseInt(_pPfx2.split('-')[0]),parseInt(_pPfx2.split('-')[1]),0).getDate():30;
   var _prodScl=_mtdDay/_pTotDays;
@@ -9812,8 +9812,8 @@ function openChDrilldown(chKey){
  var gdata=GOALS_DATA[month]||[];
 
  /* Previous month */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
+ var _moKeys=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],r=[];for(var y=25;y<=28;y++)for(var m=0;m<12;m++)r.push(A[m]+' '+y);return r;})();
+ var _moThShort=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],T=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],o={};for(var y=25;y<=28;y++)for(var m=0;m<12;m++)o[A[m]+' '+y]=T[m]+y;return o;})();
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):null;
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
@@ -10099,8 +10099,8 @@ function openSubChDrilldown(parentKey, subChKey, subLabel, subActual, subGoal, d
  var gdata=GOALS_DATA[month]||[];
 
  /* Previous month */
- var _moKeys=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26'];
- var _moThShort={'Jan 26':'ม.ค.26','Feb 26':'ก.พ.26','Mar 26':'มี.ค.26','Apr 26':'เม.ย.26','May 26':'พ.ค.26','Jun 26':'มิ.ย.26','Jul 26':'ก.ค.26'};
+ var _moKeys=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],r=[];for(var y=25;y<=28;y++)for(var m=0;m<12;m++)r.push(A[m]+' '+y);return r;})();
+ var _moThShort=(function(){var A=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],T=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],o={};for(var y=25;y<=28;y++)for(var m=0;m<12;m++)o[A[m]+' '+y]=T[m]+y;return o;})();
  var _prevMo=(function(){var i=_moKeys.indexOf(month);return i>0?_moKeys[i-1]:null;})();
  var _prevLabel=_prevMo?(_moThShort[_prevMo]||_prevMo):null;
  var _prevGdata=_prevMo?(GOALS_DATA[_prevMo]||[]):[];
