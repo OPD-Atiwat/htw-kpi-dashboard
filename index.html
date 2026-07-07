@@ -631,7 +631,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <div class="header-actions">
  <div id="data-freshness" style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);margin-right:6px">
   <span id="data-fresh-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#10B981;flex-shrink:0"></span>
-  <span style="white-space:nowrap">ข้อมูล ณ <strong id="data-last-date" style="color:var(--text1)">–</strong></span>
+  <span style="white-space:nowrap">อัปเดตล่าสุด <strong id="data-last-date" style="color:var(--text1)">–</strong></span>
  </div>
  <div class="filter-count" id="filter-count" style="display:none;font-size:10px;color:var(--text3);margin-right:6px">– รายการ</div>
  <button class="btn-sm" onclick="showInfoModal()">Metric Guide</button>
@@ -3452,7 +3452,7 @@ function init() {
   var _cap=(typeof META_PULL_TS==='string'&&META_PULL_TS.length>=10)?META_PULL_TS.slice(0,10):'';
   if(_cap && _lastD>_cap) _lastD=_cap;
   if(!_lastD) return;
-  var _dp=_lastD.split('-');
+  var _dp=(_cap||_lastD).split('-');
   var _dStr=parseInt(_dp[2])+' '+_TH_MO[parseInt(_dp[1])-1]+' '+_dp[0].slice(2);
   /* เพิ่มเวลา sync จาก META_PULL_TS (format: "2026-05-15 14:03") */
   var _tsStr='';
@@ -6815,12 +6815,8 @@ function renderContent(data){
   if(_m&&_m.days&&_m.days.length>0){
    var _ctPer=(STATE&&STATE.globalPeriod)||'';
    var _ctF=null,_ctT=null;
-   if(_ctPer==='may'){_ctF='2026-05-01';_ctT='2026-05-31';}
-   else if(_ctPer==='apr'){_ctF='2026-04-01';_ctT='2026-04-30';}
-   else if(_ctPer==='mar'){_ctF='2026-03-01';_ctT='2026-03-31';}
-   else if(_ctPer==='feb'){_ctF='2026-02-01';_ctT='2026-02-28';}
-   else if(_ctPer==='jun'){_ctF='2026-06-01';_ctT=_junToDate();}
-   else if(_ctPer==='custom'&&STATE.customFrom&&STATE.customTo){_ctF=STATE.customFrom;_ctT=STATE.customTo;}
+   if(_ctPer==='custom'&&STATE.customFrom&&STATE.customTo){_ctF=STATE.customFrom;_ctT=STATE.customTo;}
+   else{var _moMap={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};var _mn=_moMap[_ctPer];if(_mn){var _pad=function(n){return(n<10?'0':'')+n;};var _now=new Date();var _yr=_now.getFullYear();var _isCur=((_now.getMonth()+1)===_mn);_ctF=_yr+'-'+_pad(_mn)+'-01';_ctT=_isCur?(_yr+'-'+_pad(_mn)+'-'+_pad(_now.getDate())):(_yr+'-'+_pad(_mn)+'-'+_pad(new Date(_yr,_mn,0).getDate()));}}
    var _mdays=_ctF?_m.days.filter(function(d){return d.d>=_ctF&&d.d<=_ctT;}):_m.days;
    c.dates=new Set(_mdays.map(function(d){return d.d;}));
    c.passDates=new Set(_mdays.filter(function(d){return d.pass===1;}).map(function(d){return d.d;}));
