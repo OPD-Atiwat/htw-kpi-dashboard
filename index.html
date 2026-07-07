@@ -3487,6 +3487,14 @@ function populateFilters() {
 }
 
 /* APPLY FILTERS */
+function _gpR(p){
+ p=p||(STATE&&STATE.globalPeriod)||'';
+ if(p==='custom'&&STATE&&STATE.customFrom&&STATE.customTo)return[STATE.customFrom,STATE.customTo];
+ var M={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12},n=M[p];
+ if(!n)return[null,null];
+ var z=function(x){return(x<10?'0':'')+x;},d=new Date(),y=d.getFullYear(),cur=((d.getMonth()+1)===n);
+ return[y+'-'+z(n)+'-01',cur?(y+'-'+z(n)+'-'+z(d.getDate())):(y+'-'+z(n)+'-'+z(new Date(y,n,0).getDate()))];
+}
 function setGlobalPeriod(p){
  STATE.globalPeriod=p;
  // Sync period pill buttons active state
@@ -5064,14 +5072,7 @@ STATE.lbProduct=_lbProdForMult;
    data: getOpdProdActual() → channels{} ต่อเล่ม ตาม period ปัจจุบัน */
 function _ovProdChPeriod(){
  var p=(STATE&&STATE.globalPeriod)?STATE.globalPeriod:'may', from, to;
- if(p==='jun'){ from='2026-06-01'; to=(function(){var t=new Date();return t.getFullYear()===2026&&t.getMonth()===5?t.toISOString().slice(0,10):'2026-06-30';})(); }
- else if(p==='may'){ from='2026-05-01'; to=(typeof _mayToDate==='function'?_mayToDate():'2026-05-31'); }
- else if(p==='apr'){ from='2026-04-01'; to='2026-04-30'; }
- else if(p==='mar'){ from='2026-03-01'; to='2026-03-31'; }
- else if(p==='feb'){ from='2026-02-01'; to='2026-02-28'; }
- else if(p==='jan'){ from='2026-01-01'; to='2026-01-31'; }
- else if(p==='custom'&&STATE.customFrom&&STATE.customTo){ from=STATE.customFrom; to=STATE.customTo; }
- else { from='2026-05-01'; to='2026-05-31'; }
+ var _r=_gpR(p); from=_r[0]||'2026-05-01'; to=_r[1]||'2026-05-31';
  return {from:from,to:to};
 }
 function _ovProdCover(name){
@@ -5161,13 +5162,7 @@ function renderOvMarginAlert(gdata){
  var el=document.getElementById('ov-margin-alert'); if(!el) return;
  if(typeof computeBookMargin!=='function'||typeof getOpdProdActual!=='function'){el.innerHTML='';return;}
  var p=(STATE&&STATE.globalPeriod)||'jun',from,to,mk=(STATE&&STATE.ovMonth)||'Jun 26';
- if(p==='jun'){from='2026-06-01';to=(typeof _junToDate==='function'?_junToDate():'2026-06-30');}
- else if(p==='may'){from='2026-05-01';to=(typeof _mayToDate==='function'?_mayToDate():'2026-05-31');}
- else if(p==='apr'){from='2026-04-01';to='2026-04-30';}
- else if(p==='mar'){from='2026-03-01';to='2026-03-31';}
- else if(p==='feb'){from='2026-02-01';to='2026-02-28';}
- else if(p==='custom'&&STATE.customFrom&&STATE.customTo){from=STATE.customFrom;to=STATE.customTo;}
- else {el.innerHTML='';return;}
+ var _r=_gpR(p); from=_r[0]; to=_r[1]; if(!from||!to){el.innerHTML='';return;}
  var rows=[];
  (gdata||[]).forEach(function(g){
   if(!g||!g.product||g.other)return;
@@ -7288,9 +7283,16 @@ function showContentDetail(cname){
 
    /* มี fb_post_url → embed โพสต์จริง (SDK); ไม่งั้นโชว์ thumbnail สะอาดๆ (ไม่ฝัง preview iframe ที่มัก Story Unavailable) */
    if(_fbPostUrl){
-    _thumbHtml='<div style="width:100%;max-width:420px;margin:0 auto 8px">'
-     +'<iframe src="https://www.facebook.com/plugins/post.php?href='+encodeURIComponent(_fbPostUrl)+'&show_text=true&width=400" style="width:100%;height:640px;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:block;background:var(--surface2)" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share"></iframe>'
-     +'<div style="display:flex;justify-content:flex-end;margin-top:4px"><a href="'+_amUrl+'" target="_blank" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">Ads Manager ↗</a></div></div>';
+    if(/instagram\.com/i.test(_fbPostUrl)){
+     var _igBase=_fbPostUrl.split('?')[0].replace(/\/+$/,'');
+     _thumbHtml='<div style="width:100%;max-width:420px;margin:0 auto 8px">'
+      +'<iframe src="'+_igBase+'/embed" style="width:100%;height:640px;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:block;background:var(--surface2)" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"></iframe>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:4px"><a href="'+_fbPostUrl+'" target="_blank" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">เปิดใน Instagram ↗</a><a href="'+_amUrl+'" target="_blank" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">Ads Manager ↗</a></div></div>';
+    } else {
+     _thumbHtml='<div style="width:100%;max-width:420px;margin:0 auto 8px">'
+      +'<iframe src="https://www.facebook.com/plugins/post.php?href='+encodeURIComponent(_fbPostUrl)+'&show_text=true&width=400" style="width:100%;height:640px;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:block;background:var(--surface2)" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay;clipboard-write;encrypted-media;picture-in-picture;web-share"></iframe>'
+      +'<div style="display:flex;justify-content:flex-end;margin-top:4px"><a href="'+_amUrl+'" target="_blank" style="font-size:10px;font-weight:700;color:var(--text3);text-decoration:none">Ads Manager ↗</a></div></div>';
+    }
     window._ctPendingEmbed=null;
    } else {
     _thumbHtml='<div style="width:100%;max-width:380px;margin:0 auto 8px">'
@@ -10259,13 +10261,7 @@ function openSubChDrilldown(parentKey, subChKey, subLabel, subActual, subGoal, d
 /* _ovPeriodRange — คืน [from,to] ของ period ปัจจุบัน (ใช้ร่วมกันทุก product calc) */
 function _ovPeriodRange(){
  var _gp=(STATE&&STATE.globalPeriod)||'jun';
- if(_gp==='jun') return ['2026-06-01',_junToDate()];
- if(_gp==='may') return ['2026-05-01',_mayToDate()];
- if(_gp==='apr') return ['2026-04-01','2026-04-30'];
- if(_gp==='mar') return ['2026-03-01','2026-03-31'];
- if(_gp==='feb') return ['2026-02-01','2026-02-28'];
- if(_gp==='custom'&&STATE.customFrom&&STATE.customTo) return [STATE.customFrom,STATE.customTo];
- return [null,null];
+ return _gpR(_gp);
 }
 /* _ovProdActualBase — Σ actual ฐานเดียวกับที่การ์ดรายเล่มใช้ (OPD ถ้ามี, else GOALS_DATA)
    ใช้เป็น "ตัวหาร" ของ fcMultiplier → ทำให้ Σ(card FC) = engine forecast เป๊ะ (reconcile) */
@@ -10287,12 +10283,7 @@ function computeProductFcSum(gdata){
  if(!STATE.fcMultiplier||!(STATE.fcMultiplier>0)||STATE.fcIsFinal) return 0;
  var _gp=(STATE&&STATE.globalPeriod)||'jun';
  var _f,_t;
- if(_gp==='jun'){_f='2026-06-01';_t=_junToDate();}
- else if(_gp==='may'){_f='2026-05-01';_t=_mayToDate();}
- else if(_gp==='apr'){_f='2026-04-01';_t='2026-04-30';}
- else if(_gp==='mar'){_f='2026-03-01';_t='2026-03-31';}
- else if(_gp==='feb'){_f='2026-02-01';_t='2026-02-28';}
- else if(_gp==='custom'&&STATE.customFrom&&STATE.customTo){_f=STATE.customFrom;_t=STATE.customTo;}
+ var _r=_gpR(_gp); _f=_r[0]; _t=_r[1];
  var _sum=0;
  gdata.filter(function(p){return p&&!p.other;}).forEach(function(pd){
   if(!pd||pd.status==='OOS') return;
@@ -10388,12 +10379,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  (function(){
   var _period = (STATE && STATE.globalPeriod) ? STATE.globalPeriod : 'may';
   var _from, _to;
-  if(_period==='jun'){    _from='2026-06-01'; _to=(function(){var t=new Date();return t.getFullYear()===2026&&t.getMonth()===5?t.toISOString().slice(0,10):'2026-06-30';})(); }
-  else if(_period==='may'){    _from='2026-05-01'; _to=_mayToDate(); }
-  else if(_period==='apr'){ _from='2026-04-01'; _to='2026-04-30'; }
-  else if(_period==='mar'){ _from='2026-03-01'; _to='2026-03-31'; }
-  else if(_period==='feb'){ _from='2026-02-01'; _to='2026-02-28'; }
-  else if(_period==='custom'&&STATE.customFrom&&STATE.customTo){ _from=STATE.customFrom; _to=STATE.customTo; }
+  var _r=_gpR(_period); _from=_r[0]; _to=_r[1];
   if(_from && _to && typeof getOpdProdActual==='function'){
    var _opd = getOpdProdActual(p.product, _from, _to);
    if(_opd){ p = Object.assign({}, p, _opd); p._hasOpdChannels=!!(_opd.channels&&Object.keys(_opd.channels).length>0); }
@@ -10642,12 +10628,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  /* OPD override: ใช้ข้อมูล live จาก OPD_PROD_DATA เหมือน productItem */
  var _sbPer=(STATE&&STATE.globalPeriod)||'may';
  var _sbF,_sbT;
- if(_sbPer==='jun'){_sbF='2026-06-01';_sbT=_junToDate();}
- else if(_sbPer==='may'){_sbF='2026-05-01';_sbT=_mayToDate();}
- else if(_sbPer==='apr'){_sbF='2026-04-01';_sbT='2026-04-30';}
- else if(_sbPer==='mar'){_sbF='2026-03-01';_sbT='2026-03-31';}
- else if(_sbPer==='feb'){_sbF='2026-02-01';_sbT='2026-02-28';}
- else if(_sbPer==='custom'&&STATE.customFrom&&STATE.customTo){_sbF=STATE.customFrom;_sbT=STATE.customTo;}
+ var _r=_gpR(_sbPer); _sbF=_r[0]; _sbT=_r[1];
  var tActual=list.reduce(function(s,p){
   if(_sbF&&_sbT&&typeof getOpdProdActual==='function'){var _o=getOpdProdActual(p.product,_sbF,_sbT);if(_o)return s+_o.actual;}
   return s+(p.actual||0);
