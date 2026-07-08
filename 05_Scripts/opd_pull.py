@@ -41,7 +41,7 @@ MK13_COL = {
     "sale_channel": 21,   # Sale Channel ("TikTok", "Facebook" ฯลฯ)
     "sale_method":  22,   # Sale Method ("Affiliate") ← ตัวกรองหลัก
     "creator":      23,   # Creator Name (affiliate username เช่น unsexnn)
-    "revenue":      15,   # ราคาแยกรายการ (per-line, ตรงกับ OPD_DAILY/mk13_sync — ไม่รวมค่าส่ง)
+    "revenue":      27,   # ยอดเงินรับ
 }
 
 # คอลัมน์ใน %Ads (0-indexed)
@@ -266,22 +266,39 @@ def parse_mk13(rows):
         month = get_month_label(ym)
         if not month:
             continue
-        date_str = parse_full_date(date_raw)
 
-        # per-line (col15 ราคาแยกรายการ) แต่ dedup row ซ้ำ (gviz supplement append current-month ซ้ำ → กันนับเบิ้ล)
-        # dedup key = (order, date, product, creator, ราคา) — ลบ exact-dupe row, คงบรรทัดที่ต่างกันจริง
+        date_str = parse_full_date(date_raw)  # 'YYYY-MM-DD' หรือ None
+
+        # เก็บตัวอย่าง col0 สำหรับ debug (10 รายการแรก)
+        if len(col0_samples) < 10:
+            col0_samples.append(repr(order_id) if order_id else "(empty)")
+        if not order_id:
+            col0_empty += 1
+
         revenue = flt(rev_raw)
         product = prod_raw if prod_raw else "Unknown"
-        _rk = (order_id, date_str, product, creator, rev_raw)
-        if _rk in seen_orders:
-            deduped += 1
-            continue
-        seen_orders.add(_rk)
+
+        # Dedup: ถ้ามี order_id → นับ revenue ครั้งเดียวต่อ order+date+creator
+        if order_id and date_str:
+            key = (order_id, date_str, creator)
+            if key in seen_orders:
+                deduped += 1
+                # ยังนับ product เพื่อรู้ว่า order นี้มีอะไรบ้าง แต่ไม่เพิ่ม revenue
+                creators[creator][month]["products"][product]  # just touch it (no add)
+                continue
+            seen_orders.add(key)
+
+        # Monthly aggregate
         d = creators[creator][month]
-        d["revenue"] += revenue; d["orders"] += 1; d["products"][product] += revenue
+        d["revenue"] += revenue
+        d["orders"]  += 1
+        d["products"][product] += revenue
+
+        # Daily aggregate
         if date_str:
             dd = daily_creators[date_str][creator]
-            dd["revenue"] += revenue; dd["orders"] += 1
+            dd["revenue"] += revenue
+            dd["orders"]  += 1
 
     if skipped > 0:
         print(f"  (ข้าม {skipped} rows ที่คอลัมน์ไม่ครบ)")
@@ -358,13 +375,8 @@ def build_affiliate_data(creators, ads_products, daily_creators=None):
     for month in ads_products.keys():
         all_months.add(month)
 
-    # เรียงเดือนตามลำดับเวลา (dynamic — ไม่ hardcode เพื่อให้เดือนใหม่ทุกเดือนโผล่เองอัตโนมัติ)
-    def _mkey(m):
-        try:
-            return datetime.strptime(m, "%b%y")
-        except Exception:
-            return datetime(2000, 1, 1)
-    months_sorted = sorted(all_months, key=_mkey)
+    month_order = ["Jan26","Feb26","Mar26","Apr26","May26","Jun26"]
+    months_sorted = [m for m in month_order if m in all_months]
 
     # สร้าง creator summary
     creator_data = {}
@@ -870,21 +882,6 @@ def main():
     print(f"\n[MK13] กำลังดาวน์โหลด... (ไฟล์ใหญ่ อาจใช้เวลา 1-2 นาที)", flush=True)
     mk13_rows = download_csv(mk13_url, timeout=180, retries=3)
     print(f"  ได้ {len(mk13_rows)} rows (รวม header)")
-
-    # gviz supplement: export?format=csv ถูก truncate ตัดวันล่าสุดของเดือนปัจจุบันทิ้ง
-    # → ดึง gviz (de-truncate) เฉพาะเดือนปัจจุบันมาเสริม (col F = วันที่)
-    # parse_mk13 dedup ด้วย (order_id, date, creator) อยู่แล้ว → append ซ้ำได้ ไม่ double-count
-    try:
-        import urllib.parse as _up
-        _mfrom = datetime.now().replace(day=1).strftime("%Y-%m-%d")
-        _tq = _up.quote("SELECT * WHERE F >= date '%s'" % _mfrom)
-        _gv_url = "https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&gid=%s&tq=%s" % (OPD_SHEET_ID, MK13_GID, _tq)
-        _gv = download_csv(_gv_url, timeout=120, retries=2)
-        if _gv and len(_gv) > 1:
-            mk13_rows.extend(_gv[1:])   # skip gviz header
-            print(f"  + gviz เสริมเดือนปัจจุบัน ({_mfrom}+): +{len(_gv)-1} rows")
-    except Exception as _gve:
-        print(f"  gviz supplement fail (ข้าม): {_gve}")
 
     creators = {}
     daily_creators = {}
