@@ -3933,10 +3933,11 @@ function renderLiveTab(){
              :_cd('Live','—','#EE4D2D','ไม่มีตารางเดือนนี้'))
     +(_hasSel?_cd('Rerun',_stt(Rd,Rs,Rh),'#EA580C','ยอด '+_fb(rerunSales)+' · เฉลี่ย '+_fb(rPer)+'/ครั้ง')
              :_cd('Rerun','—','#EA580C','ไม่มีตารางเดือนนี้'))
-    +(_hasSel?_cd('ยอดขายวันมีไลฟ์','+'+_fb(totSales),'#111','Live '+_fb(liveSales)+' · Rerun '+_fb(rerunSales))
+    +(_hasSel?_cd('ยอด Shop วันมีไลฟ์*','+'+_fb(totSales),'#111','Live '+_fb(liveSales)+' · Rerun '+_fb(rerunSales))
              :_cd('ยอด TikTok Shop','+'+_fb(_daysM.reduce(function(s,d){return s+_shop(d);},0)),'#111','ทั้งเดือน (ไม่มีตารางแยกไลฟ์)'))
-    +(_hasSel?_cd('ROI / ชม.',_fb(roiHr),'#16A34A',_fb(totSales)+' ÷ '+totHrs+' ชม.')
-             :_cd('ROI / ชม.','—','#16A34A','ต้องมีตารางไลฟ์'))+'</div>';
+    +(_hasSel?_cd('ROI / ชม.*',_fb(roiHr),'#16A34A',_fb(totSales)+' ÷ '+totHrs+' ชม.')
+             :_cd('ROI / ชม.','—','#16A34A','ต้องมีตารางไลฟ์'))+'</div>'
+    +(_hasSel?'<div style="font-size:10px;color:#EA580C;margin:-6px 0 14px">* ยอด = TikTok Shop <b>ทั้งวัน</b> (MK13) ยังไม่ใช่เฉพาะช่วงไลฟ์ — ยอดช่วงไลฟ์จริงจะ map เมื่อเชื่อม sheet ยอดไลฟ์แยก (ส่ง link มาได้)</div>':'');
   /* ── กราฟเส้น: Shop รายวัน _M(ทึบ) vs _P same-period(ประ) เต็มความกว้าง = จำนวนวันที่มีข้อมูล ── */
   var dimF=Math.max(_maxDay,2);
   var vals=[]; for(var q=1;q<=_maxDay;q++){vals.push(_shop(_M+'-'+('0'+q).slice(-2)));vals.push(_shop(_P+'-'+('0'+q).slice(-2)));}
@@ -3956,6 +3957,23 @@ function renderLiveTab(){
   var strip=''; for(var d3=1;d3<=_maxDay;d3++){var sc3=sched[_M+'-'+('0'+d3).slice(-2)]||{};
     var bd=sc3.live_h>0?'<span style="color:#EE4D2D;font-weight:800">L'+sc3.live_h+'</span>':(sc3.rerun_h>0?'<span style="color:#EA580C;font-weight:800">R'+sc3.rerun_h+'</span>':'');
     strip+='<div style="flex:1;text-align:center;min-width:0"><div style="font-size:8px;color:var(--text3)">'+d3+'</div><div style="font-size:8px;height:12px;line-height:12px">'+bd+'</div></div>';}
+  /* ── ปฏิทินไลฟ์ทั้งเดือน (Live/Rerun + ชั่วโมง + RR/Live) ── */
+  var calHtml='';
+  if(_hasSel){
+    var _dF=_dim(_M), _fw=new Date(parseInt(_M.slice(0,4)),parseInt(_M.slice(5,7))-1,1).getDay();
+    var _dow=['อา','จ','อ','พ','พฤ','ศ','ส'],_cells='';
+    _dow.forEach(function(w){_cells+='<div style="text-align:center;font-size:9px;font-weight:800;color:var(--text3);padding:3px 0">'+w+'</div>';});
+    for(var _b=0;_b<_fw;_b++)_cells+='<div></div>';
+    for(var _dd=1;_dd<=_dF;_dd++){var _k=_M+'-'+('0'+_dd).slice(-2),_v=sched[_k]||{};
+      var _iL=_v.live_h>0,_iR=_v.rerun_h>0;
+      var _bg=_iL?'#FEF2F0':(_iR?'#FFF7ED':'var(--surface2)'),_bc=_iL?'#F9C4B8':(_iR?'#FED7AA':'var(--border)');
+      var _bdg='';
+      if(_iL)_bdg+='<div style="font-size:8px;font-weight:800;color:#EE4D2D;margin-top:2px">● Live '+_v.live_h+'ชม.</div><div style="font-size:7px;color:#EE4D2D;line-height:1.2">'+_hhmm(_v.live_hrs)+'</div>';
+      if(_iR)_bdg+='<div style="font-size:8px;font-weight:800;color:#EA580C;margin-top:2px">● Rerun '+_v.rerun_h+'ชม.</div><div style="font-size:7px;color:#EA580C;line-height:1.2">'+_hhmm(_v.rerun_hrs)+'</div>';
+      var _fu=_dd>_maxDay?';opacity:.6':'';
+      _cells+='<div style="min-height:56px;border:1px solid '+_bc+';border-radius:6px;background:'+_bg+';padding:3px 5px'+_fu+'"><div style="font-size:9px;font-weight:800;color:var(--text2)">'+_dd+(_v.note?' <span title="'+escH(_v.note)+'" style="cursor:help">🔖</span>':'')+'</div>'+_bdg+'</div>';}
+    calHtml='<div style="margin-bottom:18px"><div style="font-size:13px;font-weight:800;color:var(--text1);margin-bottom:8px">📅 ปฏิทินไลฟ์ทั้งเดือน — '+_TH(_M)+' <span style="font-size:10px;font-weight:500;color:var(--text3)">(<span style="color:#EE4D2D;font-weight:800">Live</span> / <span style="color:#EA580C;font-weight:800">Rerun</span> + ชั่วโมง · จาง=ยังไม่ถึง)</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+_cells+'</div></div>';
+  }
   var chartHtml='<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px"><span style="font-size:13px;font-weight:800;color:var(--text1)">ยอดขาย TikTok Shop รายวัน — '+_TH(_M)+'</span><span style="font-size:11px;color:var(--text3)"><span style="color:#111;font-weight:800">━</span> '+_TH(_M)+' · <span style="color:var(--text3);font-weight:800">┈</span> '+_TH(_P)+' (ช่วงเดียวกัน)'+(_hasSel?' · <span style="color:#EE4D2D;font-weight:800">L</span>/<span style="color:#EA580C;font-weight:800">R</span>+ชม.':'')+'</span></div>'
     +'<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px 4px">'+svg+(_hasSel?'<div style="display:flex;gap:1px;margin-top:2px">'+strip+'</div>':'')+'</div></div>';
   /* ── Best/Worst + per-day detail (ต่อครั้ง) + notes ── */
@@ -3991,7 +4009,7 @@ function renderLiveTab(){
       return '<div style="padding:6px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="flex:1;min-width:0;font-weight:600;color:var(--text1);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(x.product)+'</span>'+(x.noted?'<span style="font-size:8px;color:var(--text3);background:var(--border);padding:1px 5px;border-radius:8px">'+escH(x.noted)+'</span>':'')+'</div>'
         +'<div style="display:flex;flex-wrap:wrap;align-items:baseline"><span style="font-size:9px;color:var(--text3);text-decoration:line-through;margin-right:8px">ปกติ '+_fb(x.normal)+'</span>'+_tier('Live',x.live,x.normal,'#EE4D2D')+_tier('New',x.live_new,x.normal,'#EA580C')+_tier('Flash⚡',x.flash,x.normal,'#DC2626')+'</div></div>';}).join('');
     return '<div style="background:var(--surface2);border:1px solid var(--border);border-top:3px solid '+c+';border-radius:10px;padding:12px 14px"><div style="font-size:12px;font-weight:800;color:'+c+';margin-bottom:6px">'+s+' <span style="font-size:10px;color:var(--text3);font-weight:500">'+items.length+' เล่ม</span></div>'+rr+'</div>';}).join('');
-  el.innerHTML=head+sumHtml+chartHtml+bwHtml+detHtml+noteHtml
+  el.innerHTML=head+sumHtml+calHtml+chartHtml+bwHtml+detHtml+noteHtml
     +'<details style="margin-top:4px"><summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--text3);padding:8px 0">▸ Product Catalog + Promo Conditions (ปกติ / Live / New / Flash) — คลิกเพื่อดู</summary>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">'+cardHtml+'</div></details>'
     +'<div style="margin-top:12px;font-size:10px;color:var(--text3)">อัปเดตทุกวัน · '+(TL.updated||'-')+'</div>';
