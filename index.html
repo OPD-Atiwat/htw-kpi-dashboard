@@ -352,7 +352,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 .modal-overlay.open{display:flex}
 .modal-box{
  background:var(--surface);border:1px solid var(--border);border-radius:14px;
- width:100%;max-width:1100px;box-shadow:0 20px 60px rgba(0,0,0,.25);
+ width:96%;max-width:1400px;box-shadow:0 20px 60px rgba(0,0,0,.25);
  margin:auto;animation:modalIn .2s ease
 }
 .modal-box-sm{max-width:560px}
@@ -9993,17 +9993,38 @@ function openChDrilldown(chKey){
  h+='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 10px 6px;margin-bottom:14px"><canvas id="ch-daily-chart" height="150"></canvas></div>';
  h+='</div>';
 
- /* ── DAILY MARGIN (MK01 ราย channel · ย้อนหลัง + change) ── */
+ /* ── DAILY MARGIN (MK01 · เฉพาะเดือนที่เลือก + กราฟเทียบเดือนก่อน) ── */
  (function(){
   var _MD=(typeof MK01_MARGIN_DAILY!=='undefined')&&MK01_MARGIN_DAILY; if(!_MD) return;
-  var _t=(cfg.title||''),_key=['Meta','TikTok','Shopee'].filter(function(k){return _t.indexOf(k)===0;})[0]||_t;
-  var _dd=_MD[_key]; if(!_dd) return; var _ds=Object.keys(_dd).sort(); if(!_ds.length) return;
+  var _key=['Meta','TikTok','Shopee'].filter(function(k){return (cfg.title||'').indexOf(k)===0;})[0]||cfg.title;
+  var _dd=_MD[_key]; if(!_dd) return;
+  var _cR=(typeof _gpR==='function')?(_gpR(cfg.month||month)||[]):[]; var _cf=_cR[0]; if(!_cf) return;
+  var _c7=_cf.slice(0,7);
+  var _py=parseInt(_c7.slice(0,4)),_pm=parseInt(_c7.slice(5,7))-1,_pyr=_py; if(_pm<1){_pm=12;_pyr--;}
+  var _p7=_pyr+'-'+('0'+_pm).slice(-2);
+  var _cur=Object.keys(_dd).filter(function(k){return k.slice(0,7)===_c7;}).sort();
+  if(!_cur.length) return;
+  var _pk=function(k){return _p7+'-'+k.slice(8);};
+  var _vals=[]; _cur.forEach(function(k){_vals.push(_dd[k].m||0); if(_dd[_pk(k)])_vals.push(_dd[_pk(k)].m||0);});
+  var _W=760,_H=120,_pd=10,_mx=Math.max.apply(null,_vals.concat([1])),_mn=Math.min.apply(null,_vals.concat([0])),_rg=(_mx-_mn)||1;
+  var _X=function(k){return _pd+(parseInt(k.slice(8))-1)/30*(_W-2*_pd);};
+  var _Y=function(v){return _H-_pd-((v-_mn)/_rg)*(_H-2*_pd);};
+  var _cp=_cur.map(function(k){return _X(k).toFixed(1)+','+_Y(_dd[k].m||0).toFixed(1);}).join(' ');
+  var _pp=_cur.map(function(k){return _dd[_pk(k)]?(_X(k).toFixed(1)+','+_Y(_dd[_pk(k)].m||0).toFixed(1)):null;}).filter(Boolean).join(' ');
+  var _z=_Y(0).toFixed(1);
+  var _svg='<svg viewBox="0 0 '+_W+' '+_H+'" preserveAspectRatio="none" style="width:100%;height:120px;display:block">'
+    +'<line x1="'+_pd+'" y1="'+_z+'" x2="'+(_W-_pd)+'" y2="'+_z+'" stroke="var(--border)" stroke-dasharray="3 3"/>'
+    +(_pp?'<polyline points="'+_pp+'" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".55"/>':'')
+    +'<polyline points="'+_cp+'" fill="none" stroke="#16A34A" stroke-width="2.6"/></svg>';
   var _rows='';
-  for(var _i=_ds.length-1;_i>=0;_i--){var _d=_ds[_i],_cur=_dd[_d].m||0,_pv=(_i>0?(_dd[_ds[_i-1]].m||0):null),_sale=_dd[_d].sale||0;
-   var _pct=_sale>0?(_cur/_sale*100):null,_chg=(_pv!=null&&_pv!=0)?((_cur-_pv)/Math.abs(_pv)*100):null,_mc=_cur>=0?'var(--success)':'var(--danger)';
+  for(var _i=_cur.length-1;_i>=0;_i--){var _d=_cur[_i],_m=_dd[_d].m||0,_sale=_dd[_d].sale||0,_pv=_dd[_pk(_d)]?(_dd[_pk(_d)].m||0):null;
+   var _pct=_sale>0?(_m/_sale*100):null,_chg=(_pv!=null&&_pv!=0)?((_m-_pv)/Math.abs(_pv)*100):null,_mc=_m>=0?'var(--success)':'var(--danger)';
    var _cH=(_chg!=null)?'<span style="font-weight:800;color:'+(_chg>=0?'var(--success)':'var(--danger)')+'">'+(_chg>=0?'▲':'▼')+Math.abs(_chg).toFixed(0)+'%</span>':'<span style="color:var(--text3)">–</span>';
-   _rows+='<div style="display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3);width:52px">'+_d.slice(5)+'</span><span style="font-weight:800;color:'+_mc+';width:82px;text-align:right">฿'+Math.round(_cur).toLocaleString()+'</span><span style="color:var(--text3);width:40px;text-align:right">'+(_pct!=null?_pct.toFixed(0)+'%':'–')+'</span><span style="width:50px;text-align:right;font-size:9px">'+_cH+'</span></div>';}
-  h+='<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Margin รายวัน · MK01 (ไม่หักเงินเดือน) — ย้อนหลังได้</div><div style="display:flex;justify-content:space-between;padding:0 8px 4px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:52px">วันที่</span><span style="width:82px;text-align:right">Margin</span><span style="width:40px;text-align:right">%</span><span style="width:50px;text-align:right">Change</span></div><div style="max-height:210px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">'+_rows+'</div></div>';
+   _rows+='<div style="display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3);width:52px">'+_d.slice(5)+'</span><span style="font-weight:800;color:'+_mc+';width:82px;text-align:right">฿'+Math.round(_m).toLocaleString()+'</span><span style="color:var(--text3);width:40px;text-align:right">'+(_pct!=null?_pct.toFixed(0)+'%':'–')+'</span><span style="width:56px;text-align:right;font-size:9px">'+_cH+'</span></div>';}
+  h+='<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Margin รายวัน · MK01 ('+escH(cfg.title)+')</span><span style="font-size:9px;color:var(--text3)">— เส้นทึบ=เดือนนี้ · ประ=เดือนก่อน</span></div>'
+    +'<div style="border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:6px">'+_svg+'</div>'
+    +'<div style="display:flex;justify-content:space-between;padding:0 8px 4px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:52px">วันที่</span><span style="width:82px;text-align:right">Margin</span><span style="width:40px;text-align:right">%</span><span style="width:56px;text-align:right">vs เดือนก่อน</span></div>'
+    +'<div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">'+_rows+'</div></div>';
  })();
 
  /* ── SUB-CHANNELS ── */
