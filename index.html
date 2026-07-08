@@ -739,7 +739,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <button class="tab-btn" data-tab="content" onclick="switchTab('content')">Content Board</button>
  <button class="tab-btn" data-tab="consign" onclick="switchTab('consign')">Consignment</button>
  <button class="tab-btn" data-tab="affiliate" onclick="switchTab('affiliate')">Affiliate</button>
-   <button class="tab-btn" data-tab="live" onclick="switchTab('live')">🔴 Live</button>
+   <button class="tab-btn" data-tab="live" onclick="switchTab('live')">Live</button>
 <div id="sticky-summary" style="display:none;margin-left:auto;gap:8px;align-items:center;flex-shrink:0;padding-right:2px"></div>
 </nav>
 
@@ -3893,28 +3893,36 @@ function renderLiveTab(){
   var TL=(typeof TIKTOK_LIVE!=='undefined')?TIKTOK_LIVE:null;
   if(!TL||!TL.catalog){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3)">ยังไม่มีข้อมูล TikTok Live (รอ sync รอบถัดไป)</div>';return;}
   var cat=TL.catalog||[],ld=TL.live_days||{};
-  var _sc={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','':'#94A3B8'};
-  var _ord={'Focus':0,'Maintain':1,'Clearance':2,'Dead Stock':3,'':4};
+  var _sc={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626'};
   var _p=function(v){return (v!=null&&v!=='')?'฿'+Math.round(v).toLocaleString():'–';};
-  var rows=cat.slice().sort(function(a,b){return (_ord[a.status]==null?9:_ord[a.status])-(_ord[b.status]==null?9:_ord[b.status]);});
-  var catHtml=rows.map(function(x){var c=_sc[x.status]||'#94A3B8';
-    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px">'
-     +'<span style="width:78px;flex-shrink:0"><span style="font-size:9px;font-weight:800;background:'+c+'22;color:'+c+';padding:2px 6px;border-radius:6px;white-space:nowrap">'+(x.status||'-')+'</span></span>'
-     +'<span style="flex:1;min-width:0;font-weight:700;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(x.product)+'</span>'
-     +'<span style="width:70px;text-align:right;color:var(--text3);text-decoration:line-through">'+_p(x.normal)+'</span>'
-     +'<span style="width:66px;text-align:right;font-weight:800;color:#EE4D2D">'+_p(x.live)+'</span>'
-     +'<span style="width:66px;text-align:right;font-weight:800;color:#DC2626">'+_p(x.flash)+'</span></div>';}).join('');
+  var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
+  var order=['Focus','Maintain','Clearance','Dead Stock']; Object.keys(grp).forEach(function(s){if(order.indexOf(s)<0)order.push(s);});
+  var catHtml='';
+  order.forEach(function(s){var items=grp[s]; if(!items||!items.length)return; var c=_sc[s]||'#94A3B8';
+    catHtml+='<div style="display:flex;align-items:center;gap:8px;margin:14px 0 6px"><span style="font-size:11px;font-weight:800;color:'+c+'">'+s+'</span><span style="font-size:10px;color:var(--text3)">'+items.length+' เล่ม</span><div style="flex:1;height:1px;background:var(--border)"></div></div>';
+    items.forEach(function(x){var disc=(x.normal&&x.live)?Math.round((1-x.live/x.normal)*100):null;
+      catHtml+='<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:8px;margin-bottom:5px;font-size:12px">'
+        +'<span style="flex:1;min-width:0;font-weight:700;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(x.product)+'</span>'
+        +'<span style="width:60px;text-align:right;color:var(--text3);text-decoration:line-through;font-size:11px">'+_p(x.normal)+'</span>'
+        +'<span style="width:60px;text-align:right;font-weight:900;color:#EE4D2D">'+_p(x.live)+'</span>'
+        +'<span style="width:46px;text-align:right">'+(disc!=null&&disc>0?'<span style="font-size:10px;font-weight:800;color:#16A34A">-'+disc+'%</span>':'')+'</span></div>';});});
   var _THm=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   var months=Object.keys(ld).sort().reverse();
-  var ldHtml=months.map(function(mk){var days=ld[mk]||[],mo=parseInt(mk.slice(5,7))-1,tot=days.reduce(function(s,d){return s+(d.rev||0);},0);
-    var chips=days.map(function(d){return '<span style="display:inline-block;background:#EE4D2D14;color:#EE4D2D;font-weight:800;font-size:11px;padding:3px 8px;border-radius:999px;margin:3px 5px 0 0">'+parseInt(d.d.slice(8))+' <span style="font-weight:500;color:var(--text3)">฿'+Math.round(d.rev).toLocaleString()+'</span></span>';}).join('');
-    return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800;margin-bottom:2px"><span>'+_THm[mo]+' '+mk.slice(2,4)+' <span style="color:var(--text3);font-weight:500">· มีไลฟ์ '+days.length+' วัน</span></span><span style="color:#EE4D2D">฿'+Math.round(tot).toLocaleString()+'</span></div>'+chips+'</div>';}).join('');
-  el.innerHTML='<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:18px">'
-    +'<div><div style="font-size:13px;font-weight:800;margin-bottom:8px">🔴 TikTok Live — Product Catalog <span style="font-size:10px;font-weight:500;color:var(--text3)">('+cat.length+' เล่ม · ตะกร้าชมพู)</span></div>'
-    +'<div style="display:flex;padding:0 10px 5px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:78px">Status</span><span style="flex:1">Product</span><span style="width:70px;text-align:right">ปกติ</span><span style="width:66px;text-align:right">Live</span><span style="width:66px;text-align:right">Flash</span></div>'
-    +'<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">'+catHtml+'</div></div>'
-    +'<div><div style="font-size:13px;font-weight:800;margin-bottom:8px">📅 วันที่มีไลฟ์ (แยกเดือน · จาก TikTok Live sales)</div>'+(ldHtml||'<div style="color:var(--text3);font-size:12px">ยังไม่มีวันไลฟ์</div>')+'</div></div>'
-    +'<div style="margin-top:12px;font-size:10px;color:var(--text3)">อัปเดต: '+(TL.updated||'-')+' · ดึงจาก Google Sheet ทุกวัน</div>';
+  var ldHtml=months.map(function(mk){
+    var arr=(ld[mk]||[]); var byDate=arr.slice().sort(function(a,b){return a.d<b.d?-1:1;});
+    var mo=parseInt(mk.slice(5,7))-1; var tot=arr.reduce(function(s,d){return s+(d.rev||0);},0);
+    var avg=arr.length?tot/arr.length:0; var best=arr.slice().sort(function(a,b){return b.rev-a.rev;})[0];
+    var mx=Math.max.apply(null,byDate.map(function(d){return d.rev;}).concat([1]));
+    var bars=byDate.map(function(d){var hh=Math.max(3,Math.round(d.rev/mx*34));return '<div title="'+d.d+' ฿'+Math.round(d.rev).toLocaleString()+'" style="flex:1;height:'+hh+'px;background:#EE4D2D;border-radius:2px 2px 0 0;min-width:5px"></div>';}).join('');
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px"><span style="font-size:13px;font-weight:800;color:var(--text1)">'+_THm[mo]+' '+mk.slice(2,4)+'</span><span style="font-size:13px;font-weight:900;color:#EE4D2D">฿'+Math.round(tot).toLocaleString()+'</span></div>'
+      +'<div style="display:flex;gap:18px;font-size:11px;color:var(--text2);margin-bottom:8px"><span>มีไลฟ์ <b style="color:var(--text1)">'+arr.length+'</b> วัน</span><span>เฉลี่ย <b style="color:var(--text1)">฿'+Math.round(avg).toLocaleString()+'</b>/วัน</span>'+(best?'<span>สูงสุด <b style="color:var(--text1)">'+parseInt(best.d.slice(8))+'</b> (฿'+Math.round(best.rev).toLocaleString()+')</span>':'')+'</div>'
+      +'<div style="display:flex;align-items:flex-end;gap:2px;height:36px">'+bars+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:22px">'
+    +'<div><div style="font-size:14px;font-weight:800;color:var(--text1)">TikTok Live — Product Catalog</div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">'+cat.length+' เล่ม · ราคาเฉพาะใน Live (ตะกร้าชมพู)</div>'+catHtml+'</div>'
+    +'<div><div style="font-size:14px;font-weight:800;color:var(--text1)">วันที่มีไลฟ์ · แยกเดือน</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">จากยอดขาย TikTok Live รายวัน</div>'+(ldHtml||'<div style="color:var(--text3);font-size:12px">ยังไม่มีวันไลฟ์</div>')+'</div></div>'
+    +'<div style="margin-top:14px;font-size:10px;color:var(--text3)">อัปเดตทุกวัน · ล่าสุด '+(TL.updated||'-')+'</div>';
 }
 function renderCurrentTab(){
  try{renderStickyBar(STATE.currentTab);}catch(e){}
