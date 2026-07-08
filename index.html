@@ -3905,6 +3905,9 @@ function renderLiveTab(){
   var _sst=function(pfx){var out={d:0,sess:0,h:0};Object.keys(sched).forEach(function(k){if(k.slice(0,7)!==pfx)return;var v=sched[k];if((v.live_h||0)>0){out.d++;out.h+=v.live_h;out.sess+=_sess(v.live_hrs);}});return out;};
   var _rst=function(pfx){var out={d:0,sess:0,h:0};Object.keys(sched).forEach(function(k){if(k.slice(0,7)!==pfx)return;var v=sched[k];if((v.rerun_h||0)>0){out.d++;out.h+=v.rerun_h;out.sess+=_sess(v.rerun_hrs);}});return out;};
   var L=_sst(_c7),R=_rst(_c7),Lp=_sst(_p7),Rp=_rst(_p7);
+  var monHasSched=Object.keys(sched).some(function(k){return k.slice(0,7)===_c7;});
+  var liveRevDaySet={}; days.forEach(function(r){if((r['TikTok Live']||0)>0)liveRevDaySet[parseInt(r.d.slice(8))]=r['TikTok Live'];});
+  var liveRevDays=Object.keys(liveRevDaySet).length;
   var liveRev=days.reduce(function(s,r){return s+(r['TikTok Live']||0);},0);
   var pLiveRev=pdays.filter(function(r){return parseInt(r.d.slice(8))<=maxDay;}).reduce(function(s,r){return s+(r['TikTok Live']||0);},0);
   var pLiveRevDays=pdays.filter(function(r){return parseInt(r.d.slice(8))<=maxDay&&(r['TikTok Live']||0)>0;}).length;
@@ -3916,8 +3919,8 @@ function renderLiveTab(){
   var _cd=function(l,v,c,sub){return '<div style="flex:1;min-width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:4px">'+l+'</div><div style="font-size:16px;font-weight:900;color:'+(c||'var(--text1)')+'">'+v+'</div>'+(sub?'<div style="margin-top:3px">'+sub+'</div>':'')+'</div>';};
   var _stat=function(o){return o.d+' <span style="font-size:11px;color:var(--text3)">วัน · '+o.sess+' ครั้ง · '+o.h+' ชม.</span>';};
   var sumHtml='<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">'
-    +_cd('Live',_stat(L),'#EE4D2D',_lcSub)
-    +_cd('Rerun',_stat(R),'#EA580C',_rcSub)
+    +_cd('Live',monHasSched?_stat(L):(liveRevDays+' <span style="font-size:11px;color:var(--text3)">วัน · จากยอดขาย</span>'),'#EE4D2D',monHasSched?_lcSub:'<span style="font-size:9px;color:#EA580C">ไม่มีตารางชั่วโมงเดือนนี้</span>')
+    +_cd('Rerun',monHasSched?_stat(R):'<span style="font-size:13px;color:var(--text3)">—</span>','#EA580C',monHasSched?_rcSub:'<span style="font-size:9px;color:var(--text3)">เผยแพร่เฉพาะเดือนล่าสุด</span>')
     +_cd('ยอด Live (จริง)','฿'+Math.round(liveRev).toLocaleString(),'#111','<div style="display:flex;gap:5px;align-items:center">'+_mb(liveRev,pLiveRev)+'<span style="font-size:9px;color:var(--text3)">vs '+_THp+' ฿'+Math.round(pLiveRev).toLocaleString()+'</span></div>')
     +_cd('TikTok Shop / Affi','฿'+Math.round(shopTot).toLocaleString()+' <span style="font-size:11px;color:#EE4D2D">/ ฿'+Math.round(affiTot).toLocaleString()+'</span>','#111')+'</div>';
   var _cm={},_pmm={}; days.forEach(function(r){_cm[parseInt(r.d.slice(8))]=r['TikTok Live']||0;}); pdays.forEach(function(r){_pmm[parseInt(r.d.slice(8))]=r['TikTok Live']||0;});
@@ -3935,10 +3938,11 @@ function renderLiveTab(){
     +(hasPrev?'<polyline points="'+pPts.join(' ')+'" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".6"/>':'')
     +'<polyline points="'+cPts.join(' ')+'" fill="none" stroke="#EE4D2D" stroke-width="2.4"/>'+dots+'</svg>';
   var strip=''; for(var _d3=1;_d3<=dim;_d3++){var sc2=sched[_c7+'-'+('0'+_d3).slice(-2)]||{};
-    var bd=sc2.live_h>0?'<span style="color:#EE4D2D;font-weight:800">L'+sc2.live_h+'</span>':(sc2.rerun_h>0?'<span style="color:#EA580C;font-weight:800">R'+sc2.rerun_h+'</span>':'');
+    var bd=sc2.live_h>0?'<span style="color:#EE4D2D;font-weight:800">L'+sc2.live_h+'</span>':(sc2.rerun_h>0?'<span style="color:#EA580C;font-weight:800">R'+sc2.rerun_h+'</span>':(!monHasSched&&liveRevDaySet[_d3]?'<span style="color:#EE4D2D;font-weight:800" title="มียอด Live">\u25CF</span>':''));
     strip+='<div style="flex:1;text-align:center;min-width:0"><div style="font-size:8px;color:var(--text3)">'+_d3+'</div><div style="font-size:8px;height:12px;line-height:12px">'+bd+'</div></div>';}
   var _liveNote=(liveRev===0&&(L.d>0||R.d>0))?' <span style="font-size:10px;color:#EA580C">(ยอด Live เดือนนี้ยังไม่ถูก tag แยกใน MK13 รวมอยู่ใน Shop)</span>':'';
   var chartHtml='<div style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px"><span style="font-size:14px;font-weight:800;color:var(--text1)">ยอด Live รายวัน (map จาก OPD) — '+_THc+_liveNote+'</span><span style="font-size:11px;color:var(--text3)"><span style="color:#EE4D2D;font-weight:800">━</span> '+_THc+' · <span style="color:var(--text3);font-weight:800">┈</span> '+_THp+' (ช่วงเดียวกัน) · <span style="color:#EE4D2D;font-weight:800">L</span>/<span style="color:#EA580C;font-weight:800">R</span>+ชม.</span></div>'
+    +(monHasSched?'':'<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:#9A3412">ℹ️ ชีต Live เผยแพร่เฉพาะตารางเดือนล่าสุด (ก.ค. 26) — เดือนนี้จึงไม่มีชั่วโมง Live/Rerun แต่ ● เขียว = วันที่มียอด Live จริงจาก OPD (ตั้งแต่รอบนี้ระบบเก็บสะสมทุกเดือนไปข้างหน้าแล้ว)</div>')
     +'<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px 4px">'+svg+'<div style="display:flex;gap:1px;margin-top:2px">'+strip+'</div></div></div>';
   var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
   var _sc={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','อื่นๆ':'#94A3B8'};
