@@ -9985,6 +9985,19 @@ function openChDrilldown(chKey){
  h+='<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 10px 6px;margin-bottom:14px"><canvas id="ch-daily-chart" height="150"></canvas></div>';
  h+='</div>';
 
+ /* ── DAILY MARGIN (MK01 ราย channel · ย้อนหลัง + change) ── */
+ (function(){
+  var _MD=(typeof MK01_MARGIN_DAILY!=='undefined')&&MK01_MARGIN_DAILY; if(!_MD) return;
+  var _t=(cfg.title||''),_key=['Meta','TikTok','Shopee'].filter(function(k){return _t.indexOf(k)===0;})[0]||_t;
+  var _dd=_MD[_key]; if(!_dd) return; var _ds=Object.keys(_dd).sort(); if(!_ds.length) return;
+  var _rows='';
+  for(var _i=_ds.length-1;_i>=0;_i--){var _d=_ds[_i],_cur=_dd[_d].m||0,_pv=(_i>0?(_dd[_ds[_i-1]].m||0):null),_sale=_dd[_d].sale||0;
+   var _pct=_sale>0?(_cur/_sale*100):null,_chg=(_pv!=null&&_pv!=0)?((_cur-_pv)/Math.abs(_pv)*100):null,_mc=_cur>=0?'var(--success)':'var(--danger)';
+   var _cH=(_chg!=null)?'<span style="font-weight:800;color:'+(_chg>=0?'var(--success)':'var(--danger)')+'">'+(_chg>=0?'▲':'▼')+Math.abs(_chg).toFixed(0)+'%</span>':'<span style="color:var(--text3)">–</span>';
+   _rows+='<div style="display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3);width:52px">'+_d.slice(5)+'</span><span style="font-weight:800;color:'+_mc+';width:82px;text-align:right">฿'+Math.round(_cur).toLocaleString()+'</span><span style="color:var(--text3);width:40px;text-align:right">'+(_pct!=null?_pct.toFixed(0)+'%':'–')+'</span><span style="width:50px;text-align:right;font-size:9px">'+_cH+'</span></div>';}
+  h+='<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Margin รายวัน · MK01 (ไม่หักเงินเดือน) — ย้อนหลังได้</div><div style="display:flex;justify-content:space-between;padding:0 8px 4px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:52px">วันที่</span><span style="width:82px;text-align:right">Margin</span><span style="width:40px;text-align:right">%</span><span style="width:50px;text-align:right">Change</span></div><div style="max-height:210px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">'+_rows+'</div></div>';
+ })();
+
  /* ── SUB-CHANNELS ── */
  var validSubs=(cfg.subs||[]).filter(function(s){return s.actual>0||s.goal>0;});
  if(validSubs.length>0){
