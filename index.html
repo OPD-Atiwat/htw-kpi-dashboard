@@ -10062,14 +10062,24 @@ function openChDrilldown(chKey){
     +'<line x1="'+_pd+'" y1="'+_z+'" x2="'+(_W-_pd)+'" y2="'+_z+'" stroke="var(--border)" stroke-dasharray="3 3"/>'
     +(_pp?'<polyline points="'+_pp+'" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".55"/>':'')
     +'<polyline points="'+_cp+'" fill="none" stroke="#16A34A" stroke-width="2.6"/></svg>';
+  /* label เงินบนจุดกราฟเดือนนี้ (overlay HTML กัน SVG distort จาก preserveAspectRatio=none) */
+  var _lbls=_cur.map(function(k){var _lx=(_X(k)/_W*100),_ly=Math.max(_Y(_dd[k].m||0)-13,0);return '<span style="position:absolute;left:'+_lx.toFixed(2)+'%;top:'+_ly.toFixed(0)+'px;transform:translateX(-50%);font-size:8px;font-weight:800;color:#16A34A;white-space:nowrap;background:var(--surface);padding:0 2px;border-radius:2px;line-height:1.1">฿'+Math.round(_dd[k].m||0).toLocaleString()+'</span>';}).join('');
   var _rows='';
   for(var _i=_cur.length-1;_i>=0;_i--){var _d=_cur[_i],_m=_dd[_d].m||0,_sale=_dd[_d].sale||0,_pv=_dd[_pk(_d)]?(_dd[_pk(_d)].m||0):null;
    var _pct=_sale>0?(_m/_sale*100):null,_chg=(_pv!=null&&_pv!=0)?((_m-_pv)/Math.abs(_pv)*100):null,_mc=_m>=0?'var(--success)':'var(--danger)';
+   var _dBaht=(_pv!=null)?(_m-_pv):null;
    var _cH=(_chg!=null)?'<span style="font-weight:800;color:'+(_chg>=0?'var(--success)':'var(--danger)')+'">'+(_chg>=0?'▲':'▼')+Math.abs(_chg).toFixed(0)+'%</span>':'<span style="color:var(--text3)">–</span>';
-   _rows+='<div style="display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--text3);width:52px">'+_d.slice(5)+'</span><span style="font-weight:800;color:'+_mc+';width:82px;text-align:right">฿'+Math.round(_m).toLocaleString()+'</span><span style="color:var(--text3);width:40px;text-align:right">'+(_pct!=null?_pct.toFixed(0)+'%':'–')+'</span><span style="width:56px;text-align:right;font-size:9px">'+_cH+'</span></div>';}
+   var _bC=(_dBaht==null)?'<span style="color:var(--text3)">–</span>':'<span style="font-weight:800;color:'+(_dBaht>=0?'var(--success)':'var(--danger)')+'">'+(_dBaht>=0?'+':'−')+'฿'+Math.round(Math.abs(_dBaht)).toLocaleString()+'</span>';
+   _rows+='<div style="display:flex;padding:4px 8px;border-bottom:1px solid var(--border);font-size:11px">'
+    +'<span style="color:var(--text3);width:42px">'+_d.slice(5)+'</span>'
+    +'<span style="font-weight:800;color:'+_mc+';width:70px;text-align:right">฿'+Math.round(_m).toLocaleString()+'</span>'
+    +'<span style="color:var(--text3);width:30px;text-align:right">'+(_pct!=null?_pct.toFixed(0)+'%':'–')+'</span>'
+    +'<span style="color:var(--text3);width:66px;text-align:right">'+(_pv!=null?'฿'+Math.round(_pv).toLocaleString():'–')+'</span>'
+    +'<span style="width:74px;text-align:right;font-size:10px">'+_bC+'</span>'
+    +'<span style="width:46px;text-align:right;font-size:9px">'+_cH+'</span></div>';}
   h+='<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Margin รายวัน · MK01 ('+escH(cfg.title)+')</span><span style="font-size:9px;color:var(--text3)">— เส้นทึบ=เดือนนี้ · ประ=เดือนก่อน (ทั้งเดือน)</span></div>'
-    +'<div style="border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:6px">'+_svg+'</div>'
-    +'<div style="display:flex;justify-content:space-between;padding:0 8px 4px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:52px">วันที่</span><span style="width:82px;text-align:right">Margin</span><span style="width:40px;text-align:right">%</span><span style="width:56px;text-align:right">vs เดือนก่อน</span></div>'
+    +'<div style="border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:6px"><div style="position:relative;height:200px">'+_svg+_lbls+'</div></div>'
+    +'<div style="display:flex;padding:0 8px 4px;font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase"><span style="width:42px">วันที่</span><span style="width:70px;text-align:right">Margin</span><span style="width:30px;text-align:right">%</span><span style="width:66px;text-align:right">เดือนก่อน</span><span style="width:74px;text-align:right">Δ บาท</span><span style="width:46px;text-align:right">vs%</span></div>'
     +'<div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">'+_rows+'</div></div>';
  })();
 
