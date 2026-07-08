@@ -147,3 +147,9 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print(f"  ⚠️  m44_pull ล้มเหลว: {e}")
+    # chain MK01 (%Var ราย channel live) — runner ไม่ได้เรียก mk01_pull ตรงๆ จึงต่อท้ายที่นี่
+    try:
+        import mk01_pull
+        mk01_pull.main()
+    except Exception as e:
+        print(f"  ⚠️  mk01_pull (chained) ล้มเหลว: {e}")
