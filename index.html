@@ -3894,65 +3894,90 @@ function renderLiveTab(){
   if(!TL){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3)">ยังไม่มีข้อมูล TikTok Live (รอ sync)</div>';return;}
   var cat=TL.catalog||[], sched=TL.schedule||{};
   var _THm=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  var _cR=(typeof _gpR==='function')?(_gpR((STATE&&STATE.globalPeriod))||[]):[]; var _cf=_cR[0]||'2026-07-01',_c7=_cf.slice(0,7);
+  var _TH=function(m){return _THm[parseInt(m.slice(5,7))-1]+' '+m.slice(2,4);};
   var _p=function(v){return (v!=null&&v!=='')?'฿'+Math.round(v).toLocaleString():'–';};
-  var _dim=function(ym){var y=parseInt(ym.slice(0,4)),m=parseInt(ym.slice(5,7));return new Date(y,m,0).getDate();};
-  var _py=parseInt(_c7.slice(0,4)),_pm=parseInt(_c7.slice(5,7))-1,_pyr=_py; if(_pm<1){_pm=12;_pyr--;} var _p7=_pyr+'-'+('0'+_pm).slice(-2);
+  var _fb=function(v){return '฿'+Math.round(v||0).toLocaleString();};
+  var _dim=function(ym){return new Date(parseInt(ym.slice(0,4)),parseInt(ym.slice(5,7)),0).getDate();};
+  /* เดือนที่เลือก (global) */
+  var _cR=(typeof _gpR==='function')?(_gpR((STATE&&STATE.globalPeriod))||[]):[]; var _cf=_cR[0]||'2026-07-01',_selM=_cf.slice(0,7);
+  /* เดือนที่มีตารางไลฟ์ — ใช้เดือนที่เลือกถ้ามี ไม่งั้น fallback เดือนล่าสุดที่มี */
+  var _schMonths=Object.keys(sched).map(function(k){return k.slice(0,7);}).filter(function(v,i,a){return a.indexOf(v)===i;}).sort();
+  var _hasSel=_schMonths.indexOf(_selM)>=0;
+  var _M=_hasSel?_selM:(_schMonths.length?_schMonths[_schMonths.length-1]:_selM);
+  var _py=parseInt(_M.slice(0,4)),_pm=parseInt(_M.slice(5,7))-1,_pyr=_py; if(_pm<1){_pm=12;_pyr--;} var _P=_pyr+'-'+('0'+_pm).slice(-2);
+  /* OPD ราย date → TikTok Shop / Affi */
+  var _byDate={}; if(typeof OPD_DAILY!=='undefined'&&OPD_DAILY.data){OPD_DAILY.data.forEach(function(r){_byDate[r.d]=r;});}
+  var _shop=function(ds){var r=_byDate[ds];return r?(r['TikTok']||0):0;};
+  var _affi=function(ds){var r=_byDate[ds];return r?(r['TikTok Affi']||0):0;};
+  var _daysM=Object.keys(_byDate).filter(function(d){return d.slice(0,7)===_M;}).sort();
+  var _maxDay=_daysM.length?parseInt(_daysM[_daysM.length-1].slice(8)):_dim(_M);
+  var _daysP=Object.keys(_byDate).filter(function(d){return d.slice(0,7)===_P;}).sort();
+  var _maxDayP=_daysP.length?parseInt(_daysP[_daysP.length-1].slice(8)):_dim(_P);
   var _sess=function(hrs){if(!hrs||!hrs.length)return 0;var s=hrs.slice().sort(function(a,b){return a-b;}),n=1;for(var i=1;i<s.length;i++){if(s[i]!==s[i-1]+1)n++;}return n;};
-  var days=(typeof OPD_DAILY!=='undefined'&&OPD_DAILY.data)?OPD_DAILY.data.filter(function(r){return (r.d||'').slice(0,7)===_c7;}).sort(function(a,b){return a.d<b.d?-1:1;}):[];
-  var pdays=(typeof OPD_DAILY!=='undefined'&&OPD_DAILY.data)?OPD_DAILY.data.filter(function(r){return (r.d||'').slice(0,7)===_p7;}).sort(function(a,b){return a.d<b.d?-1:1;}):[];
-  var maxDay=days.length?parseInt(days[days.length-1].d.slice(8)):_dim(_c7);
-  var _sst=function(pfx){var out={d:0,sess:0,h:0};Object.keys(sched).forEach(function(k){if(k.slice(0,7)!==pfx)return;var v=sched[k];if((v.live_h||0)>0){out.d++;out.h+=v.live_h;out.sess+=_sess(v.live_hrs);}});return out;};
-  var _rst=function(pfx){var out={d:0,sess:0,h:0};Object.keys(sched).forEach(function(k){if(k.slice(0,7)!==pfx)return;var v=sched[k];if((v.rerun_h||0)>0){out.d++;out.h+=v.rerun_h;out.sess+=_sess(v.rerun_hrs);}});return out;};
-  var L=_sst(_c7),R=_rst(_c7),Lp=_sst(_p7),Rp=_rst(_p7);
-  var monHasSched=Object.keys(sched).some(function(k){return k.slice(0,7)===_c7;});
-  var liveRevDaySet={}; days.forEach(function(r){if((r['TikTok Live']||0)>0)liveRevDaySet[parseInt(r.d.slice(8))]=r['TikTok Live'];});
-  var liveRevDays=Object.keys(liveRevDaySet).length;
-  var liveRev=days.reduce(function(s,r){return s+(r['TikTok Live']||0);},0);
-  var pLiveRev=pdays.filter(function(r){return parseInt(r.d.slice(8))<=maxDay;}).reduce(function(s,r){return s+(r['TikTok Live']||0);},0);
-  var pLiveRevDays=pdays.filter(function(r){return parseInt(r.d.slice(8))<=maxDay&&(r['TikTok Live']||0)>0;}).length;
-  var shopTot=days.reduce(function(s,r){return s+(r['TikTok']||0);},0), affiTot=days.reduce(function(s,r){return s+(r['TikTok Affi']||0);},0);
-  var _mb=(typeof momBadge==='function')?function(a,b){return b>0?momBadge(a,b,{size:'10px',inline:true}):'';}:function(){return '';};
-  var _THp=_THm[parseInt(_p7.slice(5,7))-1]+' '+_p7.slice(2,4), _THc=_THm[parseInt(_c7.slice(5,7))-1]+' '+_c7.slice(2,4);
-  var _lcSub=(Lp.d>0)?('<span style="font-size:9px;color:var(--text3)">'+_THp+': '+Lp.d+'ว · '+Lp.sess+'ค · '+Lp.h+'ชม</span>'):(pLiveRevDays>0?'<span style="font-size:9px;color:var(--text3)">'+_THp+': ยอด Live '+pLiveRevDays+' วัน</span>':'');
-  var _rcSub=(Rp.d>0)?('<span style="font-size:9px;color:var(--text3)">'+_THp+': '+Rp.d+'ว · '+Rp.sess+'ค · '+Rp.h+'ชม</span>'):'';
-  var _cd=function(l,v,c,sub){return '<div style="flex:1;min-width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:4px">'+l+'</div><div style="font-size:16px;font-weight:900;color:'+(c||'var(--text1)')+'">'+v+'</div>'+(sub?'<div style="margin-top:3px">'+sub+'</div>':'')+'</div>';};
-  var _stat=function(o){return o.d+' <span style="font-size:11px;color:var(--text3)">วัน · '+o.sess+' ครั้ง · '+o.h+' ชม.</span>';};
+  /* สถิติตาราง _M: Live/Rerun วัน·ครั้ง·ชม. + ยอด Shop วันมีไลฟ์ (map จากตาราง ไม่ยึด MK13 TikTok Live) */
+  var Ld=0,Ls=0,Lh=0,Rd=0,Rs=0,Rh=0,liveSales=0,rerunSales=0,liveDates=[],notes=[];
+  Object.keys(sched).filter(function(k){return k.slice(0,7)===_M;}).sort().forEach(function(k){
+    var v=sched[k],day=parseInt(k.slice(8)),sv=_shop(k);
+    if(day>_maxDay)return;   /* นับเฉพาะวันที่มีข้อมูลจริง กันวันอนาคตยอด ฿0 ทำสถิติเพี้ยน */
+    if(v.live_h>0){Ld++;Lh+=v.live_h;Ls+=_sess(v.live_hrs);liveSales+=sv;liveDates.push({day:day,rev:sv,h:v.live_h});}
+    if(v.rerun_h>0){Rd++;Rh+=v.rerun_h;Rs+=_sess(v.rerun_hrs);rerunSales+=sv;}
+    if(v.note)notes.push({day:day,txt:v.note});
+  });
+  var totHrs=Lh+Rh,totSales=liveSales+rerunSales,roiHr=totHrs>0?totSales/totHrs:0;
+  var bestL=null,worstL=null; liveDates.forEach(function(x){if(!bestL||x.rev>bestL.rev)bestL=x; if(!worstL||x.rev<worstL.rev)worstL=x;});
+  /* ── header + note ── */
+  var head='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px"><div style="font-size:15px;font-weight:900;color:var(--text1)">ตารางไลฟ์ · '+_TH(_M)+(_hasSel?'':' <span style="font-size:11px;font-weight:600;color:#EA580C">(เดือนล่าสุดที่มีตาราง — '+_TH(_selM)+' ยังไม่เผยแพร่)</span>')+'</div><div style="font-size:10px;color:var(--text3)">ยอดขาย = TikTok Shop จริงในวันที่มีไลฟ์ (map จากตาราง)</div></div>';
+  /* ── summary cards ── */
+  var _cd=function(l,v,c,sub){return '<div style="flex:1;min-width:150px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:4px">'+l+'</div><div style="font-size:16px;font-weight:900;color:'+(c||'var(--text1)')+'">'+v+'</div>'+(sub?'<div style="margin-top:3px;font-size:9px;color:var(--text3)">'+sub+'</div>':'')+'</div>';};
+  var _st=function(d,s,h){return d+' <span style="font-size:11px;color:var(--text3)">วัน · '+s+' ครั้ง · '+h+' ชม.</span>';};
   var sumHtml='<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">'
-    +_cd('Live',monHasSched?_stat(L):(liveRevDays+' <span style="font-size:11px;color:var(--text3)">วัน · จากยอดขาย</span>'),'#EE4D2D',monHasSched?_lcSub:'<span style="font-size:9px;color:#EA580C">ไม่มีตารางชั่วโมงเดือนนี้</span>')
-    +_cd('Rerun',monHasSched?_stat(R):'<span style="font-size:13px;color:var(--text3)">—</span>','#EA580C',monHasSched?_rcSub:'<span style="font-size:9px;color:var(--text3)">เผยแพร่เฉพาะเดือนล่าสุด</span>')
-    +_cd('ยอด Live (จริง)','฿'+Math.round(liveRev).toLocaleString(),'#111','<div style="display:flex;gap:5px;align-items:center">'+_mb(liveRev,pLiveRev)+'<span style="font-size:9px;color:var(--text3)">vs '+_THp+' ฿'+Math.round(pLiveRev).toLocaleString()+'</span></div>')
-    +_cd('TikTok Shop / Affi','฿'+Math.round(shopTot).toLocaleString()+' <span style="font-size:11px;color:#EE4D2D">/ ฿'+Math.round(affiTot).toLocaleString()+'</span>','#111')+'</div>';
-  var _cm={},_pmm={}; days.forEach(function(r){_cm[parseInt(r.d.slice(8))]=r['TikTok Live']||0;}); pdays.forEach(function(r){_pmm[parseInt(r.d.slice(8))]=r['TikTok Live']||0;});
-  var W=760,H=180,pd=10,dim=maxDay||1;
-  var vals=[]; for(var _q=1;_q<=dim;_q++){vals.push(_cm[_q]||0);vals.push(_pmm[_q]||0);}
+    +_cd('Live',_st(Ld,Ls,Lh),'#EE4D2D','ยอด Shop วันไลฟ์ '+_fb(liveSales))
+    +_cd('Rerun',_st(Rd,Rs,Rh),'#EA580C','ยอด Shop วัน Rerun '+_fb(rerunSales))
+    +_cd('ยอดขายวันมีไลฟ์','+'+_fb(totSales),'#111','Live '+_fb(liveSales)+' · Rerun '+_fb(rerunSales))
+    +_cd('ROI / ชม.',_fb(roiHr),'#16A34A',_fb(totSales)+' ÷ '+totHrs+' ชม.')+'</div>';
+  /* ── กราฟเส้น: TikTok Shop รายวัน _M(ทึบ) vs _P same-period(ประ) + mark L/R+ชม. ── */
+  var dimF=_dim(_M);
+  var vals=[]; for(var q=1;q<=Math.max(_maxDay,_maxDayP);q++){vals.push(_shop(_M+'-'+('0'+q).slice(-2)));vals.push(_shop(_P+'-'+('0'+q).slice(-2)));}
   var mxv=Math.max.apply(null,vals.concat([1]));
-  var X=function(d){return pd+(dim>1?(d-1)/(dim-1):0)*(W-2*pd);};
+  var W=760,H=170,pd=10;
+  var X=function(d){return pd+(dimF>1?(d-1)/(dimF-1):0)*(W-2*pd);};
   var Y=function(v){return H-pd-(v/mxv)*(H-2*pd);};
   var cPts=[],pPts=[],dots='';
-  for(var _d2=1;_d2<=dim;_d2++){var cv=_cm[_d2]||0,pv=_pmm[_d2]||0; cPts.push(X(_d2).toFixed(1)+','+Y(cv).toFixed(1)); pPts.push(X(_d2).toFixed(1)+','+Y(pv).toFixed(1));
-    var sc=sched[_c7+'-'+('0'+_d2).slice(-2)]||{}; var mkt=(sc.live_h>0?'Live '+sc.live_h+'ชม.':(sc.rerun_h>0?'Rerun '+sc.rerun_h+'ชม.':''));
-    if(cv>0)dots+='<circle cx="'+X(_d2).toFixed(1)+'" cy="'+Y(cv).toFixed(1)+'" r="2.6" fill="#EE4D2D"><title>'+_c7+'-'+('0'+_d2).slice(-2)+' Live ฿'+Math.round(cv).toLocaleString()+(mkt?' '+mkt:'')+'</title></circle>';}
-  var hasPrev=pLiveRev>0;
-  var svg='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="width:100%;height:180px;display:block">'
-    +(hasPrev?'<polyline points="'+pPts.join(' ')+'" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-dasharray="5 4" opacity=".6"/>':'')
-    +'<polyline points="'+cPts.join(' ')+'" fill="none" stroke="#EE4D2D" stroke-width="2.4"/>'+dots+'</svg>';
-  var strip=''; for(var _d3=1;_d3<=dim;_d3++){var sc2=sched[_c7+'-'+('0'+_d3).slice(-2)]||{};
-    var bd=sc2.live_h>0?'<span style="color:#EE4D2D;font-weight:800">L'+sc2.live_h+'</span>':(sc2.rerun_h>0?'<span style="color:#EA580C;font-weight:800">R'+sc2.rerun_h+'</span>':(!monHasSched&&liveRevDaySet[_d3]?'<span style="color:#EE4D2D;font-weight:800" title="มียอด Live">\u25CF</span>':''));
-    strip+='<div style="flex:1;text-align:center;min-width:0"><div style="font-size:8px;color:var(--text3)">'+_d3+'</div><div style="font-size:8px;height:12px;line-height:12px">'+bd+'</div></div>';}
-  var _liveNote=(liveRev===0&&(L.d>0||R.d>0))?' <span style="font-size:10px;color:#EA580C">(ยอด Live เดือนนี้ยังไม่ถูก tag แยกใน MK13 รวมอยู่ใน Shop)</span>':'';
-  var chartHtml='<div style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px"><span style="font-size:14px;font-weight:800;color:var(--text1)">ยอด Live รายวัน (map จาก OPD) — '+_THc+_liveNote+'</span><span style="font-size:11px;color:var(--text3)"><span style="color:#EE4D2D;font-weight:800">━</span> '+_THc+' · <span style="color:var(--text3);font-weight:800">┈</span> '+_THp+' (ช่วงเดียวกัน) · <span style="color:#EE4D2D;font-weight:800">L</span>/<span style="color:#EA580C;font-weight:800">R</span>+ชม.</span></div>'
-    +(monHasSched?'':'<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:11px;color:#9A3412">ℹ️ ชีต Live เผยแพร่เฉพาะตารางเดือนล่าสุด (ก.ค. 26) — เดือนนี้จึงไม่มีชั่วโมง Live/Rerun แต่ ● เขียว = วันที่มียอด Live จริงจาก OPD (ตั้งแต่รอบนี้ระบบเก็บสะสมทุกเดือนไปข้างหน้าแล้ว)</div>')
+  for(var d1=1;d1<=_maxDay;d1++){var ds=_M+'-'+('0'+d1).slice(-2),cv=_shop(ds);cPts.push(X(d1).toFixed(1)+','+Y(cv).toFixed(1));
+    var sc=sched[ds]||{},mk=(sc.live_h>0?'Live '+sc.live_h+'ชม.':(sc.rerun_h>0?'Rerun '+sc.rerun_h+'ชม.':''));
+    dots+='<circle cx="'+X(d1).toFixed(1)+'" cy="'+Y(cv).toFixed(1)+'" r="2.4" fill="#111"><title>'+ds+' · Shop '+_fb(cv)+(mk?' · '+mk:'')+(sc.note?' · '+sc.note:'')+'</title></circle>';}
+  for(var d2=1;d2<=_maxDayP;d2++){pPts.push(X(d2).toFixed(1)+','+Y(_shop(_P+'-'+('0'+d2).slice(-2))).toFixed(1));}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="width:100%;height:170px;display:block">'
+    +'<polyline points="'+pPts.join(' ')+'" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-dasharray="5 4" opacity=".55"/>'
+    +'<polyline points="'+cPts.join(' ')+'" fill="none" stroke="#111" stroke-width="2.2"/>'+dots+'</svg>';
+  var strip=''; for(var d3=1;d3<=dimF;d3++){var sc3=sched[_M+'-'+('0'+d3).slice(-2)]||{};
+    var bd=sc3.live_h>0?'<span style="color:#EE4D2D;font-weight:800">L'+sc3.live_h+'</span>':(sc3.rerun_h>0?'<span style="color:#EA580C;font-weight:800">R'+sc3.rerun_h+'</span>':'');
+    strip+='<div style="flex:1;text-align:center;min-width:0"><div style="font-size:8px;color:var(--text3)">'+d3+'</div><div style="font-size:8px;height:12px;line-height:12px">'+bd+'</div></div>';}
+  var chartHtml='<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px"><span style="font-size:13px;font-weight:800;color:var(--text1)">ยอดขาย TikTok Shop รายวัน — '+_TH(_M)+'</span><span style="font-size:11px;color:var(--text3)"><span style="color:#111;font-weight:800">━</span> '+_TH(_M)+' · <span style="color:var(--text3);font-weight:800">┈</span> '+_TH(_P)+' (ช่วงเดียวกัน) · <span style="color:#EE4D2D;font-weight:800">L</span>/<span style="color:#EA580C;font-weight:800">R</span>+ชม.</span></div>'
     +'<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px 4px">'+svg+'<div style="display:flex;gap:1px;margin-top:2px">'+strip+'</div></div></div>';
+  /* ── Best/Worst live day + notes ── */
+  var bwHtml='';
+  if(bestL||notes.length){
+    bwHtml='<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">';
+    if(bestL)bwHtml+='<div style="flex:1;min-width:150px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid #16A34A;border-radius:8px;padding:9px 12px"><div style="font-size:10px;color:var(--text3);font-weight:700">วันไลฟ์ปังสุด</div><div style="font-size:13px;font-weight:800;color:var(--text1)">'+bestL.day+' '+_THm[parseInt(_M.slice(5,7))-1]+' · '+_fb(bestL.rev)+' <span style="font-size:10px;color:var(--text3)">('+bestL.h+'ชม.)</span></div></div>';
+    if(worstL&&worstL!==bestL)bwHtml+='<div style="flex:1;min-width:150px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid #DC2626;border-radius:8px;padding:9px 12px"><div style="font-size:10px;color:var(--text3);font-weight:700">วันไลฟ์ต่ำสุด</div><div style="font-size:13px;font-weight:800;color:var(--text1)">'+worstL.day+' '+_THm[parseInt(_M.slice(5,7))-1]+' · '+_fb(worstL.rev)+' <span style="font-size:10px;color:var(--text3)">('+worstL.h+'ชม.)</span></div></div>';
+    bwHtml+='</div>';
+  }
+  var noteHtml='';
+  if(notes.length){noteHtml='<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:9px 12px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:#9A3412;text-transform:uppercase;margin-bottom:4px">โน้ตพิเศษจากตาราง</div>'+notes.map(function(n){return '<div style="font-size:11px;color:#9A3412;padding:1px 0">• วันที่ '+n.day+': '+escH(n.txt)+'</div>';}).join('')+'</div>';}
+  /* ── Catalog: promo conditions 4 tier (ซ่อน collapsible) ── */
   var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
   var _sc={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','อื่นๆ':'#94A3B8'};
-  var _st=['Focus','Maintain','Clearance','Dead Stock']; Object.keys(grp).forEach(function(s){if(_st.indexOf(s)<0)_st.push(s);});
-  var cardHtml=_st.map(function(s){var items=grp[s]; if(!items||!items.length)return ''; var c=_sc[s]||'#94A3B8';
-    var rr=items.map(function(x){var disc=(x.normal&&x.live)?Math.round((1-x.live/x.normal)*100):null;
-      return '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px"><span style="flex:1;min-width:0;font-weight:600;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(x.product)+'</span><span style="color:var(--text3);text-decoration:line-through">'+_p(x.normal)+'</span><span style="font-weight:800;color:#EE4D2D">'+_p(x.live)+'</span>'+(disc>0?'<span style="color:#16A34A;font-weight:700;font-size:9px">-'+disc+'%</span>':'')+'</div>';}).join('');
+  var _sto=['Focus','Maintain','Clearance','Dead Stock']; Object.keys(grp).forEach(function(s){if(_sto.indexOf(s)<0)_sto.push(s);});
+  var _disc=function(n,p){return (n&&p&&p<n)?Math.round((1-p/n)*100):null;};
+  var _tier=function(label,val,norm,col){if(val==null)return '';var d=_disc(norm,val);return '<span style="display:inline-flex;align-items:baseline;gap:3px;margin-right:8px"><span style="font-size:8px;color:var(--text3)">'+label+'</span><span style="font-weight:800;color:'+(col||'#EE4D2D')+';font-size:11px">'+_fb(val)+'</span>'+(d?'<span style="font-size:8px;color:#16A34A;font-weight:700">-'+d+'%</span>':'')+'</span>';};
+  var cardHtml=_sto.map(function(s){var items=grp[s]; if(!items||!items.length)return ''; var c=_sc[s]||'#94A3B8';
+    var rr=items.map(function(x){
+      return '<div style="padding:6px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="flex:1;min-width:0;font-weight:600;color:var(--text1);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(x.product)+'</span>'+(x.noted?'<span style="font-size:8px;color:var(--text3);background:var(--border);padding:1px 5px;border-radius:8px">'+escH(x.noted)+'</span>':'')+'</div>'
+        +'<div style="display:flex;flex-wrap:wrap;align-items:baseline"><span style="font-size:9px;color:var(--text3);text-decoration:line-through;margin-right:8px">ปกติ '+_fb(x.normal)+'</span>'+_tier('Live',x.live,x.normal,'#EE4D2D')+_tier('New',x.live_new,x.normal,'#EA580C')+_tier('Flash⚡',x.flash,x.normal,'#DC2626')+'</div></div>';}).join('');
     return '<div style="background:var(--surface2);border:1px solid var(--border);border-top:3px solid '+c+';border-radius:10px;padding:12px 14px"><div style="font-size:12px;font-weight:800;color:'+c+';margin-bottom:6px">'+s+' <span style="font-size:10px;color:var(--text3);font-weight:500">'+items.length+' เล่ม</span></div>'+rr+'</div>';}).join('');
-  el.innerHTML=sumHtml+chartHtml
-    +'<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--text3);padding:8px 0">▸ Product Catalog — ราคาเฉพาะใน Live (คลิกเพื่อดู)</summary>'
+  el.innerHTML=head+sumHtml+chartHtml+bwHtml+noteHtml
+    +'<details style="margin-top:4px"><summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--text3);padding:8px 0">▸ Product Catalog + Promo Conditions (ปกติ / Live / New / Flash) — คลิกเพื่อดู</summary>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">'+cardHtml+'</div></details>'
     +'<div style="margin-top:12px;font-size:10px;color:var(--text3)">อัปเดตทุกวัน · '+(TL.updated||'-')+'</div>';
 }
