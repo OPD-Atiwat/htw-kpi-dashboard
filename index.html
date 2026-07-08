@@ -9925,6 +9925,8 @@ function openChDrilldown(chKey){
   if(prodMap[p.product]){var _pp=(_CK&&_prevPfx&&_prevMtdDay>0&&typeof getOpdProdActual==='function')?getOpdProdActual(p.product,_prevPfx+'-01',_prevPfx+'-'+('0'+_prevMtdDay).slice(-2)):null;prodMap[p.product].prev=_pp?Math.round(_sumCh(_pp)):Math.round((p.actual||0)*_prodSclProd);}
  });
  var prodRows=Object.values(prodMap).sort(function(a,b){return b.rev-a.rev;});
+ /* residual: ยอด channel ที่ไม่ผูกเล่ม (boxset/สินค้าอื่น) → แถว 'อื่นๆ' ให้รวม = ยอด channel เป๊ะ */
+ (function(){var _s=prodRows.reduce(function(a,p){return a+(p.rev||0);},0);var _res=Math.round((cfg.actual||0)-_s);if(_res>Math.max(500,(cfg.actual||0)*0.005)){prodRows.push({name:'อื่นๆ (boxset/ไม่ระบุเล่ม)',rev:_res,prev:0,goal:0,_residual:true});prodRows.sort(function(a,b){return b.rev-a.rev;});}})();
 
  /* Build drawer content */
  var ach=cfg.goal>0?(cfg.actual/cfg.goal*100):null;
