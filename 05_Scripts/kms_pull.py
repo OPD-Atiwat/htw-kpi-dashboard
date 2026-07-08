@@ -625,9 +625,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # chain TikTok Live catalog pull (runner ไม่เรียกตรง → ต่อท้ายที่นี่ ให้ดึงทุกวัน)
-    try:
-        import tiktok_live_pull
-        tiktok_live_pull.main()
-    except Exception as _e:
-        print(f"  tiktok_live_pull (chained) fail: {_e}")
