@@ -9688,6 +9688,12 @@ function renderOvChannelCards(o){
 
  /* Margin ไม่หักเงินเดือน + FC — คำนวณสดจาก actual/forecast/adSpend (เดิมแช่ static MK01_MARGIN_CH ไม่อัปเดต) */
  var _mk=(function(){
+  /* ยึดตรง MMS: เดือนปัจจุบัน + มี MK01_MARGIN_CH → ใช้ Margin(ไม่หักเงินเดือน) จริงจาก MK01 ไม่คำนวณเอง */
+  var _mmp=(typeof MK01_MARGIN_CH!=='undefined')&&MK01_MARGIN_CH[ch.title];
+  var _cm=(typeof _gpR==='function')?((_gpR((STATE&&STATE.globalPeriod))||[])[0]):null;
+  if(_mmp&&_mmp.from&&_cm&&_cm.slice(0,7)===_mmp.from.slice(0,7)){
+    return {m:Math.round(_mmp.m),fc:Math.round(_mmp.fc),pm:null,mms:true};
+  }
   var _vmap={'Meta':'Facebook','TikTok':'TikTok','Shopee':'Shopee'};
   var _vr=(typeof MK01_VAR_CH!=='undefined'&&MK01_VAR_CH[_vmap[ch.title]]!=null)?MK01_VAR_CH[_vmap[ch.title]]:30;
   var _v=_vr/100,_ad=ch.adSpend||0,_act=ch.actual||0,_fcr=(ch.forecast!=null?ch.forecast:_act),_pv=ch.prevActual||0;
