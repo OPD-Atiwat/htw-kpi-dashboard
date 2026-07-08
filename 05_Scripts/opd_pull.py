@@ -241,6 +241,7 @@ def parse_mk13(rows):
     col0_samples   = []   # เก็บตัวอย่าง col0 สำหรับ debug
     col0_empty     = 0
 
+    orders_map = {}   # (order_id,date_str) -> {rev(col27 order-total ครั้งเดียว), creators, month, prods}
     for row in rows[data_start:]:
         max_col = max(MK13_COL.values())
         if len(row) <= max_col:
@@ -269,7 +270,6 @@ def parse_mk13(rows):
 
         date_str = parse_full_date(date_raw)  # 'YYYY-MM-DD' หรือ None
 
-        # เก็บตัวอย่าง col0 สำหรับ debug (10 รายการแรก)
         if len(col0_samples) < 10:
             col0_samples.append(repr(order_id) if order_id else "(empty)")
         if not order_id:
@@ -278,27 +278,40 @@ def parse_mk13(rows):
         revenue = flt(rev_raw)
         product = prod_raw if prod_raw else "Unknown"
 
-        # Dedup: ถ้ามี order_id → นับ revenue ครั้งเดียวต่อ order+date+creator
         if order_id and date_str:
-            key = (order_id, date_str, creator)
-            if key in seen_orders:
-                deduped += 1
-                # ยังนับ product เพื่อรู้ว่า order นี้มีอะไรบ้าง แต่ไม่เพิ่ม revenue
-                creators[creator][month]["products"][product]  # just touch it (no add)
-                continue
-            seen_orders.add(key)
+            # group ต่อ order: col27 = ยอดรวม order (เท่ากันทุก row) → เก็บครั้งเดียว
+            # แล้วแบ่งเฉลี่ยตาม creator ตอนท้าย → กันนับซ้ำ order ที่มีหลาย creator (ตรง OPD 'TikTok Affi'/MK13)
+            o = orders_map.get((order_id, date_str))
+            if o is None:
+                o = {"rev": revenue, "creators": {}, "month": month, "prods": {}}
+                orders_map[(order_id, date_str)] = o
+            if revenue > o["rev"]:
+                o["rev"] = revenue
+            o["creators"][creator] = True
+            o["prods"][product] = True
+        else:
+            # ไม่มี order_id → นับตรง (fallback หายาก)
+            d = creators[creator][month]
+            d["revenue"] += revenue; d["orders"] += 1; d["products"][product] += revenue
+            if date_str:
+                dd = daily_creators[date_str][creator]
+                dd["revenue"] += revenue; dd["orders"] += 1
 
-        # Monthly aggregate
-        d = creators[creator][month]
-        d["revenue"] += revenue
-        d["orders"]  += 1
-        d["products"][product] += revenue
-
-        # Daily aggregate
-        if date_str:
-            dd = daily_creators[date_str][creator]
-            dd["revenue"] += revenue
-            dd["orders"]  += 1
+    # แบ่งยอด order เฉลี่ยตาม creator: Σ creator = Σ order = ตรง OPD/MK13 (กฎ 50/50 share)
+    for (oid, ds), o in orders_map.items():
+        crs = list(o["creators"].keys()); n = len(crs)
+        if n == 0:
+            continue
+        share = o["rev"] / n
+        prods = list(o["prods"].keys()); pn = len(prods) or 1
+        for cr in crs:
+            d = creators[cr][o["month"]]
+            d["revenue"] += share; d["orders"] += 1
+            for pr in prods:
+                d["products"][pr] += share / pn
+            dd = daily_creators[ds][cr]
+            dd["revenue"] += share; dd["orders"] += 1
+    deduped = len(orders_map)   # จำนวน order unique (แบ่งเฉลี่ยแล้ว)
 
     if skipped > 0:
         print(f"  (ข้าม {skipped} rows ที่คอลัมน์ไม่ครบ)")
@@ -375,8 +388,13 @@ def build_affiliate_data(creators, ads_products, daily_creators=None):
     for month in ads_products.keys():
         all_months.add(month)
 
-    month_order = ["Jan26","Feb26","Mar26","Apr26","May26","Jun26"]
-    months_sorted = [m for m in month_order if m in all_months]
+    # เรียงเดือนตามลำดับเวลา (dynamic — ไม่ hardcode เพื่อให้เดือนใหม่ทุกเดือนโผล่เองอัตโนมัติ)
+    def _mkey(m):
+        try:
+            return datetime.strptime(m, "%b%y")
+        except Exception:
+            return datetime(2000, 1, 1)
+    months_sorted = sorted(all_months, key=_mkey)
 
     # สร้าง creator summary
     creator_data = {}
@@ -882,6 +900,21 @@ def main():
     print(f"\n[MK13] กำลังดาวน์โหลด... (ไฟล์ใหญ่ อาจใช้เวลา 1-2 นาที)", flush=True)
     mk13_rows = download_csv(mk13_url, timeout=180, retries=3)
     print(f"  ได้ {len(mk13_rows)} rows (รวม header)")
+
+    # gviz supplement: export?format=csv ถูก truncate ตัดวันล่าสุดของเดือนปัจจุบันทิ้ง
+    # → ดึง gviz (de-truncate) เฉพาะเดือนปัจจุบันมาเสริม (col F = วันที่)
+    # parse_mk13 dedup ด้วย (order_id, date, creator) อยู่แล้ว → append ซ้ำได้ ไม่ double-count
+    try:
+        import urllib.parse as _up
+        _mfrom = datetime.now().replace(day=1).strftime("%Y-%m-%d")
+        _tq = _up.quote("SELECT * WHERE F >= date '%s'" % _mfrom)
+        _gv_url = "https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv&gid=%s&tq=%s" % (OPD_SHEET_ID, MK13_GID, _tq)
+        _gv = download_csv(_gv_url, timeout=120, retries=2)
+        if _gv and len(_gv) > 1:
+            mk13_rows.extend(_gv[1:])   # skip gviz header
+            print(f"  + gviz เสริมเดือนปัจจุบัน ({_mfrom}+): +{len(_gv)-1} rows")
+    except Exception as _gve:
+        print(f"  gviz supplement fail (ข้าม): {_gve}")
 
     creators = {}
     daily_creators = {}
