@@ -9908,15 +9908,21 @@ function openChDrilldown(chKey){
  var _pTotDaysProd=_pPfxProd?new Date(parseInt(_pPfxProd.split('-')[0]),parseInt(_pPfxProd.split('-')[1]),0).getDate():30;
  var _prodSclProd=(!_isFinalMonth&&_prevMtdDay>0)?(_prevMtdDay/_pTotDaysProd):1;
 
- /* Total actual per product (ไม่มีข้อมูล per-channel per-product ที่ถูกต้อง) */
+ /* per-product เฉพาะ channel นี้ (จาก OPD_PROD_DATA.channels) → รวมกันได้เท่ายอด channel */
+ var _CKMAP={'Meta':['Facebook','Instagram','LINE','Shopify','YouTube'],'TikTok':['TikTok','TikTok Live','TikTok Affi'],'Shopee':['Shopee','Shopee Live']};
+ var _CK=_CKMAP[cfg.title]||null;
+ var _cR=(typeof _gpR==='function')?(_gpR(month)||[]):[]; var _cF=_cR[0],_cT=_cR[1];
+ var _sumCh=function(o){var s=0;if(o&&o.channels&&_CK)_CK.forEach(function(k){s+=(o.channels[k]||0);});return s;};
  gdata.forEach(function(p){
   if(!p.product||p.product==='อื่นๆ') return;
-  var rev=p.actual||0;
-  if(rev>0) prodMap[p.product]={name:p.product,rev:rev,goal:p.goal||0,prev:0};
+  var rev;
+  if(_CK&&_cF&&typeof getOpdProdActual==='function'){rev=_sumCh(getOpdProdActual(p.product,_cF,_cT));}
+  else rev=p.actual||0;
+  if(rev>0) prodMap[p.product]={name:p.product,rev:Math.round(rev),goal:p.goal||0,prev:0};
  });
  _prevGdata.forEach(function(p){
   if(!p.product||p.product==='อื่นๆ') return;
-  if(prodMap[p.product]){var _pp=(_prevPfx&&_prevMtdDay>0&&typeof getOpdProdActual==='function')?getOpdProdActual(p.product,_prevPfx+'-01',_prevPfx+'-'+('0'+_prevMtdDay).slice(-2)):null;prodMap[p.product].prev=_pp?_pp.actual:Math.round((p.actual||0)*_prodSclProd);}
+  if(prodMap[p.product]){var _pp=(_CK&&_prevPfx&&_prevMtdDay>0&&typeof getOpdProdActual==='function')?getOpdProdActual(p.product,_prevPfx+'-01',_prevPfx+'-'+('0'+_prevMtdDay).slice(-2)):null;prodMap[p.product].prev=_pp?Math.round(_sumCh(_pp)):Math.round((p.actual||0)*_prodSclProd);}
  });
  var prodRows=Object.values(prodMap).sort(function(a,b){return b.rev-a.rev;});
 
@@ -10040,7 +10046,7 @@ function openChDrilldown(chKey){
 
  /* ── TOP PRODUCTS — 2-column grid ── */
  if(prodRows.length>0){
-  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">· ยอดรวมทุก channel</span></div>';
+  h+='<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:8px">Top Products <span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.6">· เฉพาะ channel นี้ (รวม = ยอด channel)</span></div>';
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
   var showRows=prodRows.slice(0,10);
   var maxRev=showRows[0].rev||1;
