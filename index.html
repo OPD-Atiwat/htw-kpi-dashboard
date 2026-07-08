@@ -9692,7 +9692,9 @@ function renderOvChannelCards(o){
   var _mmp=(typeof MK01_MARGIN_CH!=='undefined')&&MK01_MARGIN_CH[ch.title];
   var _cm=(typeof _gpR==='function')?((_gpR((STATE&&STATE.globalPeriod))||[])[0]):null;
   if(_mmp&&_mmp.from&&_cm&&_cm.slice(0,7)===_mmp.from.slice(0,7)){
-    return {m:Math.round(_mmp.m),fc:Math.round(_mmp.fc),pm:null,mms:true};
+    var _pm=null,_pct=(_mmp.sale>0)?(_mmp.m/_mmp.sale*100):null,_dd=(typeof MK01_MARGIN_DAILY!=='undefined')&&MK01_MARGIN_DAILY[ch.title];
+    if(_dd){var _c7=_mmp.from.slice(0,7),_cds=Object.keys(_dd).filter(function(k){return k.slice(0,7)===_c7;}).sort(),_N=_cds.length;var _py=parseInt(_c7.slice(0,4)),_po=parseInt(_c7.slice(5,7))-1;if(_po<1){_po=12;_py--;}var _pp=_py+'-'+('0'+_po).slice(-2);var _pds=Object.keys(_dd).filter(function(k){return k.slice(0,7)===_pp;}).sort().slice(0,_N),_ps=0;_pds.forEach(function(k){_ps+=(_dd[k].m||0);});if(_pds.length)_pm=Math.round(_ps);}
+    return {m:Math.round(_mmp.m),fc:Math.round(_mmp.fc),pm:_pm,pct:_pct,mms:true};
   }
   var _vmap={'Meta':'Facebook','TikTok':'TikTok','Shopee':'Shopee'};
   var _vr=(typeof MK01_VAR_CH!=='undefined'&&MK01_VAR_CH[_vmap[ch.title]]!=null)?MK01_VAR_CH[_vmap[ch.title]]:30;
@@ -9710,7 +9712,7 @@ function renderOvChannelCards(o){
   var _dchHtml=(_dch!=null)?' <span style="font-size:9px;font-weight:800;color:'+(_dch>=0?'var(--success)':'var(--danger)')+'">'+(_dch>=0?'▲':'▼')+Math.abs(_dch).toFixed(0)+'%</span>':'';
   h+='<div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--border);margin-top:5px;padding-top:5px">'
    +'<span style="font-size:8px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Margin (ไม่หักเงินเดือน)</span>'
-   +'<span style="font-size:12px;font-weight:900;color:'+_mc+'">'+fmtCard(_mk.m)+_dchHtml+' <span style="font-size:9px;font-weight:600;color:#7C3AED">· FC '+fmtCard(_mk.fc)+'</span></span>'
+   +'<span style="font-size:12px;font-weight:900;color:'+_mc+'">'+fmtCard(_mk.m)+(_mk.pct!=null?' <span style="font-size:9px;font-weight:700;color:var(--text2)">('+_mk.pct.toFixed(0)+'%)</span>':'')+_dchHtml+' <span style="font-size:9px;font-weight:600;color:#7C3AED">· FC '+fmtCard(_mk.fc)+'</span></span>'
    +'</div>';
  }
  h+='</div>'; /* end card */
