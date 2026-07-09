@@ -3949,10 +3949,10 @@ function renderLiveTab(){
         +'<span style="width:60px;text-align:right;font-weight:700;color:'+(ro==null?'var(--text3)':(ro>=0?'#16A34A':'#DC2626'))+'">'+_pctS(ro)+'</span>'
         +'<span style="width:66px;text-align:right;color:var(--text3)">'+(s.ad>0?_fb(s.ad):'—')+'</span>'
         +'<span style="width:48px;text-align:right;color:var(--text3)">'+(s.pa?s.pa.toFixed(1)+'%':'—')+'</span></div>'+_plLine+'</div>';}).join('');
-    return '<div style="background:var(--surface1,var(--surface2));border:1px solid var(--border);border-top:4px solid '+col+';border-radius:12px;padding:14px 16px;margin-bottom:16px">'
+    return '<div style="flex:1;min-width:430px;background:var(--surface1,var(--surface2));border:1px solid var(--border);border-top:4px solid '+col+';border-radius:12px;padding:14px 16px">'
       +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><span style="font-size:15px;font-weight:900;color:'+col+'">'+title+'</span><span style="font-size:12px;color:var(--text3);font-weight:700">'+a.n+' ครั้ง · '+a.h+' ชม. · '+_fb(a.sales)+' · ROAS '+(a.roas?a.roas.toFixed(1):'—')+'x · ROI '+_pctS(a.roi)+'</span></div>'
       +(arr.length?(th+'<div>'+rows+'</div>'):'<div style="font-size:11px;color:var(--text3);padding:14px;text-align:center">ไม่มีในเดือนนี้</div>')+'</div>';};
-  var splitHtml=_tblCard('🔴 Live Sessions',live,LIVEC)+_tblCard('🔵 Rerun Sessions',rerun,RERC);
+  var splitHtml='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-start">'+_tblCard('🔴 Live Sessions',live,LIVEC)+_tblCard('🔵 Rerun Sessions',rerun,RERC)+'</div>';
   /* catalog */
   var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
   var _scm={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','อื่นๆ':'#94A3B8'};
