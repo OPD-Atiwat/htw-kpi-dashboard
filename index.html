@@ -437,7 +437,7 @@ tbody td{padding:9px 13px;font-size:13px;color:var(--text);vertical-align:middle
 #ov-row-products{grid-template-columns:minmax(0,0.75fr) minmax(0,1.25fr)!important}
 #ov-row-products > *{min-width:0}          /* ensure grid children can shrink */
 .ov-spot-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:12px}
-.ov-nf-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.ov-nf-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .ov-nf-grid > *{min-width:0;overflow:hidden}  /* grid items must not force track expansion */
 @media(max-width:1024px){
  #ov-row-products{grid-template-columns:minmax(0,1fr)!important}
@@ -10570,7 +10570,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
   return '<div style="'+_cStyle+'" onclick="ovShowProductDetail(\''+escH(name).replace(/\\/g,'\\\\').replace(/'/g,'\\x27')+'\')">'   +'<div style="width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#7C3AED"></div>'   +'<div style="flex:1;min-width:0">'   +'<div style="font-size:12px;font-weight:700;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'+(_cb2?'margin-bottom:4px':'')+'" title="'+escH(name)+'">'+escH(shortName)+'</div>'   +(_cb2?'<div>'+_cb2+'</div>':'')   +'</div>'   +'<div style="flex-shrink:0;text-align:right;padding-left:10px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:1px">'   +(fcVal!=null&&(p.actual||0)>0?'<div style="font-size:9px;color:var(--text3);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap">FC <b style="color:'+_fcClr+'">'+fmtCard(fcVal)+'</b></div>':'')   +'<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.3px;text-transform:uppercase">Actual</div>'   +'<div style="font-size:14px;font-weight:900;color:'+((p.actual||0)>0?C_ACTUAL:'var(--text3)')+';line-height:1.1">'+(p.actual>0?fmtCard(p.actual):'–')+'</div>'   +'</div>'   +'</div>';
  }
  var _rowBg=_fcSafe?'linear-gradient(to right,rgba(22,163,74,0.22),rgba(22,163,74,0.08))':fcCardBg(fcVal,p.goal,ach,STATE.fcIsFinal);
- var _rowStyle='padding:9px 12px;min-height:72px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:stretch;gap:10px;background:'+_rowBg+';box-sizing:border-box;content-visibility:auto;contain-intrinsic-size:auto 84px';
+ var _rowStyle='padding:11px 13px;min-height:72px;border:1px solid var(--border);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.07);cursor:pointer;display:flex;align-items:stretch;gap:10px;background:'+_rowBg+';box-sizing:border-box;content-visibility:auto;contain-intrinsic-size:auto 86px';
  /* ── MoM sub-card (right panel, self-contained mini card) ── */
  /* ── %Ads Total sub-card (left of MoM) ── */
  var _PILL_W='76px';
@@ -10827,7 +10827,7 @@ function renderOvProductBlocks(gdata,prevData,momLbl,affiInfo){
  /* items — 1 or 2 columns (responsive via .ov-nf-grid class), hidden when accordion=true */
  var gridClass=cols===2?'ov-nf-grid':'';
  var _hiddenStyle=accordion?'display:none':'';
- h+='<div class="bgc-items" style="'+_hiddenStyle+'"><div class="'+gridClass+'">';
+ h+='<div class="bgc-items" style="'+_hiddenStyle+'"><div class="'+gridClass+'" style="'+(cols===2?'':'display:flex;flex-direction:column;gap:10px')+'">';
  list.forEach(function(p){h+=productItem(p);});
  h+='</div>';
  if(extraHtml) h+=extraHtml;
