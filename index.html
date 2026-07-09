@@ -3915,43 +3915,37 @@ function renderLiveTab(){
     +_cd('🔵 Rerun',_fb(R.sales),RERC,R.n+' ครั้ง · '+R.h+' ชม. · ROAS '+(R.roas?R.roas.toFixed(1):'—')+'x · ROI '+_pctS(R.roi))
     +_cd('ยอดรวมไลฟ์',_fb(All.sales),'#16A34A','Live '+_fb(L.sales)+' + Rerun '+_fb(R.sales))
     +_cd('ROAS / ROI รวม',(All.roas?All.roas.toFixed(1)+'x':'—'),'#111','ROI '+_pctS(All.roi)+' · Ad '+_fb(All.ad))+'</div>';
-  /* ปฏิทิน — ช่องสูงเท่ากันทุกช่อง (grid-auto-rows:1fr) */
+  /* ── ปฏิทิน — กะทัดรัด ดูภาพรวมง่าย + mark วันนี้ ── */
   var _dF=_dim(_M),_fw=new Date(parseInt(_M.slice(0,4)),parseInt(_M.slice(5,7))-1,1).getDay(),_dow=['อา','จ','อ','พ','พฤ','ศ','ส'],_c='';
-  var byDay={},_maxD=0; ms.forEach(function(s){var dd=parseInt(s.d.slice(8));(byDay[dd]=byDay[dd]||[]).push(s);if(dd>_maxD)_maxD=dd;});
-  _dow.forEach(function(w){_c+='<div style="text-align:center;font-size:13px;font-weight:800;color:var(--text3);padding:5px 0">'+w+'</div>';});
+  var byDay={}; ms.forEach(function(s){var dd=parseInt(s.d.slice(8));(byDay[dd]=byDay[dd]||[]).push(s);});
+  var _rtISO=''; try{_rtISO=new Date().toISOString().slice(0,10);}catch(e){}
+  var _markD=(_rtISO.slice(0,7)===_M)?parseInt(_rtISO.slice(8)):0;
+  _dow.forEach(function(w){_c+='<div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);padding:3px 0">'+w+'</div>';});
   for(var _b=0;_b<_fw;_b++)_c+='<div></div>';
   for(var _dd=1;_dd<=_dF;_dd++){var ss=byDay[_dd]||[];
     var hasL=ss.some(function(s){return s.ty==='Live';}),hasR=ss.some(function(s){return s.ty==='Rerun';});
     var bc=hasL?LIVEC:(hasR?RERC:'var(--border)'),bg=hasL?'#FEF2F0':(hasR?'#EFF4FF':'var(--surface2)');
     var bd='';
     ss.forEach(function(s){var col=s.ty==='Live'?LIVEC:RERC;
-      bd+='<div style="display:inline-block;font-size:11px;font-weight:900;color:#fff;background:'+col+';border-radius:5px;padding:2px 7px;margin-top:3px">'+(s.ty==='Live'?'LIVE':'RERUN')+' '+(s.h||0)+'ชม.</div>'
-        +'<div style="font-size:9px;color:'+col+';margin-top:1px">'+(s.tm||'')+'</div>'
-        +(s.tot>0?'<div style="font-size:13px;font-weight:900;color:#16A34A;margin-top:1px">'+_fb(s.tot)+'</div>':'');});
-    var _plc=PLAN[_M+'-'+('0'+_dd).slice(-2)]||{}; if(_plc.mc)bd+='<div style="font-size:8px;color:var(--text3);margin-top:1px">👤 '+escH(_plc.mc)+'</div>';
-    var _td=(_dd===_maxD);var _ring=_td?';box-shadow:0 0 0 3px #111,0 0 0 5px #fff':'';
-    var _dnum='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:16px;font-weight:900;color:var(--text1)">'+_dd+'</span>'+(_td?'<span style="font-size:8px;font-weight:900;color:#fff;background:#111;border-radius:4px;padding:1px 5px">ล่าสุด</span>':'')+'</div>';
-    _c+='<div style="border:2px solid '+bc+';border-radius:8px;background:'+bg+';padding:5px 6px;height:100%;box-sizing:border-box'+_ring+'">'+_dnum+bd+'</div>';}
-  var calHtml='<div style="margin-bottom:20px"><div style="font-size:16px;font-weight:900;color:var(--text1);margin-bottom:10px">📅 ปฏิทินไลฟ์ — '+_TH(_M)+' &nbsp;<span style="font-size:12px;font-weight:900;color:#fff;background:'+LIVEC+';border-radius:5px;padding:2px 9px">LIVE</span> <span style="font-size:12px;font-weight:900;color:#fff;background:'+RERC+';border-radius:5px;padding:2px 9px">RERUN</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:5px">'+_c+'</div></div>';
-  /* 2 การ์ด — แต่ละการ์ดมี Table ข้างใน */
-  var _tblCard=function(title,arr,col){
+      bd+='<div style="display:inline-block;font-size:8px;font-weight:900;color:#fff;background:'+col+';border-radius:4px;padding:1px 5px;margin-top:2px">'+(s.ty==='Live'?'L':'R')+' '+(s.h||0)+'ช</div>'
+        +(s.tot>0?' <span style="font-size:9px;font-weight:800;color:#16A34A">'+_fb(s.tot)+'</span>':'');});
+    var _td=(_dd===_markD);var _ring=_td?';box-shadow:0 0 0 2px #111':'';
+    var _dnum='<div style="display:flex;justify-content:space-between;align-items:center;line-height:1"><span style="font-size:12px;font-weight:800;color:var(--text1)">'+_dd+'</span>'+(_td?'<span style="font-size:7px;font-weight:900;color:#fff;background:#111;border-radius:3px;padding:1px 4px">วันนี้</span>':'')+'</div>';
+    _c+='<div style="border:1px solid '+bc+';border-radius:6px;background:'+bg+';padding:3px 5px;min-height:46px;box-sizing:border-box'+_ring+'">'+_dnum+bd+'</div>';}
+  var calHtml='<div style="margin-bottom:18px"><div style="font-size:14px;font-weight:900;color:var(--text1);margin-bottom:8px">📅 ปฏิทินไลฟ์ — '+_TH(_M)+' &nbsp;<span style="font-size:10px;font-weight:900;color:#fff;background:'+LIVEC+';border-radius:4px;padding:1px 7px">LIVE</span> <span style="font-size:10px;font-weight:900;color:#fff;background:'+RERC+';border-radius:4px;padding:1px 7px">RERUN</span> <span style="font-size:9px;color:var(--text3)">L/R+ชม · ฿ยอดจริง</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+_c+'</div></div>';
+  /* ── 2 การ์ด Live/Rerun — mini-card grid (Rerun กว้าง 2x → สูงพอๆ Live) ── */
+  var _cardGrid=function(title,arr,col,fx){
     var a=_agg(arr);
-    var th='<div style="display:flex;padding:6px 10px;font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase;border-bottom:2px solid '+col+'"><span style="width:52px">วันที่</span><span style="width:78px">เวลา</span><span style="width:34px;text-align:center">ชม.</span><span style="flex:1;text-align:right">ยอด</span><span style="width:52px;text-align:right">ROAS</span><span style="width:60px;text-align:right">ROI</span><span style="width:66px;text-align:right">Ad Spent</span><span style="width:48px;text-align:right">%Ads</span></div>';
-    var rows=arr.slice().sort(function(a,b){return b.d<a.d?-1:1;}).map(function(s){var day=parseInt(s.d.slice(8));var ro=_roi(s.tot,s.ad);
-      var _pl=PLAN[s.d]||{}; var _plLine=(_pl.mc||_pl.promo)?'<div style="padding:0 10px 6px;font-size:9px;color:var(--text3);line-height:1.35">'+(_pl.mc?'<span style="color:'+col+';font-weight:700">👤 '+escH(_pl.mc)+'</span>  ':'')+(_pl.promo?'🎁 '+escH(_pl.promo):'')+(_pl.note?' · '+escH(_pl.note):'')+'</div>':'';
-      return '<div style="border-bottom:1px solid var(--border)"><div style="display:flex;padding:6px 10px '+(_plLine?'2px':'6px')+';font-size:11px;align-items:center">'
-        +'<span style="width:52px;color:var(--text3)">'+day+' '+_THm[parseInt(_M.slice(5,7))-1]+'</span>'
-        +'<span style="width:78px;color:var(--text3);font-size:10px">'+(s.tm||'—')+'</span>'
-        +'<span style="width:34px;text-align:center;color:var(--text3)">'+(s.h||0)+'</span>'
-        +'<span style="flex:1;text-align:right;font-weight:800;color:'+(s.tot>0?'#16A34A':'var(--text3)')+'">'+(s.tot>0?_fb(s.tot):'—')+'</span>'
-        +'<span style="width:52px;text-align:right;font-weight:700">'+(s.roas?s.roas.toFixed(1)+'x':'—')+'</span>'
-        +'<span style="width:60px;text-align:right;font-weight:700;color:'+(ro==null?'var(--text3)':(ro>=0?'#16A34A':'#DC2626'))+'">'+_pctS(ro)+'</span>'
-        +'<span style="width:66px;text-align:right;color:var(--text3)">'+(s.ad>0?_fb(s.ad):'—')+'</span>'
-        +'<span style="width:48px;text-align:right;color:var(--text3)">'+(s.pa?s.pa.toFixed(1)+'%':'—')+'</span></div>'+_plLine+'</div>';}).join('');
-    return '<div style="flex:1;min-width:430px;background:var(--surface1,var(--surface2));border:1px solid var(--border);border-top:4px solid '+col+';border-radius:12px;padding:14px 16px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><span style="font-size:15px;font-weight:900;color:'+col+'">'+title+'</span><span style="font-size:12px;color:var(--text3);font-weight:700">'+a.n+' ครั้ง · '+a.h+' ชม. · '+_fb(a.sales)+' · ROAS '+(a.roas?a.roas.toFixed(1):'—')+'x · ROI '+_pctS(a.roi)+'</span></div>'
-      +(arr.length?(th+'<div>'+rows+'</div>'):'<div style="font-size:11px;color:var(--text3);padding:14px;text-align:center">ไม่มีในเดือนนี้</div>')+'</div>';};
-  var splitHtml='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-start">'+_tblCard('🔴 Live Sessions',live,LIVEC)+_tblCard('🔵 Rerun Sessions',rerun,RERC)+'</div>';
+    var cells=arr.slice().sort(function(x,y){return y.d<x.d?-1:1;}).map(function(s){var day=parseInt(s.d.slice(8)),ro=_roi(s.tot,s.ad),pl=PLAN[s.d]||{};
+      return '<div style="border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:7px 9px;background:var(--surface2)">'
+        +'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px"><span style="font-size:11px;font-weight:800;color:var(--text1)">'+day+' '+_THm[parseInt(_M.slice(5,7))-1]+' <span style="font-size:9px;color:var(--text3);font-weight:500">'+(s.tm||'')+'·'+(s.h||0)+'ช</span></span><span style="font-size:13px;font-weight:900;color:'+(s.tot>0?'#16A34A':'var(--text3)')+'">'+(s.tot>0?_fb(s.tot):'—')+'</span></div>'
+        +'<div style="font-size:9px;color:var(--text3);margin-top:2px">ROAS <b style="color:var(--text1)">'+(s.roas?s.roas.toFixed(1)+'x':'—')+'</b> · ROI <b style="color:'+(ro==null?'var(--text3)':(ro>=0?'#16A34A':'#DC2626'))+'">'+_pctS(ro)+'</b> · Ad '+(s.ad>0?_fb(s.ad):'—')+' · '+(s.pa?s.pa.toFixed(1)+'%':'—')+'</div>'
+        +((pl.mc||pl.promo)?'<div style="font-size:8px;color:var(--text3);margin-top:2px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(pl.mc?'<span style="color:'+col+';font-weight:700">👤'+escH(pl.mc)+'</span> ':'')+(pl.promo?'🎁'+escH(pl.promo):'')+'</div>':'')
+        +'</div>';}).join('');
+    return '<div style="flex:'+fx+';min-width:260px;background:var(--surface1,var(--surface2));border:1px solid var(--border);border-top:4px solid '+col+';border-radius:12px;padding:14px 16px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:4px"><span style="font-size:15px;font-weight:900;color:'+col+'">'+title+'</span><span style="font-size:11px;color:var(--text3);font-weight:700">'+a.n+' ครั้ง · '+a.h+' ชม. · '+_fb(a.sales)+' · ROAS '+(a.roas?a.roas.toFixed(1):'—')+'x · ROI '+_pctS(a.roi)+'</span></div>'
+      +(arr.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px">'+cells+'</div>':'<div style="font-size:11px;color:var(--text3);padding:14px;text-align:center">ไม่มีในเดือนนี้</div>')+'</div>';};
+  var splitHtml='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;align-items:stretch">'+_cardGrid('🔴 Live Sessions',live,LIVEC,1)+_cardGrid('🔵 Rerun Sessions',rerun,RERC,2)+'</div>';
   /* catalog */
   var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
   var _scm={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','อื่นๆ':'#94A3B8'};
