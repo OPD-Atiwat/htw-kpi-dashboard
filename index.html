@@ -3926,12 +3926,13 @@ function renderLiveTab(){
     var hasL=ss.some(function(s){return s.ty==='Live';}),hasR=ss.some(function(s){return s.ty==='Rerun';});
     var bc=hasL?LIVEC:(hasR?RERC:'var(--border)'),bg=hasL?'#FEF2F0':(hasR?'#EFF4FF':'var(--surface2)');
     var bd='';
-    ss.forEach(function(s){var col=s.ty==='Live'?LIVEC:RERC;
-      bd+='<div style="display:inline-block;font-size:8px;font-weight:900;color:#fff;background:'+col+';border-radius:4px;padding:1px 5px;margin-top:2px">'+(s.ty==='Live'?'L':'R')+' '+(s.h||0)+'ช</div>'
-        +(s.tot>0?' <span style="font-size:9px;font-weight:800;color:#16A34A">'+_fb(s.tot)+'</span>':'');});
+    ss.forEach(function(s){var col=s.ty==='Live'?LIVEC:RERC;var _cro=_roi(s.tot,s.ad);
+      bd+='<div style="margin-top:3px;line-height:1.4"><span style="display:inline-block;font-size:10px;font-weight:900;color:#fff;background:'+col+';border-radius:4px;padding:1px 6px">'+(s.ty==='Live'?'LIVE':'RERUN')+' '+(s.h||0)+'ช</span>'
+        +(s.tot>0?' <span style="font-size:12px;font-weight:900;color:#16A34A">'+_fb(s.tot)+'</span>':'')
+        +(_cro!=null?' <span style="font-size:10px;font-weight:800;color:'+(_cro>=0?'#16A34A':'#DC2626')+'">ROI '+_pctS(_cro)+'</span>':'')+'</div>';});
     var _td=(_dd===_markD);var _ring=_td?';box-shadow:0 0 0 2px #111':'';
-    var _dnum='<div style="display:flex;justify-content:space-between;align-items:center;line-height:1"><span style="font-size:12px;font-weight:800;color:var(--text1)">'+_dd+'</span>'+(_td?'<span style="font-size:7px;font-weight:900;color:#fff;background:#111;border-radius:3px;padding:1px 4px">วันนี้</span>':'')+'</div>';
-    _c+='<div style="border:1px solid '+bc+';border-radius:6px;background:'+bg+';padding:3px 5px;min-height:46px;box-sizing:border-box'+_ring+'">'+_dnum+bd+'</div>';}
+    var _dnum='<div style="display:flex;justify-content:space-between;align-items:center;line-height:1"><span style="font-size:14px;font-weight:900;color:var(--text1)">'+_dd+'</span>'+(_td?'<span style="font-size:7px;font-weight:900;color:#fff;background:#111;border-radius:3px;padding:1px 4px">วันนี้</span>':'')+'</div>';
+    _c+='<div style="border:1px solid '+bc+';border-radius:6px;background:'+bg+';padding:5px 7px;min-height:58px;box-sizing:border-box'+_ring+'">'+_dnum+bd+'</div>';}
   var calHtml='<div style="margin-bottom:18px"><div style="font-size:14px;font-weight:900;color:var(--text1);margin-bottom:8px">📅 ปฏิทินไลฟ์ — '+_TH(_M)+' &nbsp;<span style="font-size:10px;font-weight:900;color:#fff;background:'+LIVEC+';border-radius:4px;padding:1px 7px">LIVE</span> <span style="font-size:10px;font-weight:900;color:#fff;background:'+RERC+';border-radius:4px;padding:1px 7px">RERUN</span> <span style="font-size:9px;color:var(--text3)">L/R+ชม · ฿ยอดจริง</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+_c+'</div></div>';
   /* ── 2 การ์ด Live/Rerun — mini-card grid (Rerun กว้าง 2x → สูงพอๆ Live) ── */
   var _cardGrid=function(title,arr,col,fx,cols){
@@ -10004,14 +10005,14 @@ function openChDrilldown(chKey){
 
  /* per-product เฉพาะ channel นี้ (จาก OPD_PROD_DATA.channels) → รวมกันได้เท่ายอด channel */
  var _CKMAP={'Meta':['Facebook','Instagram','LINE','Shopify','YouTube'],'TikTok':['TikTok','TikTok Live','TikTok Affi'],'Shopee':['Shopee','Shopee Live']};
- var _CK=_CKMAP[cfg.title]||null;
+ var _CK=_CKMAP[cfg.title]||((cfg.subs&&cfg.subs.length)?cfg.subs.map(function(s){return s.chKey;}).filter(Boolean):null);
  var _cR=(typeof _gpR==='function')?(_gpR(month)||[]):[]; var _cF=_cR[0],_cT=_cR[1];
  var _sumCh=function(o){var s=0;if(o&&o.channels&&_CK)_CK.forEach(function(k){s+=(o.channels[k]||0);});return s;};
  gdata.forEach(function(p){
   if(!p.product||p.product==='อื่นๆ') return;
   var rev;
   if(_CK&&_cF&&typeof getOpdProdActual==='function'){rev=_sumCh(getOpdProdActual(p.product,_cF,_cT));}
-  else rev=p.actual||0;
+  else rev=0;   /* ไม่มี channel key → ไม่ใช้ยอดแบรนด์ (กันโชว์เกิน) ปล่อยให้ residual 'อื่นๆ' รวม */
   if(rev>0) prodMap[p.product]={name:p.product,rev:Math.round(rev),goal:p.goal||0,prev:0};
  });
  _prevGdata.forEach(function(p){
