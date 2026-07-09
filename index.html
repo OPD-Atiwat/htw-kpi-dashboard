@@ -3934,7 +3934,7 @@ function renderLiveTab(){
     _c+='<div style="border:1px solid '+bc+';border-radius:6px;background:'+bg+';padding:3px 5px;min-height:46px;box-sizing:border-box'+_ring+'">'+_dnum+bd+'</div>';}
   var calHtml='<div style="margin-bottom:18px"><div style="font-size:14px;font-weight:900;color:var(--text1);margin-bottom:8px">📅 ปฏิทินไลฟ์ — '+_TH(_M)+' &nbsp;<span style="font-size:10px;font-weight:900;color:#fff;background:'+LIVEC+';border-radius:4px;padding:1px 7px">LIVE</span> <span style="font-size:10px;font-weight:900;color:#fff;background:'+RERC+';border-radius:4px;padding:1px 7px">RERUN</span> <span style="font-size:9px;color:var(--text3)">L/R+ชม · ฿ยอดจริง</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">'+_c+'</div></div>';
   /* ── 2 การ์ด Live/Rerun — mini-card grid (Rerun กว้าง 2x → สูงพอๆ Live) ── */
-  var _cardGrid=function(title,arr,col,fx){
+  var _cardGrid=function(title,arr,col,fx,cols){
     var a=_agg(arr);
     var cells=arr.slice().sort(function(x,y){return y.d<x.d?-1:1;}).map(function(s){var day=parseInt(s.d.slice(8)),ro=_roi(s.tot,s.ad),pl=PLAN[s.d]||{};
       return '<div style="border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:7px 9px;background:var(--surface2)">'
@@ -3944,8 +3944,8 @@ function renderLiveTab(){
         +'</div>';}).join('');
     return '<div style="flex:'+fx+';min-width:260px;background:var(--surface1,var(--surface2));border:1px solid var(--border);border-top:4px solid '+col+';border-radius:12px;padding:14px 16px">'
       +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:4px"><span style="font-size:15px;font-weight:900;color:'+col+'">'+title+'</span><span style="font-size:11px;color:var(--text3);font-weight:700">'+a.n+' ครั้ง · '+a.h+' ชม. · '+_fb(a.sales)+' · ROAS '+(a.roas?a.roas.toFixed(1):'—')+'x · ROI '+_pctS(a.roi)+'</span></div>'
-      +(arr.length?'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px">'+cells+'</div>':'<div style="font-size:11px;color:var(--text3);padding:14px;text-align:center">ไม่มีในเดือนนี้</div>')+'</div>';};
-  var splitHtml='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;align-items:stretch">'+_cardGrid('🔴 Live Sessions',live,LIVEC,1)+_cardGrid('🔵 Rerun Sessions',rerun,RERC,2)+'</div>';
+      +(arr.length?'<div style="display:grid;grid-template-columns:repeat('+cols+',minmax(0,1fr));gap:8px">'+cells+'</div>':'<div style="font-size:11px;color:var(--text3);padding:14px;text-align:center">ไม่มีในเดือนนี้</div>')+'</div>';};
+  var splitHtml='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;align-items:stretch">'+_cardGrid('🔴 Live Sessions',live,LIVEC,1,2)+_cardGrid('🔵 Rerun Sessions',rerun,RERC,2,4)+'</div>';
   /* catalog */
   var grp={}; cat.forEach(function(x){var s=x.status||'อื่นๆ';(grp[s]=grp[s]||[]).push(x);});
   var _scm={'Focus':'#16A34A','Maintain':'#1877F2','Clearance':'#EA580C','Dead Stock':'#DC2626','อื่นๆ':'#94A3B8'};
