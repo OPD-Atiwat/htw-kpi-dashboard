@@ -9239,9 +9239,20 @@ function renderOvMarginCards(o){
    _MKv=_ec.mkt;_VRv=_ec['var'];_FXv=_ec.fix;_MK=_ec.mkt_pct;_VR=_ec.var_pct;_FX=_ec.fix_pct;
    _MKp=_ep.mkt_pct;_VRp=_ep.var_pct;_FXp=_ep.fix_pct;_cmpLbl=M07_MARGIN.cost.prev_label||_pLbl;_cmpHas=(_MKp!=null);
   }else{
-   /* เดือนย้อนหลัง: ผลรวมรายวันจาก M07_DAILY (ไม่มี snapshot API) */
-   _MKv=_cur.mkt;_VRv=_cur.vr;_FXv=_cur.fix;_MK=_cur.mkt_pct;_VR=_cur.var_pct;_FX=_cur.fix_pct;
-   _MKp=_hasPrev?_prv.mkt_pct:null;_VRp=_hasPrev?_prv.var_pct:null;_FXp=_hasPrev?_prv.fix_pct:null;_cmpLbl=_pLbl;_cmpHas=_hasPrev;
+   /* เดือนย้อนหลัง: ใช้ cost snapshot เต็มเดือนจาก M07_MARGIN_BY_MONTH (ตรง MMS) ถ้ามี ไม่งั้น fallback ผลรวมรายวัน */
+   var _E3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+   var _bmL=function(pfx){return _E3[+pfx.slice(5,7)-1]+' '+pfx.slice(2,4);};
+   var _BYM=(typeof M07_MARGIN_BY_MONTH!=='undefined')?M07_MARGIN_BY_MONTH:{};
+   var _bc=(_BYM[_bmL(_curPfx)]&&_BYM[_bmL(_curPfx)].cost)?_BYM[_bmL(_curPfx)].cost.excl:null;
+   var _bp=(_BYM[_bmL(_pPfx)]&&_BYM[_bmL(_pPfx)].cost)?_BYM[_bmL(_pPfx)].cost.excl:null;
+   if(_bc){
+    _MKv=_bc.mkt;_VRv=_bc['var'];_FXv=_bc.fix;_MK=_bc.mkt_pct;_VR=_bc.var_pct;_FX=_bc.fix_pct;
+    _MKp=_bp?_bp.mkt_pct:null;_VRp=_bp?_bp.var_pct:null;_FXp=_bp?_bp.fix_pct:null;
+    _cmpLbl=_THM[+_pPfx.slice(5,7)-1]+' (เต็มเดือน)';_cmpHas=!!_bp;
+   }else{
+    _MKv=_cur.mkt;_VRv=_cur.vr;_FXv=_cur.fix;_MK=_cur.mkt_pct;_VR=_cur.var_pct;_FX=_cur.fix_pct;
+    _MKp=_hasPrev?_prv.mkt_pct:null;_VRp=_hasPrev?_prv.var_pct:null;_FXp=_hasPrev?_prv.fix_pct:null;_cmpLbl=_pLbl;_cmpHas=_hasPrev;
+   }
   }
   /* delta = จุด% เทียบ same period; ต้นทุนลด = ดี = เขียว */
   function _dlt(cur,prev){if(prev==null||isNaN(prev))return '';var d=cur-prev;if(Math.abs(d)<0.05)d=0;var col=d<0?'var(--success)':(d>0?'var(--danger)':'var(--text3)');var ar=d<0?'▼':(d>0?'▲':'–');return '<div style="font-size:9px;font-weight:700;color:'+col+';margin-top:2px">'+ar+Math.abs(d).toFixed(1)+' จุด <span style="color:var(--text3);font-weight:500">('+escH(_cmpLbl)+' '+prev.toFixed(1)+'%)</span></div>';}
