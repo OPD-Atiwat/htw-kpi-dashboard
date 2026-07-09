@@ -12,17 +12,7 @@ TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXN
 HTML  = "/Users/opendurian/Documents/Claude/Projects/Excel: Content KPI Dashboard/index.html"
 
 HOWTO_TEAM = 35          # listMapping id ของ OpenDurian HOW-TO
-GOALS = {"online": 431000, "consign": 429005, "total": 860005}   # เป้า margin เดือนปัจจุบัน (Jul 26 / default)
-# เป้า Profit ก่อนผลิต ราย month — อิงชีต Base Profit (Brand OpenDurian HOW-TO)
-GOALS_BY_MONTH = {
-    "Jan 26": {"online": -72897, "consign": 552897, "total": 480000},
-    "Feb 26": {"online": 29858,  "consign": 570000, "total": 599858},
-    "Mar 26": {"online": 438563, "consign": 458938, "total": 897500},
-    "Apr 26": {"online": 468000, "consign": 630000, "total": 1308000},
-    "May 26": {"online": 249400, "consign": 624050, "total": 873450},
-    "Jun 26": {"online": 174000, "consign": 560000, "total": 734000},
-    "Jul 26": {"online": 431000, "consign": 429005, "total": 860005},
-}
+GOALS = {"online": 174000, "consign": 560000, "total": 734000}   # เป้า margin (กำหนดเอง)
 
 def fetch_margin(is_consign_group, start, end):
     """is_consign_group: 1=ไม่รวม Consignment (Online), 2=รวม Consignment (Total)"""
@@ -110,59 +100,6 @@ def main():
         print("  ⚠️  ไม่พบ var M07_MARGIN — ข้าม"); return
     html = new_html
 
-    # ── 1b) M07_MARGIN_BY_MONTH (ทุกเดือน full-month — dynamic, ไม่ hardcode) ──
-    # PERF: cache เดือนที่จบแล้ว (data ไม่เปลี่ยน) — ดึง API แค่เดือนปัจจุบัน (+เดือนก่อนช่วงต้นเดือน
-    # เผื่อ data มาช้า) ตัดจาก ~24 API calls/รอบ เหลือ 2-4 → M07 ไม่ block sync
-    ENG = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    bym = read_var(html, "M07_MARGIN_BY_MONTH") or {}   # เริ่มจาก cache เดิม
-    _m = datetime.date(2026, 1, 1)
-    _curfirst = cutoff.replace(day=1)
-    _prevfirst = datetime.date(cutoff.year-1, 12, 1) if cutoff.month == 1 else datetime.date(cutoff.year, cutoff.month-1, 1)
-    _fetched = 0
-    while _m <= _curfirst:
-        y, mo = _m.year, _m.month
-        key = f"{ENG[mo-1]} {str(y)[2:]}"
-        g = GOALS_BY_MONTH.get(key, GOALS)
-        _is_cur  = (y == cutoff.year and mo == cutoff.month)
-        _is_prev = (_m == _prevfirst and cutoff.day <= 5)   # refresh prev เฉพาะต้นเดือน (data late)
-        _nxt = datetime.date(y+1, 1, 1) if mo == 12 else datetime.date(y, mo+1, 1)
-        # เดือนจบแล้ว + มีใน cache → ไม่ดึง API ซ้ำ (แค่ refresh goal เผื่อ GOALS_BY_MONTH เปลี่ยน)
-        if key in bym and not _is_cur and not _is_prev and bym[key].get("cost"):
-            try:
-                bym[key]["online"]["goal"]  = g["online"]
-                bym[key]["consign"]["goal"] = g["consign"]
-                bym[key]["total"]["goal"]   = g["total"]
-            except Exception:
-                pass
-            _m = _nxt; continue
-        ms = f"{y}-{mo:02d}-01"; last = calendar.monthrange(y, mo)[1]
-        # เดือนปัจจุบัน → MTD ถึง cutoff; เดือนจบแล้ว → ทั้งเดือน
-        me = end if _is_cur else f"{y}-{mo:02d}-{last:02d}"
-        try:
-            on = fetch_margin(1, ms, me); to = fetch_margin(2, ms, me); _fetched += 1
-            bym[key] = {
-                "online":  {"goal": g["online"],  "actual": on["actual"]},
-                "consign": {"goal": g["consign"], "actual": to["actual"] - on["actual"]},
-                "total":   {"goal": g["total"],   "actual": to["actual"]},
-                # cost snapshot เต็มเดือน (ตรง MMS) — excl=online(group1), incl=total(group2)
-                "cost": {
-                    "excl": {"mkt": on["mkt"], "mkt_pct": on["mkt_pct"], "var": on["var"],
-                             "var_pct": on["var_pct"], "fix": on["fix"], "fix_pct": on["fix_pct"], "sale": on["sale"]},
-                    "incl": {"mkt": to["mkt"], "mkt_pct": to["mkt_pct"], "var": to["var"],
-                             "var_pct": to["var_pct"], "fix": to["fix"], "fix_pct": to["fix_pct"], "sale": to["sale"]},
-                },
-            }
-        except Exception as e:
-            print(f"  BYM {ms} fail: {e}")
-        _m = _nxt
-    print(f"  BYM: ดึง API {_fetched} เดือน (cache ที่เหลือ)")
-    new_html_b, nb = write_var(html, "M07_MARGIN_BY_MONTH", bym)
-    if nb == 1:
-        html = new_html_b
-        print(f"  ✅ M07_MARGIN_BY_MONTH {len(bym)} เดือน: " + ", ".join(f"{k}={bym[k]['total']['actual']:,}" for k in bym))
-    else:
-        print("  ⚠️  ไม่พบ var M07_MARGIN_BY_MONTH — ข้าม (เพิ่ม var M07_MARGIN_BY_MONTH = {}; ใน index.html)")
-
     # ── 2) M07_DAILY (รายวัน — self-backfill ตั้งแต่ 1 มี.ค.) ──
     daily = read_var(html, "M07_DAILY") or {}
     want = []
@@ -170,7 +107,7 @@ def main():
     while d <= today:
         ds = d.strftime("%Y-%m-%d")
         # เติมวันที่ขาด + refresh 2 วันล่าสุดเสมอ (ยอดวันนี้/เมื่อวานยังขยับ)
-        if ds not in daily or (today - d).days <= 6:   # refresh 6 วันล่าสุด (วันเก่า M07 ยัง allocate → กัน stale ไม่ตรง M07)
+        if ds not in daily or (today - d).days <= 1:
             want.append(ds)
         d += datetime.timedelta(days=1)
     print(f"  M07_DAILY: ต้องดึง {len(want)} วัน (มีแล้ว {len(daily)})")
