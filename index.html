@@ -8161,6 +8161,16 @@ function renderCreator(data){
  var cm={};
  var contentByCreator={};
  var pal=['#1877F2','#16A34A','#CA8A04','#DC2626','#7C3AED','#DB2777','#0891B2','#65A30D'];
+ /* New MSG = วันที่ในชื่อ Ad ([DD.MM.YY]) ตรงกับเดือนที่เลือก (STATE.ovMonth) */
+ var _MONM={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+ var _ovp=(STATE.ovMonth||'').trim().split(/\s+/);
+ var _newMoKey=(_ovp.length===2&&_MONM[_ovp[0]])?('20'+_ovp[1]+'-'+_MONM[_ovp[0]]):'';
+ function _isNewAdName(nm){
+  var m=(nm||'').match(/\[(\d{1,2})[.\/](\d{1,2})[.\/](\d{2,4})\]/);
+  if(!m||!_newMoKey)return false;
+  var mm=('0'+m[2]).slice(-2), yy=(m[3].length===2?('20'+m[3]):m[3]);
+  return (yy+'-'+mm)===_newMoKey;
+ }
 
  data.forEach(function(r){
  if(!r.creator)return;
@@ -8173,8 +8183,8 @@ function renderCreator(data){
  if(r.hit_roas==='\u0e1c\u0e48\u0e32\u0e19')c.passRows++;
  if(r.platform==='Meta')c.metaRev+=r.revenue_thb;
  // Note: TikTok organic revenue comes from GOALS_DATA (computed below), not RAW_DATA
- // New MSG per creator
- if(r.is_new){
+ // New MSG per creator — อิงวันที่ในชื่อ Ad ตรงกับเดือนที่เลือก
+ if(_isNewAdName(r.content_name)){
  var nk=r.content_name||'';
  if(nk){
  c.newSeen[nk]=true;
