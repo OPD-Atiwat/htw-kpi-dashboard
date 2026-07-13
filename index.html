@@ -740,6 +740,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
  <button class="tab-btn" data-tab="consign" onclick="switchTab('consign')">Consignment</button>
  <button class="tab-btn" data-tab="affiliate" onclick="switchTab('affiliate')">Affiliate</button>
    <button class="tab-btn" data-tab="live" onclick="switchTab('live')">Live</button>
+   <button class="tab-btn" data-tab="cgoal" onclick="switchTab('cgoal')">Goal</button>
 <div id="sticky-summary" style="display:none;margin-left:auto;gap:8px;align-items:center;flex-shrink:0;padding-right:2px"></div>
 </nav>
 
@@ -1230,6 +1231,7 @@ button:focus-visible, select:focus-visible, a:focus-visible{ outline:2px solid v
 
 <!-- =================== TAB: AFFILIATE =================== -->
 <div class="tab-pane" id="tab-live"><div id="live-content" style="padding:2px"></div></div>
+<div class="tab-pane" id="tab-cgoal"><div id="cgoal-content" style="padding:2px"></div></div>
 <div class="tab-pane" id="tab-affiliate">
 
  <!-- Header hero -->
@@ -3890,6 +3892,59 @@ function setCreatorPlatform(plat){
  renderCreator(filterChartData(STATE.filteredData,'creator'));
 }
 
+function renderCreatorGoalTab(){
+  var el=document.getElementById('cgoal-content'); if(!el) return;
+  var CG=['หมิว','ริว','มิ้น','สต็อป'];
+  var CGC={'หมิว':'#D97706','ริว':'#2563EB','มิ้น':'#7C3AED','สต็อป':'#DB2777'};
+  var mo=STATE.ovMonth||'Jul 26';
+  var G=(typeof CHANNEL_GOALS_DIRECT!=='undefined'&&CHANNEL_GOALS_DIRECT[mo])||{};
+  var fbGoal=+(G.Facebook||1600000), ttGoal=+(G.TikTok||2810000), liveGoal=+(G.TikTokLive||360000);
+  var CHAL=0.10, ROAS_T=2.0, COSTMSG_T=80;
+  var data=(STATE.filteredData||[]).filter(function(r){return r.platform==='Meta' && (r.campaign_name||'').indexOf('[TESTOPDHOWTO]')<0;});
+  var cur={}; CG.forEach(function(c){cur[c]={rev:0,sp:0,msg:0};});
+  data.forEach(function(r){ if(cur[r.creator]){ cur[r.creator].rev+=r.revenue_thb||0; cur[r.creator].sp+=r.spend_thb||0; cur[r.creator].msg+=r.messages||0; } });
+  var totFb=CG.reduce(function(s,c){return s+cur[c].rev;},0)||1;
+  var M=function(v){return '฿'+Math.round(v).toLocaleString();};
+  var h='';
+  h+='<div style="margin-bottom:14px"><div style="font-size:18px;font-weight:800;color:var(--text1)">🎯 เป้าราย Creator — '+escH(mo)+'</div>';
+  h+='<div style="font-size:12px;color:var(--text2);margin-top:3px">อิงเป้า Sale Online เดือนนี้ · FB '+M(fbGoal)+' · TikTok '+M(ttGoal)+' · Live '+M(liveGoal)+' · challenge +'+(CHAL*100)+'%</div></div>';
+  h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;background:var(--card,#fff);border-radius:10px;overflow:hidden;min-width:760px">';
+  h+='<thead><tr style="background:var(--bg2,#f3f4f6);color:var(--text2);font-size:11px">'
+   +'<th style="text-align:left;padding:10px">Creator</th>'
+   +'<th style="text-align:right;padding:10px">FB ปัจจุบัน</th>'
+   +'<th style="text-align:right;padding:10px">สัดส่วน</th>'
+   +'<th style="text-align:right;padding:10px">เป้า FB</th>'
+   +'<th style="text-align:right;padding:10px">เป้า ROAS</th>'
+   +'<th style="text-align:right;padding:10px">เป้า Cost/Msg</th>'
+   +'<th style="text-align:right;padding:10px">เป้า TikTok</th>'
+   +'<th style="text-align:right;padding:10px">เป้า Live<br><span style="font-size:9px;font-weight:400">(ไม่รวม rerun)</span></th>'
+   +'</tr></thead><tbody>';
+  CG.forEach(function(c){
+    var sh=cur[c].rev/totFb;
+    var fbT=fbGoal*sh*(1+CHAL);
+    var roasNow=cur[c].sp>0?(cur[c].rev/cur[c].sp):0;
+    var cmNow=cur[c].msg>0?(cur[c].sp/cur[c].msg):0;
+    var roasCol=roasNow>=ROAS_T?'#16A34A':'#DC2626';
+    var cmCol=(cmNow>0&&cmNow<=COSTMSG_T)?'#16A34A':'#DC2626';
+    h+='<tr style="border-top:1px solid var(--border,#eee)">'
+     +'<td style="padding:10px;font-weight:700;color:'+CGC[c]+'">'+escH(c)+'</td>'
+     +'<td style="text-align:right;padding:10px">'+M(cur[c].rev)+'</td>'
+     +'<td style="text-align:right;padding:10px">'+(sh*100).toFixed(1)+'%</td>'
+     +'<td style="text-align:right;padding:10px;font-weight:800;color:var(--text1)">'+M(fbT)+'</td>'
+     +'<td style="text-align:right;padding:10px;font-weight:700">&gt; '+ROAS_T.toFixed(1)+'<div style="font-size:10px;font-weight:400;color:'+roasCol+'">now '+roasNow.toFixed(2)+'</div></td>'
+     +'<td style="text-align:right;padding:10px;font-weight:700">&le; ฿'+COSTMSG_T+'<div style="font-size:10px;font-weight:400;color:'+cmCol+'">now ฿'+Math.round(cmNow)+'</div></td>'
+     +'<td style="text-align:right;padding:10px"><input type="number" placeholder="กรอก" style="width:82px;text-align:right;padding:4px 6px;border:1px solid var(--border,#ccc);border-radius:6px;background:transparent;color:var(--text1)"></td>'
+     +'<td style="text-align:right;padding:10px"><input type="number" placeholder="กรอก" style="width:82px;text-align:right;padding:4px 6px;border:1px solid var(--border,#ccc);border-radius:6px;background:transparent;color:var(--text1)"></td>'
+     +'</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.6">'
+   +'* เป้า FB = เป้า Sale Online FB เดือนนั้น × สัดส่วนยอด FB ที่ครีทำได้ × (1+challenge 10%)<br>'
+   +'* ROAS เกณฑ์ทีม &gt; 2.0 · Cost/Msg เกณฑ์ทีม &le; ฿80 (สีเขียว=ผ่าน แดง=ยังไม่ถึง)<br>'
+   +'* TikTok &amp; Live กรอกเป้าเอง เพราะยอด TikTok/Live ยังไม่มี attribution รายคน</div>';
+  el.innerHTML=h;
+}
+
 function renderLiveTab(){
   var el=document.getElementById('live-content'); if(!el) return;
   var TL=(typeof TIKTOK_LIVE!=='undefined')?TIKTOK_LIVE:null;
@@ -3989,6 +4044,7 @@ function renderCurrentTab(){
  else if(STATE.currentTab==='consign') renderConsignTab();
  else if(STATE.currentTab==='affiliate') renderAffiliateTab();
  else if(STATE.currentTab==='live') renderLiveTab();
+ else if(STATE.currentTab==='cgoal') renderCreatorGoalTab();
 }
 
 /* OVERVIEW */
