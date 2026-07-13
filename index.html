@@ -3428,6 +3428,8 @@ function init() {
   if(r.ad_date && r.ad_date>=DATA_CUTOFF) return false;
   return !_TEST_CAMPAIGN_TAGS.some(function(t){return cn.indexOf(t)>=0;});
  }).map(normalizeRow);
+ /* Retag creator 'Mon' — [Mon] tag ใน ad_name (NORM_DATA กรอง TESTOPDHOWTO ออกแล้ว เหลือ [OPDHOWTO]) */
+ NORM_DATA.forEach(function(r){ if((r.ad_name||'').indexOf('[Mon]')>=0){ r.creator='Mon'; r.creators=['Mon']; } });
  try{ if(typeof OPD_DAILY!=='undefined'&&OPD_DAILY.data) OPD_DAILY.data=OPD_DAILY.data.filter(function(r){return !(r.d&&r.d>=DATA_CUTOFF);}); }catch(e){}
  try{ if(typeof M07_DAILY!=='undefined') Object.keys(M07_DAILY).forEach(function(k){ if(k>=DATA_CUTOFF) delete M07_DAILY[k]; }); }catch(e){}
  populateFilters();
@@ -4792,7 +4794,7 @@ function renderOverview(data){
  var ch='';
  CREATORS.forEach(function(cr){
  var _useAO=(typeof AO_DATA!=='undefined'&&AO_DATA.ads&&AO_DATA.ads.length&&AO_DATA.period&&(range.from||'').length>=7&&AO_DATA.period.indexOf((range.from||'').slice(0,7))>=0);
- var cd=_useAO?AO_DATA.ads.filter(function(a){var _nm=a.ad_name||'';return _nm.indexOf(cr.name)>=0||(cr.name==='สต็อป'&&_nm.indexOf('สต๊อป')>=0);}):monthData.filter(function(r){var _cs=r.creators||[r.creator];return _cs.indexOf(cr.name)>=0;});
+ var cd=_useAO?AO_DATA.ads.filter(function(a){var _nm=a.ad_name||'';if(cr.name==='Mon')return _nm.indexOf('[Mon]')>=0&&(a.campaign_name||'').indexOf('[OPDHOWTO]')>=0;return _nm.indexOf(cr.name)>=0||(cr.name==='สต็อป'&&_nm.indexOf('สต๊อป')>=0);}):monthData.filter(function(r){var _cs=r.creators||[r.creator];return _cs.indexOf(cr.name)>=0;});
  var rev=0,spend=0,imp=0,msg=0;
  cd.forEach(function(r){if(_useAO){var _nm=r.ad_name||'';var _n=0;['ริว','หมิว','มิ้น','แนน','แก้ม','สต็อป','Mon'].forEach(function(t){if(_nm.indexOf(t)>=0||(t==='สต็อป'&&_nm.indexOf('สต๊อป')>=0))_n++;});var _shA=1;rev+=(r.revenue||0)*_shA;spend+=(r.spend||0)*_shA;imp+=(r.impressions||0)*_shA;msg+=(r.msg||0)*_shA;}else{var _cs=r.creators||[r.creator];var _sh=1;rev+=(r.revenue_thb||0)*_sh;spend+=(r.spend_thb||0)*_sh;imp+=(r.impressions||0)*_sh;msg+=(r.messages||0)*_sh;}});
  var roas=spend>0?(rev/spend):0;
