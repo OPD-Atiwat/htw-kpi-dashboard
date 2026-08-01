@@ -83,7 +83,7 @@ PRODUCT_MAP = {
     "Capybara":        "ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara",
     "Capybara_Boxset": "ถ้าโลกมันแย่ ก็แค่คิดแบบคาปิบาร่า Think Like a Happybara",
     "DevilLove":       "ปีศาจความรักมักเลือกฉันเป็นเหยื่อ How to Fight the Love Demon in My Heart",
-    "Mind":            "ฉันจะมีชีวิตที่ดี",
+    "Mind":            "ถือไพ่เหนือกว่า ด้วยวิชาอ่านใจ",
     "Garden":          "วันไหนที่ใจแข็งแรง ดอกไม้จะผลิบาน The Enchanted Garden",
     "Helmet":          "เมื่อโลกทั้งใบซ่อนอยู่ใต้หมวกกันน็อก (Helmet Girl)",
     "Breath":          "กว่าจะคิดได้ ก็ไม่มีลมหายใจแล้ว (It Is Never Too Late to Love Yourself)",
@@ -118,7 +118,7 @@ API_FIELDS = ",".join([
     "ad_id", "ad_name", "campaign_name", "date_start",
     "spend", "impressions", "reach",
     "inline_link_clicks", "ctr", "cpm",
-    "actions", "action_values", "purchase_roas",
+    "actions", "action_values", "purchase_roas", "cost_per_action_type",
 ])
 
 
@@ -195,17 +195,31 @@ def fetch_all_pages(url, params):
 
 
 def extract_action(arr, *types):
-    """ดึงค่าจาก actions/action_values array"""
+    """ดึงค่าจาก actions/action_values array — คืนค่าจาก action_type แรกที่เจอ (ไม่ sum ซ้ำ)"""
     if not arr:
         return 0.0
     for atype in types:
         for a in arr:
             if a.get("action_type") == atype:
                 try:
-                    return float(a.get("value", 0) or 0)
+                    return float(a.get("value", 0) or 0)   # อ่านค่าที่ Meta คำนวณมาให้ตรงๆ ไม่บวกเอง
                 except (ValueError, TypeError):
                     return 0.0
     return 0.0
+
+
+# "Messaging conversations started" — ลำดับ key ตาม attribution (ลอง 7d ก่อน แล้ว fallback base/1d)
+# ใช้ตัวเดียวกันทุกที่ กัน metric เพี้ยน — Cost per messaging conversation started = สำคัญสุด
+MSG_ACTION_TYPES = (
+    "onsite_conversion.messaging_conversation_started_7d",
+    "onsite_conversion.messaging_conversation_started",
+    "onsite_conversion.messaging_conversation_started_1d",
+)
+PURCHASE_ACTION_TYPES = (
+    "omni_purchase",
+    "offsite_conversion.fb_pixel_purchase",
+    "purchase",
+)
 
 
 def clean_name(name):
@@ -233,6 +247,32 @@ def current_month_key():
                             today.strftime("%b") + str(today.year)[2:])
 
 
+# ⚠️ หมิวออกจากทีมตั้งแต่ ส.ค. 2026 — แอดที่ tag [หมิว] ตั้งแต่เดือนนี้เป็นต้นไป
+# ให้นับรวมเป็นของ "สต็อป" แทน (เดือนก่อนหน้ายังคงเป็นหมิวตามเดิม ห้ามย้อนแก้ประวัติ)
+MEW_RETAG_FROM_YM = (2026, 8)
+
+def _ad_ym(ad_name):
+    """ดึง (ปี,เดือน) จาก bracket แรก [DD.MM.YY] ของชื่อแอด — คืน None ถ้า parse ไม่ได้"""
+    tags = re.findall(r'\[([^\]]+)\]', ad_name)
+    if tags:
+        m = re.match(r'^\s*(\d{1,2})\.(\d{1,2})\.(\d{2,4})\s*$', tags[0])
+        if m:
+            d, mo, y = m.groups()
+            y = int(y); mo = int(mo)
+            y = y + 2000 if y < 100 else y
+            return (y, mo)
+    return None
+
+def _retag_mew(creator, ad_name):
+    """หมิว → สต็อป ถ้าแอดอยู่ในเดือน ส.ค. 2026 เป็นต้นไป"""
+    if creator != "หมิว":
+        return creator
+    ym = _ad_ym(ad_name)
+    if ym and ym >= MEW_RETAG_FROM_YM:
+        return "สต็อป"
+    return creator
+
+
 def guess_creator(ad_name):
     """ดึง creator จาก bracket ที่สอง [Date][CreatorTag] ..."""
     # Central / Influ / Cross Page / Our creators
@@ -245,6 +285,7 @@ def guess_creator(ad_name):
         "แก้ม":       "แก้ม",
         "สต็อป":      "สต็อป",
         "สต๊อป":      "สต็อป",
+        "Mon":        "Mon",
         # Central (inhouse)
         "Course":     "Central",
         "PILOT":      "Central",
@@ -254,27 +295,30 @@ def guess_creator(ad_name):
         "mena.forest":"Influ",
     }
     tags = re.findall(r'\[([^\]]+)\]', ad_name)
+    result = "Unknown"
+    found = False
     # First tag = date, second tag = creator
     for b in tags[1:]:
         b = b.strip()
         if b in TAG_MAP:
-            return TAG_MAP[b]
+            result = TAG_MAP[b]; found = True; break
         # Fuzzy match our creators
-        if "ริว" in b: return "ริว"
-        if "หมิว" in b: return "หมิว"
-        if "มิ้น" in b: return "มิ้น"
-        if "แนน" in b: return "แนน"
-        if "แก้ม" in b: return "แก้ม"
-        if "สต็อป" in b or "สต๊อป" in b: return "สต็อป"
+        if "ริว" in b: result = "ริว"; found = True; break
+        if "หมิว" in b: result = "หมิว"; found = True; break
+        if "มิ้น" in b: result = "มิ้น"; found = True; break
+        if "แนน" in b: result = "แนน"; found = True; break
+        if "แก้ม" in b: result = "แก้ม"; found = True; break
+        if "สต็อป" in b or "สต๊อป" in b: result = "สต็อป"; found = True; break
         # Any other unknown bracket = Influ (external)
         if b and not re.match(r'^\d', b):  # not a date-like tag
-            return "Influ"
-    # Fallback: keyword scan in full name
-    if "หมิว" in ad_name: return "หมิว"
-    if "ริว"  in ad_name: return "ริว"
-    if "มิ้น" in ad_name: return "มิ้น"
-    if "สต็อป" in ad_name or "สต๊อป" in ad_name: return "สต็อป"
-    return "Unknown"
+            result = "Influ"; found = True; break
+    if not found:
+        # Fallback: keyword scan in full name
+        if "หมิว" in ad_name: result = "หมิว"
+        elif "ริว"  in ad_name: result = "ริว"
+        elif "มิ้น" in ad_name: result = "มิ้น"
+        elif "สต็อป" in ad_name or "สต๊อป" in ad_name: result = "สต็อป"
+    return _retag_mew(result, ad_name)
 
 
 def guess_product(ad_name):
@@ -299,7 +343,7 @@ def resolve_creator_by_product(creator, product):
 
 
 # ครีเอเตอร์ทีมเรา (เฉพาะกลุ่มนี้ที่แชร์ยอด 50/50 ได้)
-TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม", "สต็อป"]
+TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม", "สต็อป", "Mon"]
 
 def guess_creators(ad_name):
     """คืน list ครีเอเตอร์ทีมเราที่เจอใน bracket [Date][Creator1][Creator2]...
@@ -316,8 +360,11 @@ def guess_creators(ad_name):
         elif "แนน" in b: m = "แนน"
         elif "แก้ม" in b: m = "แก้ม"
         elif "สต็อป" in b or "สต๊อป" in b: m = "สต็อป"
-        if m and m not in found:
-            found.append(m)
+        elif b.strip() == "Mon": m = "Mon"
+        if m:
+            m = _retag_mew(m, ad_name)
+            if m not in found:
+                found.append(m)
     return found if found else [guess_creator(ad_name)]
 
 
@@ -366,20 +413,31 @@ def pull_ad_insights():
     print(f"   Fields:  spend, revenue, ROAS, purchases, messages, impressions,")
     print(f"            reach, clicks, CTR, CPM")
 
-    params = {
-        "level":          "ad",
-        "fields":         API_FIELDS,
-        "time_range":     json.dumps({"since": DATE_FROM, "until": DATE_TO}),
-        "time_increment": 1,
-        "filtering":      json.dumps([
-            {"field": "spend", "operator": "GREATER_THAN", "value": "0"}
-        ]),
-        "access_token":   ACCESS_TOKEN,
-        "limit":          500,
-    }
-
+    import datetime as _dt
+    _start = _dt.date.fromisoformat(DATE_FROM)
+    _end   = _dt.date.fromisoformat(DATE_TO)
     url = f"{BASE_URL}/{AD_ACCOUNT_ID}/insights"
-    raw_rows = fetch_all_pages(url, params)
+    raw_rows = []
+    _cur = _start
+    while _cur <= _end:                                   # แบ่งช่วงทีละ 5 วัน กัน Meta overload (attribution window ทำให้ response ใหญ่ขึ้น)
+        _ce = min(_cur + _dt.timedelta(days=4), _end)
+        params = {
+            "level":          "ad",
+            "fields":         API_FIELDS,
+            "time_range":     json.dumps({"since": _cur.isoformat(), "until": _ce.isoformat()}),
+            "time_increment": 1,
+            # ใช้ attribution setting เดียวกับหน้าจอ Ads Manager → revenue/conversions ตรง UI (ไม่ใช่ default API)
+            "use_unified_attribution_setting": "true",
+            "filtering":      json.dumps([
+                {"field": "spend", "operator": "GREATER_THAN", "value": "0"}
+            ]),
+            "access_token":   ACCESS_TOKEN,
+            "limit":          100,
+        }
+        _chunk = fetch_all_pages(url, params)
+        raw_rows.extend(_chunk)
+        print(f"   • {_cur.isoformat()}–{_ce.isoformat()}: {len(_chunk):,} rows")
+        _cur = _ce + _dt.timedelta(days=1)
     print(f"   ✅ ได้ {len(raw_rows):,} records (spend > 0)")
     return raw_rows
 
@@ -401,6 +459,7 @@ def transform_rows(raw_rows):
         actions     = day.get("actions", []) or []
         action_vals = day.get("action_values", []) or []
         roas_arr    = day.get("purchase_roas", []) or []
+        cost_actions= day.get("cost_per_action_type", []) or []
 
         # ── Purchases ──
         purchases = extract_action(actions,
@@ -416,13 +475,8 @@ def transform_rows(raw_rows):
             "purchase",
         )
 
-        # ── Messaging conversations started ──
-        messages = extract_action(actions,
-            "onsite_conversion.messaging_conversation_started_7d",
-            "onsite_conversation.messaging_conversation_started_7d",
-            "messaging_first_reply",
-            "onsite_conversion.post_save",
-        )
+        # ── Messaging conversations started (robust ทุก attribution variant, กันนับซ้ำ) ──
+        messages = extract_action(actions, *MSG_ACTION_TYPES)
 
         # ── ROAS ──
         if roas_arr:
@@ -433,18 +487,20 @@ def transform_rows(raw_rows):
         else:
             roas = revenue / spend if spend > 0 and revenue > 0 else 0.0
 
-        cpa = spend / purchases if purchases > 0 else 0.0
+        # CPA + Cost/Msg — ดึงจาก Meta cost_per_action_type ตรงๆ (ห้ามคำนวณเอง)
+        cpa = extract_action(cost_actions, *PURCHASE_ACTION_TYPES)
+        cost_msg = extract_action(cost_actions, *MSG_ACTION_TYPES)
         cvr = purchases / clicks * 100 if clicks > 0 else 0.0
 
         fmt     = guess_format(ad_name)
         product = guess_product(ad_name)
         launch  = guess_launch_date(ad_name)
-        # creators list (รองรับแชร์ 50/50 เมื่อมีหลายครีในชื่อแอด)
+        # creators list — ยึด Ad Name เป็นหลัก: creator = แท็กในชื่อแอดเสมอ
+        # (เลิก Cross Page override — เมื่อก่อนบังคับ product=Cross Page -> "Cross Page"
+        #  ทำให้ยอดหลุดจากครีเอเตอร์ ไม่ตรง Ads Manager "Ad name contains [ชื่อ]")
         creators = guess_creators(ad_name)
-        if product == "Cross Page":
-            creators = ["Cross Page"]          # Cross Page ทับเสมอ ไม่แชร์
         creator = creators[0]                  # primary (tag แรก) — backward compat
-        share   = round(1.0 / len(creators), 6)
+        share   = 1.0                          # ไม่แชร์: แต่ละครีได้เต็ม (ไม่หาร len)
 
         rows.append({
             "month":        month_key(date_str),
@@ -464,6 +520,7 @@ def transform_rows(raw_rows):
             "roas":         round(roas, 4),
             "cpm_thb":      round(cpm, 4),
             "cpa_thb":      round(cpa, 2),
+            "cost_per_msg": round(cost_msg, 2),
             "clicks":       clicks,
             "ctr":          round(ctr, 4),
             "cvr":          round(cvr, 4),
@@ -820,6 +877,19 @@ def print_summary(rows):
 # ─── Main ──────────────────────────────────────────────────────
 
 def main():
+    # ── re-read backfill flag ทุกรอบ (แก้ module-cache: runner import meta_pull ครั้งเดียว flag เดิมไม่ถูกอ่านซ้ำ) ──
+    global DATE_FROM, DATE_TO
+    try:
+        if _os.path.exists(_BF_FILE):
+            _v3 = open(_BF_FILE).read().strip()
+            if len(_v3) == 7 and _v3[4] == "-":
+                import calendar as _c3
+                _y3, _m3 = int(_v3[:4]), int(_v3[5:7])
+                DATE_FROM = "%04d-%02d-01" % (_y3, _m3)
+                DATE_TO   = "%04d-%02d-%02d" % (_y3, _m3, _c3.monthrange(_y3, _m3)[1])
+                print("   \U0001F501 BACKFILL(main re-read): ดึง Meta %s ถึง %s" % (DATE_FROM, DATE_TO))
+    except Exception as _e3:
+        print("   backfill re-read fail:", _e3)
     print("=" * 72)
     print("  Meta Ads API Puller v2 — OpenDurian How-to")
     print(f"  ช่วง: {DATE_FROM} → {DATE_TO}")
@@ -913,7 +983,7 @@ def pull_adset_insights_agg():
         "fields":     ",".join([
             "ad_id","ad_name","adset_id","adset_name","campaign_name",
             "spend","impressions","reach","inline_link_clicks","ctr","cpm",
-            "actions","action_values","purchase_roas",
+            "actions","action_values","purchase_roas","cost_per_action_type",
         ]),
         "time_range":  json.dumps({"since": DATE_FROM, "until": today.strftime("%Y-%m-%d")}),  # ถึงวันนี้ ให้ตรง Meta UI live (creator/AO)
         "time_increment": "all_days",   # aggregate ทั้งช่วง ไม่แยกรายวัน
@@ -950,32 +1020,40 @@ def update_ao_data(html_path):
                 "campaign_name": r.get("campaign_name",""),
                 "spend":0,"revenue":0,"purchases":0,"impressions":0,
                 "reach":0,"clicks":0,"msg":0,
+                "roas_m":0.0,"ctr_m":0.0,"cpm_m":0.0,"cpa_m":0.0,"costmsg_m":0.0,
             }
         d = ads_agg[aid]
         d["spend"]       += float(r.get("spend",0) or 0)
         d["impressions"] += int(float(r.get("impressions",0) or 0))
         d["reach"]       += int(float(r.get("reach",0) or 0))
         d["clicks"]      += int(float(r.get("inline_link_clicks",0) or 0))
-        for a in (r.get("action_values") or []):
-            if a.get("action_type","") in ("omni_purchase","offsite_conversion.fb_pixel_purchase","purchase"):
-                d["revenue"] += float(a.get("value",0) or 0)
-        for a in (r.get("actions") or []):
-            if a.get("action_type","") in ("omni_purchase","offsite_conversion.fb_pixel_purchase","purchase"):
-                d["purchases"] += int(float(a.get("value",0) or 0))
-            if "messaging_conversation" in a.get("action_type",""):
-                d["msg"] += int(float(a.get("value",0) or 0))
+        # นับ/ยอด — extract_action คืน action_type แรกที่เจอ กันนับซ้ำหลาย variant
+        d["revenue"]   += extract_action(r.get("action_values") or [], *PURCHASE_ACTION_TYPES)
+        d["purchases"] += int(extract_action(r.get("actions") or [], *PURCHASE_ACTION_TYPES))
+        d["msg"]       += int(extract_action(r.get("actions") or [], *MSG_ACTION_TYPES))
+        # ── ค่า ratio + cost: ดึงจาก Meta ตรงๆ (ห้ามคำนวณเอง) ──
+        _pr = r.get("purchase_roas") or []
+        if _pr: d["roas_m"] = float(_pr[0].get("value",0) or 0)
+        if r.get("ctr") not in (None,""): d["ctr_m"] = float(r.get("ctr",0) or 0)
+        if r.get("cpm") not in (None,""): d["cpm_m"] = float(r.get("cpm",0) or 0)
+        _ca = r.get("cost_per_action_type") or []
+        _cpa  = extract_action(_ca, *PURCHASE_ACTION_TYPES)
+        _cmsg = extract_action(_ca, *MSG_ACTION_TYPES)
+        if _cpa:  d["cpa_m"] = _cpa
+        if _cmsg: d["costmsg_m"] = _cmsg
 
     # Build ads list
     ads_list = []
     for d in sorted(ads_agg.values(), key=lambda x: -x["spend"]):
         sp  = d["spend"]
         rev = d["revenue"]
-        roas = round(rev/sp, 2) if sp > 0 else 0.0
+        # ทุก ratio ดึงจาก Meta ตรงๆ (ห้ามคำนวณเอง)
+        roas = round(d["roas_m"], 2)
         fmt, age, auto_on, aud_group, audience = _parse_adset_meta(d["adset_name"], d["ad_name"])
-        ctr = round(d["clicks"]/d["impressions"]*100, 2) if d["impressions"] > 0 else 0.0
-        cpm = round(d["spend"]/d["impressions"]*1000, 2) if d["impressions"] > 0 else 0.0
-        cpa = round(sp/d["purchases"], 0) if d["purchases"] > 0 else 0.0
-        cost_msg = round(sp/d["msg"], 2) if d["msg"] > 0 else 0.0
+        ctr = round(d["ctr_m"], 2)
+        cpm = round(d["cpm_m"], 2)
+        cpa = round(d["cpa_m"], 0)
+        cost_msg = round(d["costmsg_m"], 2)
         # Tier
         if d["purchases"] == 0: tier = "np"
         elif roas >= 2.5: tier = "ex"
