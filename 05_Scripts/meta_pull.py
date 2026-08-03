@@ -54,7 +54,14 @@ if _BF_MONTH:
     DATE_TO   = "%04d-%02d-%02d" % (_by, _bm, _cal.monthrange(_by, _bm)[1])
     print("   \U0001F501 BACKFILL MODE: ดึง Meta %s ถึง %s" % (DATE_FROM, DATE_TO))
 else:
-    DATE_FROM = today.replace(day=1).strftime("%Y-%m-%d")
+    # ⚠️ กันบั๊กวันสุดท้ายของเดือนก่อนหน้าตกหล่นตอนข้ามเดือน (เคยเกิดจริง — 31 ก.ค. หายทั้งวัน
+    #    เพราะวันที่ 1 ส.ค. เดือนปัจจุบันเปลี่ยนเป็น ส.ค. ทันที ไม่เคยย้อนไปดึง 31 ก.ค. ที่ยังไม่ปิดตอนรันวันนั้น)
+    #    แก้ถาวร: ต้น 3 วันของเดือน ให้ดึงย้อนไปคาบเกี่ยวเดือนก่อนหน้าด้วยเสมอ
+    #    update_raw_data() รองรับ multi-month ในรอบเดียวแล้ว (ลบ+แทนที่ทุกเดือนที่ปรากฏใน rows)
+    if today.day <= 3:
+        DATE_FROM = (today.replace(day=1) - timedelta(days=5)).strftime("%Y-%m-%d")
+    else:
+        DATE_FROM = today.replace(day=1).strftime("%Y-%m-%d")
     # ตัดวันปัจจุบัน (in-progress / MMS ยังไม่ allocate) → ดึงถึงเมื่อวาน ให้ตรงกับ MK13/dashboard
     DATE_TO   = max(DATE_FROM, (today - timedelta(days=1)).strftime("%Y-%m-%d"))
 BASE_URL  = f"https://graph.facebook.com/{API_VERSION}"
@@ -549,8 +556,15 @@ def update_raw_data(rows, html_path):
         print(f"⚠️  ไม่พบไฟล์: {html_path}")
         return False
 
+    new_recs = [r for r in rows if r.get("platform") == "Meta"]
+
+    # เดือนที่ปรากฏจริงใน rows รอบนี้ (ปกติมีเดือนเดียว แต่ต้น 3 วันของเดือน DATE_FROM
+    # จะย้อนไปคาบเกี่ยวเดือนก่อนหน้าด้วย → ต้องรองรับหลายเดือนในรอบเดียว กันวันสุดท้ายเดือนก่อนตกหล่น)
+    months_in_new = sorted(set(r.get("month", "") for r in new_recs if r.get("month")))
     cur_month = current_month_key()
-    print(f"\n📊 อัปเดต RAW_DATA เดือน {cur_month} ใน dashboard...")
+    if not months_in_new:
+        months_in_new = [cur_month]
+    print(f"\n📊 อัปเดต RAW_DATA เดือน {', '.join(months_in_new)} ใน dashboard...")
 
     with open(html_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -566,23 +580,25 @@ def update_raw_data(rows, html_path):
         print(f"   ⚠️  Parse RAW_DATA ผิดพลาด: {e}")
         return False
 
-    # คง records เดือนอื่น + platform อื่น (TikTok ฯลฯ)
+    months_set = set(months_in_new)
+    # คง records เดือนอื่น + platform อื่น (TikTok ฯลฯ) — ลบเฉพาะเดือนที่ API ส่งมาจริงรอบนี้
     kept = [r for r in existing
-            if not (r.get("month") == cur_month and r.get("platform") == "Meta")]
+            if not (r.get("month") in months_set and r.get("platform") == "Meta")]
 
-    new_recs   = [r for r in rows if r.get("platform") == "Meta"]
-    new_dates  = set(r.get("ad_date", "") for r in new_recs)
-
-    # ── Rate-limit safeguard ──────────────────────────────────────
-    # ถ้า API ส่งมาแค่บางวัน (rate limit) ให้คงข้อมูลวันที่ยังไม่ได้ดึงไว้
-    existing_meta  = [r for r in existing
-                      if r.get("month") == cur_month and r.get("platform") == "Meta"]
-    existing_dates = set(r.get("ad_date", "") for r in existing_meta)
-    missed_dates   = existing_dates - new_dates          # วันที่ API ไม่ส่งมา
-    rescued        = [r for r in existing_meta if r.get("ad_date", "") in missed_dates]
-    if rescued:
-        print(f"   ⚠️  API ได้ {len(new_dates)} วัน / มีอยู่แล้ว {len(existing_dates)} วัน"
-              f" — คงข้อมูล {len(missed_dates)} วันที่ขาด ({sorted(missed_dates)[0]} → {sorted(missed_dates)[-1]})")
+    # ── Rate-limit safeguard (ต่อเดือน) ────────────────────────────
+    # ถ้า API ส่งมาแค่บางวัน (rate limit) ให้คงข้อมูลวันที่ยังไม่ได้ดึงไว้ — เช็คแยกทีละเดือน
+    rescued = []
+    for mo in months_in_new:
+        new_dates_mo = set(r.get("ad_date", "") for r in new_recs if r.get("month") == mo)
+        existing_meta_mo  = [r for r in existing
+                             if r.get("month") == mo and r.get("platform") == "Meta"]
+        existing_dates_mo = set(r.get("ad_date", "") for r in existing_meta_mo)
+        missed_dates = existing_dates_mo - new_dates_mo
+        if missed_dates:
+            rescued_mo = [r for r in existing_meta_mo if r.get("ad_date", "") in missed_dates]
+            rescued.extend(rescued_mo)
+            print(f"   ⚠️  [{mo}] API ได้ {len(new_dates_mo)} วัน / มีอยู่แล้ว {len(existing_dates_mo)} วัน"
+                  f" — คงข้อมูล {len(missed_dates)} วันที่ขาด ({sorted(missed_dates)[0]} → {sorted(missed_dates)[-1]})")
 
     merged = kept + new_recs + rescued
     merged.sort(key=lambda r: (
@@ -604,8 +620,8 @@ def update_raw_data(rows, html_path):
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"   ✅ คงไว้ (platform อื่น): {len(kept):,} records")
-    print(f"   ✅ Meta ใหม่จาก API: {len(new_recs):,} records ({cur_month})")
+    print(f"   ✅ คงไว้ (platform อื่น/เดือนอื่น): {len(kept):,} records")
+    print(f"   ✅ Meta ใหม่จาก API: {len(new_recs):,} records ({', '.join(months_in_new)})")
     if rescued:
         print(f"   ✅ Meta คงไว้ (ขาดจาก API): {len(rescued):,} records")
     print(f"   ✅ รวม: {len(merged):,} records")
