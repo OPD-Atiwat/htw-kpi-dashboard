@@ -258,30 +258,21 @@ def current_month_key():
 # ให้นับรวมเป็นของ "สต็อป" แทน (เดือนก่อนหน้ายังคงเป็นหมิวตามเดิม ห้ามย้อนแก้ประวัติ)
 MEW_RETAG_FROM_YM = (2026, 8)
 
-def _ad_ym(ad_name):
-    """ดึง (ปี,เดือน) จาก bracket แรก [DD.MM.YY] ของชื่อแอด — คืน None ถ้า parse ไม่ได้"""
-    tags = re.findall(r'\[([^\]]+)\]', ad_name)
-    if tags:
-        m = re.match(r'^\s*(\d{1,2})\.(\d{1,2})\.(\d{2,4})\s*$', tags[0])
-        if m:
-            d, mo, y = m.groups()
-            y = int(y); mo = int(mo)
-            y = y + 2000 if y < 100 else y
-            return (y, mo)
-    return None
-
-def _retag_mew(creator, ad_name):
-    """หมิว → สต็อป ถ้าแอดอยู่ในเดือน ส.ค. 2026 เป็นต้นไป"""
+def _retag_mew(creator, ym):
+    """หมิว → สต็อป ถ้า 'เดือนที่แอดรันจริง' (ym = (ปี,เดือน) จาก ad_date ของแถวนั้น)
+       อยู่ตั้งแต่ ส.ค. 2026 เป็นต้นไป — ⚠️ ต้องใช้ ad_date จริง ไม่ใช่วันที่ในชื่อครีเอทีฟ
+       เพราะแอด evergreen ที่สร้างไว้ตั้งแต่ พ.ค./มิ.ย./ก.ค. อาจยังรันสด (มีสเปนด์) ต่อใน ส.ค.
+       ถ้าดูจากวันในชื่อ (creative date) จะไม่ถูก retag ทั้งที่รันจริงในเดือนหมิวออกจากทีมแล้ว"""
     if creator != "หมิว":
         return creator
-    ym = _ad_ym(ad_name)
     if ym and ym >= MEW_RETAG_FROM_YM:
         return "สต็อป"
     return creator
 
 
-def guess_creator(ad_name):
-    """ดึง creator จาก bracket ที่สอง [Date][CreatorTag] ..."""
+def guess_creator(ad_name, ym=None):
+    """ดึง creator จาก bracket ที่สอง [Date][CreatorTag] ...
+       ym (ปี,เดือน) ของ ad_date จริง — ใช้เช็ค retag หมิว→สต็อป (ดู _retag_mew)"""
     # Central / Influ / Cross Page / Our creators
     TAG_MAP = {
         # Our creators
@@ -325,7 +316,7 @@ def guess_creator(ad_name):
         elif "ริว"  in ad_name: result = "ริว"
         elif "มิ้น" in ad_name: result = "มิ้น"
         elif "สต็อป" in ad_name or "สต๊อป" in ad_name: result = "สต็อป"
-    return _retag_mew(result, ad_name)
+    return _retag_mew(result, ym)
 
 
 def guess_product(ad_name):
@@ -352,10 +343,11 @@ def resolve_creator_by_product(creator, product):
 # ครีเอเตอร์ทีมเรา (เฉพาะกลุ่มนี้ที่แชร์ยอด 50/50 ได้)
 TEAM_CREATORS = ["ริว", "หมิว", "มิ้น", "แนน", "แก้ม", "สต็อป", "Mon"]
 
-def guess_creators(ad_name):
+def guess_creators(ad_name, ym=None):
     """คืน list ครีเอเตอร์ทีมเราที่เจอใน bracket [Date][Creator1][Creator2]...
        ถ้าเจอหลายคน → แชร์ยอดเท่ากัน (เช่น [มิ้น][ริว] → ['มิ้น','ริว'] = 50/50)
-       ถ้าไม่เจอครีทีมเราเลย → fallback เป็น [guess_creator()] (เดี่ยว เช่น Central/Influ)"""
+       ถ้าไม่เจอครีทีมเราเลย → fallback เป็น [guess_creator()] (เดี่ยว เช่น Central/Influ)
+       ym (ปี,เดือน) ของ ad_date จริง — ใช้เช็ค retag หมิว→สต็อป (ดู _retag_mew)"""
     tags = re.findall(r'\[([^\]]+)\]', ad_name)
     found = []
     for b in tags[1:]:               # ข้าม tag แรก (วันที่)
@@ -369,10 +361,10 @@ def guess_creators(ad_name):
         elif "สต็อป" in b or "สต๊อป" in b: m = "สต็อป"
         elif b.strip() == "Mon": m = "Mon"
         if m:
-            m = _retag_mew(m, ad_name)
+            m = _retag_mew(m, ym)
             if m not in found:
                 found.append(m)
-    return found if found else [guess_creator(ad_name)]
+    return found if found else [guess_creator(ad_name, ym)]
 
 
 def guess_format(ad_name):
@@ -505,7 +497,12 @@ def transform_rows(raw_rows):
         # creators list — ยึด Ad Name เป็นหลัก: creator = แท็กในชื่อแอดเสมอ
         # (เลิก Cross Page override — เมื่อก่อนบังคับ product=Cross Page -> "Cross Page"
         #  ทำให้ยอดหลุดจากครีเอเตอร์ ไม่ตรง Ads Manager "Ad name contains [ชื่อ]")
-        creators = guess_creators(ad_name)
+        _row_ym = None
+        try:
+            _row_ym = (int(date_str[:4]), int(date_str[5:7]))
+        except Exception:
+            _row_ym = None
+        creators = guess_creators(ad_name, _row_ym)
         creator = creators[0]                  # primary (tag แรก) — backward compat
         share   = 1.0                          # ไม่แชร์: แต่ละครีได้เต็ม (ไม่หาร len)
 
@@ -1100,7 +1097,7 @@ def update_ao_data(html_path):
             "msg":            d["msg"],
             "cost_per_msg":   cost_msg,
             "book":           _infer_book_from_names(d["ad_name"], d["adset_name"], d["campaign_name"], PRODUCT_MAP),
-            "creator":        guess_creator(d["ad_name"]),
+            "creator":        guess_creator(d["ad_name"], (today.year, today.month)),
             "tier":           tier,
         })
 
